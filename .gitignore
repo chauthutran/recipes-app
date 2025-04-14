@@ -1,0 +1,3 @@
+recipe-api/.env.local
+recipe-api/node_modules
+recipe-api/dist

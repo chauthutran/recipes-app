@@ -1,0 +1,16 @@
+{
+  "name": "recipes-app",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix frontend\" \"npm run start --prefix recipe-api\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.0.1",
+    "prettier": "^3.5.3",
+    "prettier-plugin-vue": "^1.1.6"
+  },
+  "dependencies": {
+    "@heroicons/vue": "^2.2.0",
+    "@tailwindcss/postcss": "^4.1.4"
+  }
+}

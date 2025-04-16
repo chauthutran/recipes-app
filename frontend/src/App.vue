@@ -3,16 +3,16 @@
         <Header />
 
         <main className="flex-1 flex p-4">
-            <RecipeList />
+            <HomePage />
         </main>
         <Footer />
     </div>
 </template>
 
 <script setup lang="ts">
+import HomePage from './components/HomePage.vue';
 import Footer from './components/layout/Footer.vue';
 import Header from './components/layout/Header.vue';
-import RecipeList from './components/recipes/RecipeList.vue';
 </script>
 
 <style scoped>

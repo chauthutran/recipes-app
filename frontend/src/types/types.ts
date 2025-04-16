@@ -3,7 +3,7 @@ export interface IRecipe {
     name: string;
     ingredients: string[];
     method: string[];
-    imageUrl: string;
+    imageUrl?: string;
     categories: string[];
     mealTypes: string[];
     dietaryRestrictions: string[];
@@ -13,7 +13,8 @@ export interface IRecipe {
 }
 
 export interface ICategory {
+    _id: string;
     name: string;
     description: string;
-    icon: string
+    icon: string;
 }

@@ -6,7 +6,7 @@
             class="flex flex-col items-center justify-center text-leaf-green font-extrabold"
         >
             <div class="text-2xl">
-                <GiNoodles />
+                <img src="../../assets/food-svgrepo-com.svg" alt="recipe" class="w-14 h-14" />
             </div>
             <div>AI Recipes</div>
         </div>

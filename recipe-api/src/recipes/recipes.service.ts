@@ -3,56 +3,120 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Recipe, RecipeDocument } from '../schemas/recipe.schema';
 
-
 @Injectable()
 export class RecipesService {
-    constructor(@InjectModel(Recipe.name) private recipeModel: Model<RecipeDocument>) {}
-    
-    create (data: Partial<Recipe>) {
+    constructor(
+        @InjectModel(Recipe.name) private recipeModel: Model<RecipeDocument>,
+    ) {}
+
+    create(data: Partial<Recipe>) {
         const created = new this.recipeModel(data);
         return created.save();
     }
-    
-    findAll (): Promise<Recipe[]> {
+
+    findAll(): Promise<Recipe[]> {
         return this.recipeModel.find().exec();
     }
-    
-    findOne (id: string): Promise<Recipe | null> {
+
+    findOne(id: string): Promise<Recipe | null> {
         return this.recipeModel.findById(id).exec();
     }
-    
-    findByCategory (categoryIds: string[]): Promise<Recipe[]> {
-        const categoryObjIds = categoryIds.map((id => new Types.ObjectId(id)));
-        return this.recipeModel.find({categories: { $in: categoryObjIds }}).exec();
+
+    findByCategory(categoryIds: string[]): Promise<Recipe[]> {
+        const categoryObjIds = categoryIds.map((id) => new Types.ObjectId(id));
+        return this.recipeModel
+            .find({ categories: { $in: categoryObjIds } })
+            .exec();
     }
     
-    findByRating (topN: number): Promise<Recipe[]> {
+    findTrending(limit = 10): Promise<Recipe[]> {
+        return this.recipeModel.aggregate([
+            {
+              $addFields: {
+                totalSaves: {
+                  $cond: {
+                    if: { $isArray: '$saves' },
+                    then: { $size: '$saves' },
+                    else: 0,
+                  },
+                },
+                averageRating: {
+                  $cond: {
+                    if: { $gt: [{ $size: '$ratings' }, 0] },
+                    then: { $avg: '$ratings.rating' },
+                    else: 0,
+                  },
+                },
+              },
+            },
+            {
+              $sort: {
+                totalSaves: -1,
+                averageRating: -1,
+              },
+            },
+            { $limit: limit },
+        ]);
+    }
+    
+    async findRecommended(userId: string, limit = 10): Promise<Recipe[]> {
+        const userRecipes = await this.recipeModel.find({
+            $or: [
+              { 'ratings.user': userId },
+              { saves: userId },
+            ],
+          });
+        
+          if (userRecipes.length === 0) {
+            // fallback if user has no activity yet
+            return this.findTrending(limit);
+          }
+        
+          // 2. Extract user's preferred categories, meal types, and dietary filters
+          const categories = userRecipes.flatMap(r => r.categories).map(String);
+          const mealTypes = userRecipes.flatMap(r => r.mealTypes);
+          const restrictions = userRecipes.flatMap(r => r.dietaryRestrictions);
+        
+          // 3. Find similar recipes
+          return this.recipeModel.find({
+            $or: [
+              { categories: { $in: categories } },
+              { mealTypes: { $in: mealTypes } },
+              { dietaryRestrictions: { $in: restrictions } },
+            ],
+            saves: { $ne: userId }, // optionally exclude already saved
+          })
+          .sort({ updatedAt: -1 }) // newest recommended first
+          .limit(limit);
+    }
+
+    findByRating(topN: number): Promise<Recipe[]> {
         return this.recipeModel.aggregate([
             {
                 $addFields: {
-                    avgRating: { $avg: '$ratings.rating'}
-                }
+                    avgRating: { $avg: '$ratings.rating' },
+                },
             },
             {
-                $sort: { avgRating: -1 }
+                $sort: { avgRating: -1 },
             },
             {
-                $limit: topN
+                $limit: topN,
             },
             {
                 $lookup: {
-                    from: "users", // Join with the 'users' collection to populate user details for ratings
-                    localField: "ratings.user",
-                    foreignField: "_id",
-                    as: "ratingUsers", // Output as 'ratingUsers' array
+                    from: 'users', // Join with the 'users' collection to populate user details for ratings
+                    localField: 'ratings.user',
+                    foreignField: '_id',
+                    as: 'ratingUsers', // Output as 'ratingUsers' array
                 },
             },
             {
                 $lookup: {
-                    from: "categories", // Join with the 'categories' collection
-                    localField: "categories", // Field in the 'recipes' collection that references categories
-                    foreignField: "_id", // Field in the 'categories' collection
-                    as: "categoryDetails", // Output populated category details
+                    from: 'categories', // Join with the 'categories' collection
+                    localField: 'categories', // Field in the 'recipes' collection that references categories
+                    foreignField: '_id', // Field in the 'categories' collection
+                    as: 'categoryDetails', // Output populated category details
                 },
             },
             {
@@ -69,22 +133,24 @@ export class RecipesService {
                     createdAt: 1,
                 },
             },
-        ])
+        ]);
     }
-    
-    update (id: string, data: Partial<Recipe>): Promise<Recipe | null> {
-        return this.recipeModel.findByIdAndUpdate(id, data, { new: true }).exec();
+
+    update(id: string, data: Partial<Recipe>): Promise<Recipe | null> {
+        return this.recipeModel
+            .findByIdAndUpdate(id, data, { new: true })
+            .exec();
     }
-    
+
     /**
-     * 
+     *
      * Returns a Mongoose query that resolves to:
      * *** The deleted document (Recipe) if found and deleted
      * *** null if no document with that ID exists
      * *** .exec() executes the query and wraps the result in a Promise
-     * 
+     *
      */
-    delete (id: string): Promise<Recipe | null> {
+    delete(id: string): Promise<Recipe | null> {
         return this.recipeModel.findByIdAndDelete(id).exec();
     }
 }

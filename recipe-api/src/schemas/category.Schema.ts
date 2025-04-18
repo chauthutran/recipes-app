@@ -9,9 +9,9 @@ export class Category {
 
     @Prop({ type: String, required: true })
     description: string;
-    
+
     @Prop({ type: String, required: true })
-    icon: string
+    icon: string;
 }
 
 export const CategorySchema = SchemaFactory.createForClass(Category);

@@ -3,10 +3,10 @@ import { CategoriesService } from './categories.service';
 
 @Controller('categories')
 export class CategoriesController {
-    constructor(private readonly categoryService: CategoriesService) {} 
-    
+    constructor(private readonly categoryService: CategoriesService) {}
+
     @Get()
-    findAll () {
+    findAll() {
         return this.categoryService.findAll();
     }
 }

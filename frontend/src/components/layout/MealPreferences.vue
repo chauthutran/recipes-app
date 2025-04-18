@@ -3,7 +3,7 @@
         <h2>Meal Preferences:</h2>
         <label>
             Meal Type:
-            <select name="mealType" v-model="preferences.mealType" >
+            <select name="mealType" v-model="preferences.mealType">
                 <option value="breakfast">Breakfast</option>
                 <option value="lunch">Lunch</option>
                 <option value="dinner">Dinner</option>
@@ -11,14 +11,19 @@
         </label>
         <label>
             Dietary Restrictions:
-            <select name="dietaryRestrictions" v-model="preferences.dietaryRestrictions" >
+            <select
+                name="dietaryRestrictions"
+                v-model="preferences.dietaryRestrictions"
+            >
                 <option value="vegan">Vegan</option>
                 <option value="vegetarian">Vegetarian</option>
                 <option value="gluten-free">Gluten Free</option>
                 <option value="none">None</option>
             </select>
         </label>
-        <button @click.prevent="$emit('submit', preferences)">Generate Meal Plan</button>
+        <button @click.prevent="$emit('submit', preferences)">
+            Generate Meal Plan
+        </button>
     </div>
 </template>
 
@@ -26,12 +31,11 @@
 import { ref } from 'vue';
 
 defineEmits<{
-    (e: "submit", data: any): void 
-}>()
+    (e: 'submit', data: any): void;
+}>();
 
-const preferences = ref({ 
+const preferences = ref({
     mealType: 'lunch',
-    dietaryRestrictions: 'vegan' 
-})
-
+    dietaryRestrictions: 'vegan',
+});
 </script>

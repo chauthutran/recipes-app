@@ -6,10 +6,7 @@
             placeholder="Search for recipes..."
             class="p-2 w-full border border-gray-300 rounded"
         />
-        <button
-            type="submit"
-            class="ml-2 bg-blue-600 text-white px-4 rounded"
-        >
+        <button type="submit" class="ml-2 bg-blue-600 text-white px-4 rounded">
             Search
         </button>
     </form>

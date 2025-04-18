@@ -8,7 +8,7 @@
             alt="Recipe Image"
             class="w-full h-48 object-cover"
         />
-        
+
         <img
             v-else
             src="../../assets/default-recipe-image.png"
@@ -26,7 +26,7 @@
             <p class="text-gray-500 text-sm mt-2">
                 Created at: {{ formatDate(recipe.createdAt) }}
             </p>
-            
+
             <div class="mt-4 flex justify-between items-center">
                 <button
                     @click="$emit('showDetails', recipe)"
@@ -42,7 +42,7 @@
                 </button>
             </div>
         </div>
-        
+
         <RecipeActionBar :data="recipe" />
     </div>
 </template>

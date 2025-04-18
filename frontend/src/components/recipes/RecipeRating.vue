@@ -1,7 +1,11 @@
 <template>
     <div className="flex items-center">
         <!-- Full stars -->
-        <FullStar v-for="n in fullStars" :key="'full-' + n" class="w-5 h-5 text-yellow-400" />
+        <FullStar
+            v-for="n in fullStars"
+            :key="'full-' + n"
+            class="w-5 h-5 text-yellow-400"
+        />
 
         <!-- Half star -->
         <svg
@@ -14,8 +18,13 @@
             <defs>
                 <linearGradient id="half">
                     <!-- Half of the star will be yellow -->
-                    <stop offset="50%" stop-color="#fdc700" /> <!-- Yellow color -->
-                    <stop offset="50%" stop-color="transparent" stop-opacity="1" />
+                    <stop offset="50%" stop-color="#fdc700" />
+                    <!-- Yellow color -->
+                    <stop
+                        offset="50%"
+                        stop-color="transparent"
+                        stop-opacity="1"
+                    />
                 </linearGradient>
             </defs>
             <path

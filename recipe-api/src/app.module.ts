@@ -8,23 +8,23 @@ import { UsersModule } from './users/users.module';
 import { CategoriesModule } from './categories/categories.module';
 
 @Module({
-  imports: [
-    ConfigModule.forRoot({
-      envFilePath: '.env.local', // <-- load your .env.local
-      isGlobal: true,
-    }),
-    MongooseModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        uri: configService.get<string>('MONGO_URI'),
-      }),
-      inject: [ConfigService],
-    }),
-    RecipesModule,
-    UsersModule,
-    CategoriesModule,
-  ],
-  controllers: [AppController],
-  providers: [AppService],
+    imports: [
+        ConfigModule.forRoot({
+            envFilePath: '.env.local', // <-- load your .env.local
+            isGlobal: true,
+        }),
+        MongooseModule.forRootAsync({
+            imports: [ConfigModule],
+            useFactory: async (configService: ConfigService) => ({
+                uri: configService.get<string>('MONGO_URI'),
+            }),
+            inject: [ConfigService],
+        }),
+        RecipesModule,
+        UsersModule,
+        CategoriesModule,
+    ],
+    controllers: [AppController],
+    providers: [AppService],
 })
 export class AppModule {}

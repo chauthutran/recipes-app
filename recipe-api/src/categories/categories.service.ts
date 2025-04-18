@@ -5,9 +5,12 @@ import { Category, CategoryDocument } from 'src/schemas/category.Schema';
 
 @Injectable()
 export class CategoriesService {
-    constructor(@InjectModel(Category.name) private categoryModel: Model<CategoryDocument>) {}
-    
-    findAll () {
+    constructor(
+        @InjectModel(Category.name)
+        private categoryModel: Model<CategoryDocument>,
+    ) {}
+
+    findAll() {
         return this.categoryModel.find();
     }
 }

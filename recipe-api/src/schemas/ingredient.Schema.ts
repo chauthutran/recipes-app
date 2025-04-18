@@ -4,9 +4,9 @@ export type IngredientDocument = Ingredient & Document;
 
 @Schema({ timestamps: true })
 export class Ingredient {
-    @Prop({ type: String, require: true})
+    @Prop({ type: String, require: true })
     name: string;
-    
+
     @Prop({ type: Number, required: true })
     index: number;
 }

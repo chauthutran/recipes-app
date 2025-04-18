@@ -1,10 +1,8 @@
 <template>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <p v-if="errMsg !== ''">{errMsg}</p>
-        
+    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
         <RecipeCard
             v-for="recipe in featuredRecipes"
-            :key="recipe._id"
+            :key="'feature_' + recipe._id"
             :recipe="recipe"
             @edit="onEdit"
             @delete="onShowDetails"
@@ -19,7 +17,6 @@ import axios from 'axios';
 import RecipeCard from '../recipes/RecipeCard.vue';
 
 const featuredRecipes = ref<IRecipe[] | null>(null);
-const errMsg = ref('');
 
 const onEdit = (recipe: IRecipe) => {
     console.log('edit: ', recipe);
@@ -30,7 +27,9 @@ const onShowDetails = (recipe: IRecipe) => {
 };
 
 onMounted(async () => {
-    const res = await axios.get('http://localhost:3000/recipes/top-pick?top=3');
+    const res = await axios.get(
+        'http://localhost:3000/recipes/top-pick?top=10',
+    );
     featuredRecipes.value = res.data;
 });
 </script>

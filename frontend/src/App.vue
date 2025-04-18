@@ -1,19 +1,24 @@
+<script setup lang="ts">
+import { useAppProvider } from './providers/useAppProvider';
+import Footer from './components/layout/Footer.vue';
+import Header from './components/layout/Header.vue';
+import AppWrapper from './components/AppWrapper.vue';
+import { useAuthProvider } from './providers/useAuthProvider';
+
+useAppProvider();
+useAuthProvider();
+</script>
+
 <template>
     <div class="flex h-screen flex-col">
         <Header />
 
         <main className="flex-1 flex p-4">
-            <HomePage />
+            <AppWrapper />
         </main>
         <Footer />
     </div>
 </template>
-
-<script setup lang="ts">
-import HomePage from './components/HomePage.vue';
-import Footer from './components/layout/Footer.vue';
-import Header from './components/layout/Header.vue';
-</script>
 
 <style scoped>
 .logo {

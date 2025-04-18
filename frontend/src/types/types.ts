@@ -1,3 +1,8 @@
+export interface IUser {
+    _id?: string;
+    email: string;
+}
+
 export interface IRecipe {
     _id: string;
     name: string;
@@ -17,4 +22,9 @@ export interface ICategory {
     name: string;
     description: string;
     icon: string;
+}
+
+export interface IAppPage {
+    name: string;
+    data: IRecipe[] | null;
 }

@@ -16,18 +16,20 @@
             class="w-full h-48 object-cover"
         />
 
-        <div class="p-4">
-            <h3 class="text-lg font-semibold text-gray-800">
+        <div class="">
+            <RecipeActionBar :data="recipe" />
+            
+            <h3 class="mt-4 text-lg font-semibold text-gray-800">
                 {{ recipe.name }}
             </h3>
-            <p class="text-sm text-gray-600 mt-1 line-clamp-2">
+            <!-- <p class="text-sm text-gray-600 mt-1 line-clamp-2">
                 {{ recipe._id }}
-            </p>
+            </p> -->
             <p class="text-gray-500 text-sm mt-2">
                 Created at: {{ formatDate(recipe.createdAt) }}
             </p>
 
-            <div class="mt-4 flex justify-between items-center">
+            <div class="mt-2 flex justify-between items-center">
                 <button
                     @click="$emit('showDetails', recipe)"
                     class="text-blue-500 hover:underline"
@@ -42,8 +44,6 @@
                 </button>
             </div>
         </div>
-
-        <RecipeActionBar :data="recipe" />
     </div>
 </template>
 

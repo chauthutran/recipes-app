@@ -21,8 +21,8 @@ export class RecipesController {
     }
 
     @Get()
-    findAll() {
-        return this.recipeService.findAll();
+    findAll( @Query('limit') limit = 10, @Query('page') page = 1,) {
+        return this.recipeService.findAll({limit, page});
     }
 
     @Get()
@@ -46,6 +46,43 @@ export class RecipesController {
     findRecommended(@Param('userId') userId: string, @Query() limit: string) {
         const limitNumber = parseInt(limit) || 10; // Default to 10 if not provided
         return this.recipeService.findRecommended(userId, limitNumber);
+    }
+    
+    @Get("popular-users-amount")
+    findByUserSaves(@Query('limit') limit: string) {
+        const limitNumber = parseInt(limit) || 5; // Default to 5 if not provided
+        return this.recipeService.findPopularCategoriesByRecipeSaves(limitNumber);
+    }
+    
+    @Get("popular-recipes-amount")
+    findByRecipesAmount(@Query() limit: string) {
+        const limitNumber = parseInt(limit) || 5; // Default to 5 if not provided
+        return this.recipeService.findPopularCategoriesByRecipeAmount(limitNumber);
+    }
+    
+    @Get('favorites')
+    findUserFavoriteRecipes(@Query('limit') limit: string): Promise<Recipe[]> {
+        const limitNumber = parseInt(limit) || 10; // Default to 5 if not provided
+        return this.recipeService.findUserFavorite(limitNumber);
+    }
+
+    @Get("query")
+    async searchRecipes(
+        @Query('search') search?: string,
+        @Query('ingredients') ingredients?: string[], // comma separated in URL
+        @Query('categories') categories?: string[],
+        @Query('dietary') dietary?: string[],
+        @Query('limit') limit = 10,
+        @Query('page') page = 1,
+    ): Promise<Recipe[]> {
+        return this.recipeService.search({
+            search,
+            ingredients,
+            categories,
+            dietary,
+            limit: Number(limit),
+            page: Number(page),
+        });
     }
 
     @Get('categories')

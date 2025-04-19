@@ -1,121 +1,50 @@
 <template>
     <header
-        class="font-montserrat px-10 flex items-center space-x-10 py-3 text-black"
+        class="font-montserrat px-6 md:px-12 py-4 bg-white shadow flex items-center justify-between text-black"
     >
-        <div
-            class="flex flex-col items-center justify-center text-leaf-green font-extrabold"
-        >
-            <div class="text-2xl">
-                <img
-                    src="../../assets/food-svgrepo-com.svg"
-                    alt="recipe"
-                    class="w-14 h-14"
-                />
-            </div>
-            <div>AI Recipes</div>
+        <!-- Logo and Title -->
+        <div class="flex flex-col items-center space-x-4">
+            <img
+                src="../../assets/food-svgrepo-com.svg"
+                alt="recipe"
+                class="w-12 h-12"
+            />
+            <span class="text-xl font-bold text-leaf-green">FoodieHeaven</span>
         </div>
 
-        <button
-            :class="
-                'border_b border-leaf-green hover:border_b hover:border-leaf-green' +
-                    appPage.name ===
-                PAGE_HOME
-                    ? 'border_b border-leaf-green'
-                    : ''
-            "
-            @click="appPage.name === PAGE_HOME"
-        >
-            Home
-        </button>
-        <button
-            :class="[
-            'border_b hover:border_b',
-            appPage.name === PAGE_RECIPES ? 'border-leaf-green' : 'border-transparent',
-            'hover:border-leaf-green'
-            ]"
-            @click="appPage.name === PAGE_RECIPES_BY_CATEGORY"
-        >
-            Recipes
-        </button>
-        <button
-            :class="[
-                'border_b border-leaf-green hover:border_b hover:border-leaf-green' +
-                    appPage.name ===
-                PAGE_RECIPES_BY_CATEGORY
-                    ? 'border_b border-leaf-green'
-                    : ''
-            ]"
-            @click="appPage.name === PAGE_RECIPES_BY_CATEGORY"
-        >
-            Categories
-        </button>
-        <button
-            :class="
-                'border_b border-leaf-green hover:border_b hover:border-leaf-green' +
-                    appPage.name ===
-                PAGE_DIETARY_RESTRICTION
-                    ? 'border_b border-leaf-green'
-                    : ''
-            "
-            @click="appPage.name === PAGE_DIETARY_RESTRICTION"
-        >
-            Dietary Preferences
-        </button>
-        <button
-            :class="
-                'border_b border-leaf-green hover:border_b hover:border-leaf-green' +
-                    appPage.name ===
-                PAGE_MEAL_TYPE
-                    ? 'border_b border-leaf-green'
-                    : ''
-            "
-            @click="appPage.name === PAGE_MEAL_TYPE"
-        >
-            Meal Types
-        </button>
-        <button
-            :class="
-                'border_b border-leaf-green hover:border_b hover:border-leaf-green' +
-                    appPage.name ===
-                PAGE_FAVORITES
-                    ? 'border_b border-leaf-green'
-                    : ''
-            "
-            @click="appPage.name === PAGE_FAVORITES"
-        >
-            Favorite
-        </button>
-        <button
-            :class="
-                'border_b border-leaf-green hover:border_b hover:border-leaf-green' +
-                    appPage.name ===
-                PAGE_MEAL_PLANNER
-                    ? 'border_b border-leaf-green'
-                    : ''
-            "
-            @click="appPage.name === PAGE_MEAL_PLANNER"
-        >
-            Meal Planner
-        </button>
+        <!-- Navigation Menus -->
+        <nav class="hidden md:flex space-x-4">
+            <MenuButton :text="'Home'" :name="PAGE_HOME" />
+            <MenuButton :text="'Recipes'" :name="PAGE_RECIPES" />
+            <MenuButton :text="'Categories'" :name="PAGE_RECIPES_BY_CATEGORY" />
+            <MenuButton
+                :text="'Dietary Preferences'"
+                :name="PAGE_DIETARY_RESTRICTION"
+            />
+            <MenuButton :text="'Meal Types'" :name="PAGE_MEAL_TYPE" />
+            <MenuButton :text="'Favorite'" :name="PAGE_FAVORITES" />
+            <MenuButton :text="'Meal Planner'" :name="PAGE_MEAL_PLANNER" />
+        </nav>
 
-        <!-- <button>Favorites</button>
-        <button>Recipe Upload</button>
-        <button>Profile</button>
-        <button>Notifications</button> -->
-        <!-- <button class="bg-leaf-green px-3 py-1 text-white rounded">Log-out</button> -->
-
-        <button v-if="!user" class="bg-leaf-green px-3 py-1 text-white rounded">
-            Login
-        </button>
-
-        <button v-else class="bg-leaf-green px-3 py-1 text-white rounded">
-            Log-out
-        </button>
+        <!-- Auth Buttons -->
+        <div class="flex items-center space-x-3">
+            <button
+                v-if="!user"
+                class="bg-leaf-green hover:bg-leaf-green/90 text-white px-4 py-1.5 rounded transition"
+            >
+                Login
+            </button>
+            <button
+                v-else
+                class="bg-red-500 hover:bg-red-600 text-white px-4 py-1.5 rounded transition"
+            >
+                Logout
+            </button>
+        </div>
     </header>
 </template>
 
 <script setup lang="ts">
-import { useAppContext } from '../../composables/useAppContext';
 import { useAuthContext } from '../../composables/useAuthContext';
 import {
     PAGE_HOME,
@@ -126,7 +55,7 @@ import {
     PAGE_FAVORITES,
     PAGE_MEAL_PLANNER,
 } from '../../constants/constants';
+import MenuButton from '../basics/MenuButton.vue';
 
-const { appPage } = useAppContext();
 const { user } = useAuthContext();
 </script>

@@ -51,6 +51,7 @@ export class Recipe {
         rating: number;
     }[];
 
+    // Users who saved this recipes
     @Prop({ type: [MongooseSchema.Types.ObjectId], ref: 'User' })
     saves: Types.ObjectId;
 }

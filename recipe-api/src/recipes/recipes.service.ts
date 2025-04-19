@@ -14,8 +14,13 @@ export class RecipesService {
         return created.save();
     }
 
-    findAll(): Promise<Recipe[]> {
-        return this.recipeModel.find().exec();
+    findAll({ limit, page }): Promise<Recipe[]> {
+        return this.recipeModel
+            .find()
+            .sort({ createdAt: -1 })
+            .limit(limit)
+            .skip((page - 1) * limit)
+            .exec();
     }
 
     findOne(id: string): Promise<Recipe | null> {
@@ -28,68 +33,90 @@ export class RecipesService {
             .find({ categories: { $in: categoryObjIds } })
             .exec();
     }
-    
+
     findTrending(limit = 10): Promise<Recipe[]> {
         return this.recipeModel.aggregate([
             {
-              $addFields: {
-                totalSaves: {
-                  $cond: {
-                    if: { $isArray: '$saves' },
-                    then: { $size: '$saves' },
-                    else: 0,
-                  },
+                $addFields: {
+                    totalSaves: {
+                        $cond: {
+                            if: { $isArray: '$saves' },
+                            then: { $size: '$saves' },
+                            else: 0,
+                        },
+                    },
+                    averageRating: {
+                        $cond: {
+                            if: { $gt: [{ $size: '$ratings' }, 0] },
+                            then: { $avg: '$ratings.rating' },
+                            else: 0,
+                        },
+                    },
                 },
-                averageRating: {
-                  $cond: {
-                    if: { $gt: [{ $size: '$ratings' }, 0] },
-                    then: { $avg: '$ratings.rating' },
-                    else: 0,
-                  },
-                },
-              },
             },
             {
-              $sort: {
-                totalSaves: -1,
-                averageRating: -1,
-              },
+                $sort: {
+                    totalSaves: -1,
+                    averageRating: -1,
+                },
             },
             { $limit: limit },
         ]);
     }
-    
+
     async findRecommended(userId: string, limit = 10): Promise<Recipe[]> {
         const userRecipes = await this.recipeModel.find({
-            $or: [
-              { 'ratings.user': userId },
-              { saves: userId },
-            ],
-          });
-        
-          if (userRecipes.length === 0) {
+            $or: [{ 'ratings.user': userId }, { saves: userId }],
+        });
+
+        if (userRecipes.length === 0) {
             // fallback if user has no activity yet
             return this.findTrending(limit);
-          }
-        
-          // 2. Extract user's preferred categories, meal types, and dietary filters
-          const categories = userRecipes.flatMap(r => r.categories).map(String);
-          const mealTypes = userRecipes.flatMap(r => r.mealTypes);
-          const restrictions = userRecipes.flatMap(r => r.dietaryRestrictions);
-        
-          // 3. Find similar recipes
-          return this.recipeModel.find({
-            $or: [
-              { categories: { $in: categories } },
-              { mealTypes: { $in: mealTypes } },
-              { dietaryRestrictions: { $in: restrictions } },
-            ],
-            saves: { $ne: userId }, // optionally exclude already saved
-          })
-          .sort({ updatedAt: -1 }) // newest recommended first
-          .limit(limit);
+        }
+
+        // 2. Extract user's preferred categories, meal types, and dietary filters
+        const categories = userRecipes.flatMap((r) => r.categories).map(String);
+        const mealTypes = userRecipes.flatMap((r) => r.mealTypes);
+        const restrictions = userRecipes.flatMap((r) => r.dietaryRestrictions);
+
+        // 3. Find similar recipes
+        return this.recipeModel
+            .find({
+                $or: [
+                    { categories: { $in: categories } },
+                    { mealTypes: { $in: mealTypes } },
+                    { dietaryRestrictions: { $in: restrictions } },
+                ],
+                saves: { $ne: userId }, // optionally exclude already saved
+            })
+            .sort({ updatedAt: -1 }) // newest recommended first
+            .limit(limit);
     }
 
+    async findUserFavorite(limit = 10): Promise<Recipe[]> {
+        return this.recipeModel.aggregate([
+            {
+              $addFields: {
+                saveCount: { $size: { $ifNull: ['$saves', []] } },
+              },
+            },
+            {
+              $sort: { saveCount: -1, createdAt: -1 },
+            },
+            {
+              $limit: +limit,
+            },
+            {
+              $lookup: {
+                from: 'categories',
+                localField: 'categories',
+                foreignField: '_id',
+                as: 'categories',
+              },
+            }
+          ]);
+    }
+    
     findByRating(topN: number): Promise<Recipe[]> {
         return this.recipeModel.aggregate([
             {
@@ -134,6 +161,96 @@ export class RecipesService {
                 },
             },
         ]);
+    }
+
+    
+    //  count how many recipes are in each category, and that count can be our "popularity" metric.
+    findPopularCategoriesByRecipeAmount(limit = 5): Promise<Recipe[]> {
+        return this.recipeModel.aggregate([
+            { $unwind: '$categories' }, // flatten the categories array
+            {
+                $group: {
+                    _id: '$categories', // group by category ID
+                    count: { $sum: 1 }, // count recipes in each category
+                },
+            },
+            { $sort: { count: -1 } }, // most popular first
+            { $limit: limit },
+            {
+                $lookup: {
+                    from: 'categories', // assuming collection name is 'categories'
+                    localField: '_id',
+                    foreignField: '_id',
+                    as: 'category',
+                },
+            },
+            { $unwind: '$category' },
+            {
+                $project: {
+                    _id: '$category._id',
+                    name: '$category.name',
+                    count: 1,
+                },
+            },
+        ]);
+    }
+    
+    // Get the categories with the "saves" count
+    findPopularCategoriesByRecipeSaves(limit = 5): Promise<Recipe[]> {
+        return this.recipeModel.aggregate([
+            {
+              $addFields: {
+                saveCount: { $size: { $ifNull: ['$saves', []] } }
+              }
+            },
+            {
+              $sort: { saveCount: -1, createdAt: -1 }
+            },
+            {
+              $limit: limit
+            },
+            {
+              $lookup: {
+                from: 'categories',
+                localField: 'categories',
+                foreignField: '_id',
+                as: 'categories'
+              }
+            }
+        ]);
+    }
+    
+    search({
+        search,
+        ingredients,
+        categories,
+        dietary,
+        limit,
+        page,
+    }): Promise<Recipe[]> {
+        const query: any = {};
+
+        if (search) {
+            query.name = { $regex: search, $options: 'i' };
+        }
+
+        if (ingredients && ingredients.length) {
+            query.ingredients = { $in: ingredients };
+        }
+
+        if (categories && categories.length) {
+            query.categories = { $in: categories };
+        }
+
+        if (dietary && dietary.length) {
+            query.dietaryRestrictions = { $in: dietary };
+        }
+
+        return this.recipeModel
+            .find(query)
+            .limit(limit)
+            .skip((page - 1) * limit)
+            .sort({ createdAt: -1 });
     }
 
     update(id: string, data: Partial<Recipe>): Promise<Recipe | null> {

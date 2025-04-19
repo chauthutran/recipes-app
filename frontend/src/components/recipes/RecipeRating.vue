@@ -37,7 +37,7 @@
         <EmptyStar
             v-for="n in emptyStars"
             :key="'empty-' + n"
-            class="w-5 h-5"
+            class="w-5 h-5 text-gray-300"
         />
 
         <span v-if="ratingUserNo" className="text-sm text-gray-600 ml-2"

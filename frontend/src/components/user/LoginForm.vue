@@ -89,7 +89,7 @@ const handleLogin = async () => {
     });
     if (user != null) {
         alert('login successfully !!');
-        appPage.value = { name: PAGE_HOME, data: null };
+        appPage.value = PAGE_HOME;
     } else {
         error.value = 'Login failed !';
     }

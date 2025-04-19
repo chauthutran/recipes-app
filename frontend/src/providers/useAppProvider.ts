@@ -1,10 +1,10 @@
 import { ref, provide, onMounted, type InjectionKey, type Ref } from 'vue';
-import type { IAppPage, ICategory } from '../types/types';
+import type { ICategory } from '../types/types';
 import axios from 'axios';
 import { PAGE_HOME } from '../constants/constants';
 
 export type AppContext = {
-    appPage: Ref<IAppPage>;
+    appPage: Ref<string>;
     categories: Ref<ICategory[] | null>;
     loading: Ref<boolean>;
     errMsg: Ref<string>;
@@ -14,7 +14,7 @@ export const AppKey: InjectionKey<AppContext> = Symbol('app');
 
 // Create a setup function to call inside your component
 export function useAppProvider() {
-    const appPage = ref<IAppPage>({ name: PAGE_HOME, data: null });
+    const appPage = ref<string>(PAGE_HOME);
 
     const categories = ref<ICategory[] | null>(null);
     const loading = ref(true);

@@ -23,8 +23,3 @@ export interface ICategory {
     description: string;
     icon: string;
 }
-
-export interface IAppPage {
-    name: string;
-    data: IRecipe[] | null;
-}

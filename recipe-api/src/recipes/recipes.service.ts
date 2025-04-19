@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Recipe, RecipeDocument } from '../schemas/recipe.schema';
@@ -239,7 +239,8 @@ export class RecipesService {
         }
 
         if (categories && categories.length) {
-            query.categories = { $in: categories };
+            const categoryObjIds = categories.map((id: string) => new Types.ObjectId(id));
+            query.categories = { $in: categoryObjIds };
         }
 
         if (dietary && dietary.length) {

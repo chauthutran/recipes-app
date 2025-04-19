@@ -1,6 +1,6 @@
 <template>
     <div
-        class="p-4 border-2 border-leaf-green rounded-md shadow-sm w-full h-full flex flex-col justify-between space-y-3"
+        class="p-4 border-2 border-leaf-green rounded-md shadow-sm w-full h-full flex flex-col justify-between space-y-3 max-w-md"
     >
         <img
             v-if="recipe.imageUrl"

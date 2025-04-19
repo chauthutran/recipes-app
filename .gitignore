@@ -2,3 +2,4 @@ recipe-api/.env.local
 recipe-api/node_modules
 recipe-api/dist
 frontend/node_modules
+/node_modules

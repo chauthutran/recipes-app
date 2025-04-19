@@ -3,7 +3,9 @@ import {
     Controller,
     Delete,
     Get,
+    Logger,
     Param,
+    ParseArrayPipe,
     Post,
     Put,
     Query,
@@ -70,8 +72,20 @@ export class RecipesController {
     async searchRecipes(
         @Query('search') search?: string,
         @Query('ingredients') ingredients?: string[], // comma separated in URL
-        @Query('categories') categories?: string[],
-        @Query('dietary') dietary?: string[],
+        
+        @Query('categories', new ParseArrayPipe({
+            items: String,
+            separator: ',',      // split on commas
+            optional: true,      // so missing param doesn’t error
+        }))
+        categories?: string[],
+        
+        @Query('dietary', new ParseArrayPipe({
+            items: String,
+            separator: ',',      // split on commas
+            optional: true,      // so missing param doesn’t error
+        }))
+        dietary?: string[],
         @Query('limit') limit = 10,
         @Query('page') page = 1,
     ): Promise<Recipe[]> {

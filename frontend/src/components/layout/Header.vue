@@ -15,7 +15,7 @@
         <!-- Navigation Menus -->
         <nav class="hidden md:flex space-x-4">
             <MenuButton :text="'Home'" :name="PAGE_HOME" />
-            <MenuButton :text="'Recipes'" :name="PAGE_RECIPES" />
+            <MenuButton :text="'Discover'" :name="PAGE_DISCOVER" />
             <MenuButton :text="'Categories'" :name="PAGE_RECIPES_BY_CATEGORY" />
             <MenuButton
                 :text="'Dietary Preferences'"
@@ -31,31 +31,47 @@
             <button
                 v-if="!user"
                 class="bg-leaf-green hover:bg-leaf-green/90 text-white px-4 py-1.5 rounded transition"
+                @click="appPage = PAGE_LOGIN"
             >
                 Login
             </button>
+
             <button
                 v-else
-                class="bg-red-500 hover:bg-red-600 text-white px-4 py-1.5 rounded transition"
+                class="relative text-green-500 px-4 py-1.5 rounded transition"
+                @click="handleLogout"
             >
-                Logout
+                <UserCircleIcon
+                    class="pointer-events-none absolute left-3 top-1/2 transform -translate-y-1/2 h-10 w-10 peer-focus:text-leaf-green"
+                />
             </button>
         </div>
     </header>
 </template>
 
 <script setup lang="ts">
+import { UserCircleIcon } from '@heroicons/vue/24/solid';
+import { useAppContext } from '../../composables/useAppContext';
 import { useAuthContext } from '../../composables/useAuthContext';
 import {
     PAGE_HOME,
     PAGE_RECIPES_BY_CATEGORY,
     PAGE_MEAL_TYPE,
-    PAGE_RECIPES,
+    PAGE_DISCOVER,
     PAGE_DIETARY_RESTRICTION,
     PAGE_FAVORITES,
     PAGE_MEAL_PLANNER,
+    PAGE_LOGIN,
 } from '../../constants/constants';
 import MenuButton from '../basics/MenuButton.vue';
 
-const { user } = useAuthContext();
+const { user, logout } = useAuthContext();
+const { appPage } = useAppContext();
+
+const handleLogout = () => {
+    const ok = confirm("Are you sure you want to log-out ?");
+    if(ok) {
+        logout();
+    }
+}
 </script>

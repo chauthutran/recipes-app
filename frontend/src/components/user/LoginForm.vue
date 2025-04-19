@@ -1,75 +1,84 @@
 <template>
-    <div class="w-96 p-4 flex flex-col">
-        <div class="mb-4">
-            <label
-                class="block text-xs font-medium text-gray-900"
-                htmlFor="email"
-            >
-                Email
-            </label>
-            <div class="relative">
-                <input
-                    class="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
-                    id="email"
-                    type="email"
-                    name="email"
-                    v-model="email"
-                    placeholder="Enter your email"
-                    required
-                />
-                <UserIcon
-                    class="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900"
-                />
+    <div class="w-full h-full flex items-center justify-center">
+        <div class="w-96 p-6 bg-white rounded-lg shadow-md">
+            <!-- Email -->
+            <div class="mb-5 w-full text-left">
+                <label
+                    for="email"
+                    class="block text-sm font-medium text-gray-700 mb-1 text-left"
+                >
+                    Email
+                </label>
+                <div class="relative">
+                    <input
+                        id="email"
+                        type="email"
+                        name="email"
+                        v-model="email"
+                        placeholder="Enter your email"
+                        required
+                        class="peer block w-full rounded-md border border-gray-300 py-2 pl-10 pr-3 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-leaf-green focus:border-leaf-green"
+                    />
+                    <UserIcon
+                        class="pointer-events-none absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 peer-focus:text-leaf-green"
+                    />
+                </div>
+            </div>
+
+            <!-- Password -->
+            <div class="mb-5 w-full text-left">
+                <label
+                    for="password"
+                    class="block text-sm font-medium text-gray-700 mb-1 text-left"
+                >
+                    Password
+                </label>
+                <div class="relative">
+                    <input
+                        id="password"
+                        type="password"
+                        name="password"
+                        v-model="password"
+                        placeholder="Enter password"
+                        required
+                        minlength="4"
+                        class="peer block w-full rounded-md border border-gray-300 py-2 pl-10 pr-3 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-leaf-green focus:border-leaf-green"
+                    />
+                    <KeyIcon
+                        class="pointer-events-none absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 peer-focus:text-leaf-green"
+                    />
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <button
+                    :class="[
+                        'flex w-full flex-row px-4 py-2 rounded text-white',
+                        loading ? 'bg-gray-300' : 'bg-leaf-green hover:bg-green-600',
+                    ]"
+                    @click="handleLogin"
+                >
+                    <span class="flex-1">Log in</span>
+                    <LoadingCircle :size="20" v-if="loading" />
+                    <!-- <FaSpinner class="ml-auto h-5" size={20} />} -->
+                </button>
             </div>
         </div>
-        <div class="mb-4">
-            <label
-                class="block text-xs font-medium text-gray-900"
-                htmlFor="password"
-            >
-                Password
-            </label>
-            <div class="relative">
-                <input
-                    class="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
-                    id="password"
-                    type="password"
-                    name="password"
-                    placeholder="Enter password"
-                    v-model="password"
-                    required
-                    minLength="{4}"
-                />
-                <KeyIcon
-                    class="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900"
-                />
-            </div>
-        </div>
-
-        <div class="mb-4">
-            <button
-                class="flex w-full flex-row bg-leaf-green px-4 py-2 rounded hover:bg-green-600 text-white"
-                @click="handleLogin"
-            >
-                <span class="flex-1">Log in</span>
-                <!-- <FaSpinner class="ml-auto h-5" size={20} />} -->
-            </button>
-        </div>
-
-        <div class="flex h-8 items-end space-x-1 text-red-500">
-            <p v-if="error != null">{error}</p>
-        </div>
+        
+        <p v-if="errMsg !== ''">{{ errMsg }}</p>
     </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import LoadingCircle from "../basics/LoadingCircle.vue";
 import { KeyIcon, UserIcon } from '@heroicons/vue/24/solid';
-import axios from 'axios';
 import { PAGE_HOME } from '../../constants/constants';
 import { useAppContext } from '../../composables/useAppContext';
+import { useAuthContext } from '../../composables/useAuthContext';
 
 const { appPage } = useAppContext();
+const { user, login, loading, errMsg } = useAuthContext();
 
 const email = ref<string>('test2@example.com');
 const password = ref<string>('1234');
@@ -81,17 +90,10 @@ const handleLogin = async () => {
         return;
     }
 
-    error.value = null;
-    // Perform login logic here
-    const user = await axios.post('http://localhost:3000/users/login', {
-        email: email.value,
-        password: password.value,
-    });
-    if (user != null) {
-        alert('login successfully !!');
+    await login(email.value, password.value);
+    if(user)
+    {
         appPage.value = PAGE_HOME;
-    } else {
-        error.value = 'Login failed !';
     }
 };
 </script>

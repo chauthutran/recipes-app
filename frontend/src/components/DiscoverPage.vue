@@ -1,61 +1,93 @@
 <template>
     <div className="flex flex-col flex-1">
         <!-- 🔍 Search + Filters -->
-        <div className="mb-8">
-            <div class="grid gap-4 md:grid-cols-4 lg:grid-cols-5">
-                <input
-                    v-model="filters.search"
-                    type="text"
-                    placeholder="Search recipes..."
-                    class="border p-2 rounded w-full"
-                />
+        <div class="mb-8">
+            <div class="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                <!-- Search -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1"
+                        >Recipes</label
+                    >
+                    <input
+                        v-model="filters.search"
+                        type="text"
+                        placeholder="Search recipes..."
+                        class="border border-gray-300 p-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-green-500"
+                    />
+                </div>
 
-                <input
-                    v-model="filters.ingredients"
-                    type="text"
-                    placeholder="Ingredients (comma-separated)"
-                    class="border p-2 rounded w-full"
-                />
+                <!-- Ingredients -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1"
+                        >Ingredients</label
+                    >
+                    <input
+                        v-model="filters.ingredients"
+                        type="text"
+                        placeholder="Ingredients (comma-separated)"
+                        class="border border-gray-300 p-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-green-500"
+                    />
+                </div>
 
-                <!-- <select v-model="filters.category" class="border p-2 rounded w-full">
-                    <option value="">All Categories</option>
-                    <option v-for="cat in categories" :key="cat._id" :value="cat._id">
-                        {{ cat.name }}
-                    </option>
-                </select> -->
-                
-                <aside class="w-full lg:w-1/4 space-y-4">
-                    <h3 class="text-lg font-semibold">Categories</h3>
-                    <ul class="space-y-2">
-                        <li v-for="category in categories" :key="category._id">
-                        <label class="flex items-center">
+                <!-- Dietary Options -->
+
+                <div class="col-span-1 md:col-span-2 lg:col-span-3">
+                    <h3 class="text-lg font-semibold mb-2">Dietary</h3>
+                    <div
+                        class="grid justify-start grid-cols-[repeat(auto-fit,_minmax(140px,_1fr))] gap-x-3 gap-y-2"
+                    >
+                        <label
+                            class="flex flex-row items-start gap-2 text-left"
+                            v-for="option in dietaryOptions"
+                            :key="option"
+                        >
+                            <input
+                                type="checkbox"
+                                v-model="filters.dietary"
+                                :value="option"
+                                class="w-1 mt-0.5"
+                            />
+                            <span
+                                class="text-sm text-gray-700 whitespace-nowrap"
+                                >{{ option }}</span
+                            >
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Categories -->
+                <div class="col-span-1 md:col-span-2 lg:col-span-3">
+                    <h3 class="text-lg font-semibold mb-2">Categories</h3>
+                    <div
+                        class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3"
+                    >
+                        <label
+                            class="flex items-center space-x-2"
+                            v-for="category in categories"
+                            :key="category._id"
+                        >
                             <input
                                 type="checkbox"
                                 v-model="filters.category"
                                 :value="category._id"
-                                class="mr-2"
+                                class="form-checkbox text-green-600"
                             />
-                            {{ category.name }}
+                            <span class="text-sm text-gray-700">{{
+                                category.name
+                            }}</span>
                         </label>
-                        </li>
-                    </ul>
-                </aside>
+                    </div>
+                </div>
 
-
-                <select v-model="filters.dietary" class="border p-2 rounded w-full">
-                    <option value="">All Diets</option>
-                    <option v-for="option in dietaryOptions" :key="option" :value="option">
-                        {{ option }}
-                    </option>
-                </select>
-                
                 <!-- Action Button -->
-                <button
-                    @click="fetchRecipes"
-                    class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded shadow-sm transition"
-                >
-                    Search
-                </button>
+                <div class="col-span-1 md:col-span-2 lg:col-span-3">
+                    <button
+                        @click="fetchRecipes"
+                        class="mt-4 bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded shadow-md transition w-full sm:w-auto"
+                    >
+                        Search
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -64,7 +96,7 @@
             <h2
                 className="text-2xl font-semibold mb-4 border-b border-leaf-green w-fit pr-3"
             >
-            🍛 Recipes
+                🍛 Recipes
             </h2>
             <GridLayout v-if="recipes.length">
                 <RecipeCard
@@ -73,7 +105,9 @@
                     :recipe="recipe"
                 />
             </GridLayout>
-            <div v-else class="italic text-gray-500">No recipes found. Try adjusting your filters.</div>
+            <div v-else class="italic text-gray-500">
+                No recipes found. Try adjusting your filters.
+            </div>
         </div>
 
         <!-- 📄 Pagination -->
@@ -92,7 +126,6 @@
         </section>
     </div>
 </template>
-
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
@@ -136,8 +169,8 @@ const fetchRecipes = async () => {
             limit: HOME_PAGE_RECIPE_LIMIT,
             page: page.value,
         },
-    paramsSerializer: (params) =>
-        qs.stringify(params, { arrayFormat: 'comma' }),
+        paramsSerializer: (params) =>
+            qs.stringify(params, { arrayFormat: 'comma' }),
     });
 
     recipes.value = res.data;

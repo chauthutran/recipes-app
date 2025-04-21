@@ -2,13 +2,15 @@
     <h2
         class="flex space-x-4 text-2xl font-semibold mb-4 border-b border-leaf-green w-fit pr-5 justify-center items-center whitespace-nowrap"
     >
-        <img src="../../assets/recipe-book-svgrepo-com.svg" class="w-12" alt="new-recipes" /> 
+        <img
+            src="../../assets/recipe-book-svgrepo-com.svg"
+            class="w-12"
+            alt="new-recipes"
+        />
         <div class="">New Recipes</div>
     </h2>
-    
-    <div v-if="recipes === null" class="italic p-4">
-        Loading ...
-    </div>
+
+    <div v-if="recipes === null" class="italic p-4">Loading ...</div>
     <div v-else-if="recipes.length === 0" class="italic p-4">
         No new recipes found.
     </div>

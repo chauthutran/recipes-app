@@ -1,9 +1,9 @@
+import { getLimit, getPage } from './../utils/recipeUtils';
 import {
     Body,
     Controller,
     Delete,
     Get,
-    Logger,
     Param,
     ParseArrayPipe,
     Post,
@@ -12,6 +12,7 @@ import {
 } from '@nestjs/common';
 import { RecipesService } from './recipes.service';
 import { Recipe } from 'src/schemas/recipe.schema';
+import { RECIPES_PER_PAGE } from 'src/constants/app.constant';
 
 @Controller('recipes')
 export class RecipesController {
@@ -23,8 +24,10 @@ export class RecipesController {
     }
 
     @Get()
-    findAll( @Query('limit') limit = 10, @Query('page') page = 1,) {
-        return this.recipeService.findAll({limit, page});
+    findAll( @Query('limit') limit: string, @Query('page') page: string,) {
+        const limitNumber = getLimit(limit); 
+        const pageNumber = parseInt(page) || 1; 
+        return this.recipeService.findAll({limit: limitNumber, page: pageNumber});
     }
 
     @Get()
@@ -34,48 +37,56 @@ export class RecipesController {
 
     @Get('top-pick')
     findByRating(@Query('top') top: string) {
-        const topNumber = parseInt(top) || 10; // Default to 10 if not provided
-        return this.recipeService.findByRating(topNumber);
+        return this.recipeService.findByRating(getLimit(top));
     }
     
     @Get('trending')
     findTrending(@Query('limit') limit: string) {
-        const limitNumber = parseInt(limit) || 10; // Default to 10 if not provided
-        return this.recipeService.findTrending(limitNumber);
+        return this.recipeService.findTrending(getLimit(limit));
     }
     
     @Get('recommended/:userId')
-    findRecommended(@Param('userId') userId: string, @Query() limit: string) {
-        const limitNumber = parseInt(limit) || 10; // Default to 10 if not provided
+    findRecommended(
+        @Param('userId') userId: string,
+        @Query('limit') limit: string
+    ) {
+        const limitNumber = getLimit(limit); // Default to 10 if not provided
         return this.recipeService.findRecommended(userId, limitNumber);
     }
     
     
-    @Get('/:userId')
-    findByUser(@Param('userId') userId: string, @Query('limit') limit = 10, @Query('page') page = 1) {
-        return this.recipeService.findByUser({userId, limit, page});
+    @Get('user/:userId')
+    findByUser(
+        @Param('userId') userId: string,
+        @Query('limit') limit: string,
+        @Query('page') page: string
+    ) {
+        const limitNumber = getLimit(limit);
+        const pageNumber = getPage(page);
+        return this.recipeService.findByUser({userId, limit: limitNumber, page: pageNumber});
     }
     
     @Get("popular-users-amount")
     findByUserSaves(@Query('limit') limit: string) {
-        const limitNumber = parseInt(limit) || 5; // Default to 5 if not provided
+        const limitNumber = getLimit(limit);
         return this.recipeService.findPopularCategoriesByRecipeSaves(limitNumber);
     }
     
     @Get("popular-recipes-amount")
     findByRecipesAmount(@Query() limit: string) {
-        const limitNumber = parseInt(limit) || 5; // Default to 5 if not provided
+        const limitNumber = getLimit(limit); // Default to 5 if not provided
         return this.recipeService.findPopularCategoriesByRecipeAmount(limitNumber);
     }
     
     @Get('favorites')
     findUserFavoriteRecipes(@Query('limit') limit: string): Promise<Recipe[]> {
-        const limitNumber = parseInt(limit) || 10; // Default to 5 if not provided
+        const limitNumber = getLimit(limit); // Default to 5 if not provided
         return this.recipeService.findUserFavorite(limitNumber);
     }
 
     @Get("query")
     async searchRecipes(
+        @Query('userId') userId?: string,
         @Query('search') search?: string,
         @Query('ingredients') ingredients?: string[], // comma separated in URL
         
@@ -92,10 +103,11 @@ export class RecipesController {
             optional: true,      // so missing param doesn’t error
         }))
         dietary?: string[],
-        @Query('limit') limit = 10,
+        @Query('limit') limit = RECIPES_PER_PAGE,
         @Query('page') page = 1,
     ): Promise<Recipe[]> {
         return this.recipeService.search({
+            userId,
             search,
             ingredients,
             categories,

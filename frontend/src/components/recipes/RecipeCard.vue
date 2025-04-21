@@ -18,7 +18,7 @@
 
         <div class="">
             <RecipeActionBar :data="recipe" />
-            
+
             <h3 class="mt-4 text-lg font-semibold text-gray-800">
                 {{ recipe.name }}
             </h3>

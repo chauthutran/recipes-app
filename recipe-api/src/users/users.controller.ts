@@ -1,5 +1,4 @@
 import { Controller, Post, Body, Param, Put, Delete, BadRequestException } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
 import { UsersService } from './users.service';
 import { User } from 'src/schemas/user.Schema';
 

@@ -21,7 +21,10 @@ export function useAuthProvider() {
 
     const login = async (email: string, password: string) => {
         try {
-            const res = await axios.get('http://localhost:3000/categories');
+            const res = await axios.post('http://localhost:3000/users/login', {
+                email,
+                password,
+            });
             user.value = res.data;
         } catch (err: any) {
             errMsg.value = `Failed to load categories: ${err.message}`;
@@ -38,10 +41,7 @@ export function useAuthProvider() {
         loading.value = true;
 
         try {
-            const res = await axios.post(
-                'http://localhost:3000/categories',
-                data,
-            );
+            const res = await axios.post('http://localhost:3000/users', data);
             user.value = res.data;
         } catch (err: any) {
             errMsg.value = `Failed to load categories: ${err.message}`;

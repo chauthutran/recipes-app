@@ -54,7 +54,9 @@
                 <button
                     :class="[
                         'flex w-full flex-row px-4 py-2 rounded text-white',
-                        loading ? 'bg-gray-300' : 'bg-leaf-green hover:bg-green-600',
+                        loading
+                            ? 'bg-gray-300'
+                            : 'bg-leaf-green hover:bg-green-600',
                     ]"
                     @click="handleLogin"
                 >
@@ -64,14 +66,14 @@
                 </button>
             </div>
         </div>
-        
+
         <p v-if="errMsg !== ''">{{ errMsg }}</p>
     </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import LoadingCircle from "../basics/LoadingCircle.vue";
+import LoadingCircle from '../basics/LoadingCircle.vue';
 import { KeyIcon, UserIcon } from '@heroicons/vue/24/solid';
 import { PAGE_HOME } from '../../constants/constants';
 import { useAppContext } from '../../composables/useAppContext';
@@ -91,8 +93,7 @@ const handleLogin = async () => {
     }
 
     await login(email.value, password.value);
-    if(user)
-    {
+    if (user) {
         appPage.value = PAGE_HOME;
     }
 };

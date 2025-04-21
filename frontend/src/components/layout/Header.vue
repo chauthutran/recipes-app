@@ -17,10 +17,17 @@
             <MenuButton :text="'Home'" :name="PAGE_HOME" />
             <MenuButton :text="'Discover'" :name="PAGE_DISCOVER" />
             <MenuButton :text="'Categories'" :name="PAGE_RECIPES_BY_CATEGORY" />
-            <MenuButton :text="'My Recipes'" v-if="user" :name="PAGE_MY_RECIPES" />
-            <MenuButton :text="'Favorites'" v-if="user" :name="PAGE_FAVORITES" />
-            
-            
+            <MenuButton
+                :text="'My Recipes'"
+                v-if="user"
+                :name="PAGE_MY_RECIPES"
+            />
+            <MenuButton
+                :text="'Favorites'"
+                v-if="user"
+                :name="PAGE_FAVORITES"
+            />
+
             <!-- <MenuButton
                 :text="'Dietary Preferences'"
                 :name="PAGE_DIETARY_RESTRICTION"
@@ -62,7 +69,7 @@ import {
     PAGE_DISCOVER,
     PAGE_FAVORITES,
     PAGE_LOGIN,
-PAGE_MY_RECIPES,
+    PAGE_MY_RECIPES,
 } from '../../constants/constants';
 import MenuButton from '../basics/MenuButton.vue';
 
@@ -70,9 +77,9 @@ const { user, logout } = useAuthContext();
 const { appPage } = useAppContext();
 
 const handleLogout = () => {
-    const ok = confirm("Are you sure you want to log-out ?");
-    if(ok) {
+    const ok = confirm('Are you sure you want to log-out ?');
+    if (ok) {
         logout();
     }
-}
+};
 </script>

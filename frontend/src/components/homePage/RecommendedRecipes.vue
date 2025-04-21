@@ -16,14 +16,12 @@ Common Strategies for Recommendation
 -->
 
 <template>
-     <h2
+    <h2
         className="text-2xl font-semibold mb-4 border-b border-leaf-green w-fit pr-5"
     >
         Recommended Recipes
     </h2>
-    <div v-if="recommendedRecipes === null" class="italic p-4">
-        Loading ...
-    </div>
+    <div v-if="recommendedRecipes === null" class="italic p-4">Loading ...</div>
     <div v-else-if="recommendedRecipes.length === 0" class="italic p-4">
         No recommended recipes found.
     </div>
@@ -45,7 +43,6 @@ import type { IRecipe } from '../../types/types';
 import axios from 'axios';
 import { useAuthContext } from '../../composables/useAuthContext';
 import RecipeCard from '../recipes/RecipeCard.vue';
-import GridLayout from '../layout/GridLayout.vue';
 import { HOME_PAGE_RECIPE_LIMIT } from '../../constants/constants';
 import RowGridLayout from '../layout/RowGridLayout.vue';
 
@@ -54,7 +51,7 @@ const { user } = useAuthContext();
 const recommendedRecipes = ref<IRecipe[] | null>(null);
 onMounted(async () => {
     const res = await axios.get(
-        'http://localhost:3000/recipes/recommended/' + user.value?._id + "?limit=" + HOME_PAGE_RECIPE_LIMIT,
+        `http://localhost:3000/recipes/recommended/${user.value?._id}?limit=${HOME_PAGE_RECIPE_LIMIT}`,
     );
     recommendedRecipes.value = res.data;
 });

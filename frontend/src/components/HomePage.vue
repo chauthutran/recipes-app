@@ -29,16 +29,20 @@
             <div className="mb-8">
                 <PopularCategories />
             </div>
-            
+
             <div className="mb-8">
                 <UserFavorites />
             </div>
-            
+
             <div className="mb-8">
                 <h2
                     class="flex space-x-4 text-2xl font-semibold mb-4 pr-4 border-b border-leaf-green w-fit justify-center items-center whitespace-nowrap"
                 >
-                    <img src="../assets/category-2-svgrepo-com.svg" class="w-8" alt="new-recipes" /> 
+                    <img
+                        src="../assets/category-2-svgrepo-com.svg"
+                        class="w-8"
+                        alt="new-recipes"
+                    />
                     <div class="">Categories</div>
                 </h2>
                 <CategoryNav />
@@ -65,5 +69,4 @@ import UserFavorites from './homePage/UserFavorites.vue';
 import CategoryNav from './categories/CategoryNav.vue';
 
 const { user } = useAuthContext();
-
 </script>

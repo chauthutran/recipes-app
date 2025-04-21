@@ -11,17 +11,19 @@ Showcase recipes that are currently popular — these could be:
     <h2
         class="flex space-x-4 text-2xl font-semibold mb-4 border-b border-leaf-green w-fit pr-5 justify-center items-center whitespace-nowrap"
     >
-        <img src="../../assets/tag-price-svgrepo-com.svg" class="w-10" alt="new-recipes" /> 
+        <img
+            src="../../assets/tag-price-svgrepo-com.svg"
+            class="w-10"
+            alt="new-recipes"
+        />
         <div class="">Trending Recipes</div>
     </h2>
-    
-    <div v-if="trendingRecipes === null" class="italic p-4">
-        Loading ...
-    </div>
+
+    <div v-if="trendingRecipes === null" class="italic p-4">Loading ...</div>
     <div v-else-if="trendingRecipes.length === 0" class="italic p-4">
         No trending recipes found.
     </div>
-    
+
     <RowGridLayout v-else>
         <RecipeCard
             v-for="recipe in trendingRecipes"
@@ -44,7 +46,8 @@ import RowGridLayout from '../layout/RowGridLayout.vue';
 const trendingRecipes = ref<IRecipe[] | null>(null);
 onMounted(async () => {
     const res = await axios.get(
-        'http://localhost:3000/recipes/trending?limit=' + HOME_PAGE_RECIPE_LIMIT,
+        'http://localhost:3000/recipes/trending?limit=' +
+            HOME_PAGE_RECIPE_LIMIT,
     );
     trendingRecipes.value = res.data;
 });

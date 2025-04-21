@@ -1,68 +1,79 @@
 <template>
     <div class="w-full">
-        <div v-if="!recipes" class="text-gray-500 italic">
-            You haven't added any recipes yet.
-        </div
-        
-        <div v-else-if="recipes.length == 0" class="text-gray-500 italic">
-            You haven't added any recipes yet.
-        </div>
-      
-        <RecipesPaging 
-            v-else 
+      <div className="mb-8">
+          <h2 className="text-xl font-semibold text-left">
+              Find My Recipes
+          </h2>
+          <FindRecipes @on-search="handleOnSearch" />
+      </div>
+            
+        <RecipesPaging
             :recipes="recipes"
             :page="page"
-            @update:page="(newPage: number) => { page = newPage }" />
-        </div>
-  
+            @update:page="
+                (newPage: number) => {
+                    page = newPage;
+                }
+            "
+        />
     </div>
-  </template>
-  
-  <script setup lang="ts">
-  import { ref, onMounted, watch } from 'vue'
-  import axios from 'axios'
-import type { IRecipe } from '../types/types'
-import { useAuthContext } from '../composables/useAuthContext'
-import type RecipesPaging from './basics/RecipesPaging.vue';
+</template>
+
+<script setup lang="ts">
+import { ref, onMounted, watch } from 'vue';
+import axios from 'axios';
+import type { IRecipe } from '../types/types';
+import { useAuthContext } from '../composables/useAuthContext';
+import RecipesPaging from './basics/RecipesPaging.vue';
 import { HOME_PAGE_RECIPE_LIMIT } from '../constants/constants';
-  
-  const { user } = useAuthContext();
-  const page = ref(1);
-  const recipes = ref<IRecipe[]>([])
-  
-  const fetchUserRecipes = async () => {
-    const res = await axios.get('/api/recipes/', {
-        params: {
-            userId: user.value!._id,
-            limit: HOME_PAGE_RECIPE_LIMIT,
-            page: page.value,
-        }
-    })
-    recipes.value = res.data
-  }
-  
-  const deleteRecipe = async (id: string) => {
-    await axios.delete(`/api/recipes/${id}`)
+import FindRecipes from './homePage/FindRecipes.vue';
+
+const { user } = useAuthContext();
+const page = ref(1);
+const searchQuery = ref("");
+
+const recipes = ref<IRecipe[]>([]);
+
+const fetchUserRecipes = async () => {
+    const res = await axios.get(
+        "http://localhost:3000/recipes/query",
+        {
+            params: {
+               userId: user.value!._id,
+               search: searchQuery.value,
+              limit: HOME_PAGE_RECIPE_LIMIT,
+              page: page.value,
+            },
+        },
+    );
+    recipes.value = res.data;
+};
+
+const handleOnSearch = async (searchValue: string) => {
+  searchQuery.value = searchValue;
+  await fetchUserRecipes();
+}
+
+/** const deleteRecipe = async (id: string) => {
+    await axios.delete(`/recipes/${id}`)
     recipes.value = recipes.value.filter(r => r._id !== id)
   }
   
   const editRecipe = (recipe: IRecipe) => {
     // You can emit, route to edit page, or open a modal
     console.log('Edit', recipe)
-  }
-  
-  onMounted(fetchUserRecipes);
+  } */
+
+onMounted(fetchUserRecipes);
 // Whenever page changes (e.g., user clicks 'Next' or 'Prev'), call the fetchRecipes() function
 watch(page, fetchUserRecipes);
+</script>
 
-  </script>
-  
-  <style scoped>
-  .line-clamp-3 {
+<style scoped>
+.line-clamp-3 {
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
-  }
-  </style>
-  
+}
+</style>

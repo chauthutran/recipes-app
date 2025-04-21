@@ -4,15 +4,13 @@
         <div v-else-if="errMsg !== ''" class="text-red-600 italic">
             {{ errMsg }}
         </div>
-        <GridLayout
-            v-else
-            gap="gap-0"
-        >
-            <CategoryCard 
+        <GridLayout v-else gap="gap-0">
+            <CategoryCard
                 v-for="category in categories"
                 key="category._id"
                 :category="category"
-                @click="handleOnClick" />
+                @click="handleOnClick"
+            />
         </GridLayout>
     </div>
 </template>
@@ -39,11 +37,11 @@ const selectedCategories = ref<string[]>([]);
 
 const handleOnClick = (category: ICategory, selected: boolean) => {
     const { _id } = category;
-    
-    selectedCategories.value = selected 
+
+    selectedCategories.value = selected
         ? [...selectedCategories.value, _id]
-        : selectedCategories.value.filter(id => id !== _id);
-    
+        : selectedCategories.value.filter((id) => id !== _id);
+
     emit('itemsOnClick', selectedCategories.value);
 };
 </script>

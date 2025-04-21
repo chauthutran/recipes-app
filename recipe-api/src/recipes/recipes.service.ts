@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Recipe, RecipeDocument } from '../schemas/recipe.schema';
@@ -66,16 +66,19 @@ export class RecipesService {
 
     
     async findByUser({userId, limit, page}): Promise<Recipe[]> {
-        return await this.recipeModel.find({
-           user: new Types.ObjectId(userId),
-        })
-        .sort({ createdAt: -1 })  // newest recommended first
-        .limit(limit)
-        .skip((page - 1) * limit)
-        .exec();
+        if (!Types.ObjectId.isValid(userId)) {
+            throw new BadRequestException('Invalid user ID format');
+        }
+          
+        return await this.recipeModel
+            .find({ user: new Types.ObjectId(userId) })
+            .sort({ createdAt: -1 }) // newest first
+            .limit(limit)
+            .skip((page - 1) * limit)
+            .exec();
     }
     
-    async findRecommended(userId: string, limit = 10): Promise<Recipe[]> {
+    async findRecommended(userId: string, limit: number): Promise<Recipe[]> {
         const userRecipes = await this.recipeModel.find({
             $or: [{ 'ratings.user': userId }, { saves: userId }],
         });
@@ -104,7 +107,7 @@ export class RecipesService {
             .limit(limit);
     }
 
-    async findUserFavorite(limit = 10): Promise<Recipe[]> {
+    async findUserFavorite(limit: number): Promise<Recipe[]> {
         return this.recipeModel.aggregate([
             {
               $addFields: {
@@ -176,7 +179,7 @@ export class RecipesService {
 
     
     //  count how many recipes are in each category, and that count can be our "popularity" metric.
-    findPopularCategoriesByRecipeAmount(limit = 5): Promise<Recipe[]> {
+    findPopularCategoriesByRecipeAmount(limit: number): Promise<Recipe[]> {
         return this.recipeModel.aggregate([
             { $unwind: '$categories' }, // flatten the categories array
             {
@@ -207,31 +210,48 @@ export class RecipesService {
     }
     
     // Get the categories with the "saves" count
-    findPopularCategoriesByRecipeSaves(limit = 5): Promise<Recipe[]> {
-        return this.recipeModel.aggregate([
-            {
-              $addFields: {
-                saveCount: { $size: { $ifNull: ['$saves', []] } }
-              }
-            },
-            {
-              $sort: { saveCount: -1, createdAt: -1 }
-            },
-            {
-              $limit: limit
-            },
-            {
-              $lookup: {
-                from: 'categories',
-                localField: 'categories',
-                foreignField: '_id',
-                as: 'categories'
-              }
-            }
-        ]);
+    findPopularCategoriesByRecipeSaves(limit: number): Promise<Recipe[]> {
+        try {
+            return this.recipeModel.aggregate([
+                {
+                $addFields: {
+                    saveCount: { $size: { $ifNull: ['$saves', []] } }
+                }
+                },
+                {
+                $addFields: {
+                    categories: {
+                    $map: {
+                        input: '$categories',
+                        as: 'cat',
+                        in: { $toObjectId: '$$cat' }
+                    }
+                    }
+                }
+                },
+                {
+                $sort: { saveCount: -1, createdAt: -1 }
+                },
+                {
+                $limit: limit
+                },
+                {
+                $lookup: {
+                    from: 'categories',
+                    localField: 'categories',
+                    foreignField: '_id',
+                    as: 'categories'
+                }
+                }
+            ]);
+        }
+        catch (err) {
+            throw new BadRequestException( `Failed to fetch popular categories by recipe saves: ${err.message || err}`);
+        } 
     }
     
     search({
+        userId,
         search,
         ingredients,
         categories,
@@ -241,6 +261,10 @@ export class RecipesService {
     }): Promise<Recipe[]> {
         const query: any = {};
 
+        if(userId) {
+            query.user = new Types.ObjectId(userId);
+        }
+        
         if (search) {
             query.name = { $regex: search, $options: 'i' };
         }

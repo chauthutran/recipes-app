@@ -12,7 +12,7 @@ import {
     PAGE_LOGIN,
     PAGE_DISCOVER,
     PAGE_RECIPES_BY_CATEGORY,
-PAGE_MY_RECIPES,
+    PAGE_MY_RECIPES,
 } from '../constants/constants';
 import HomePage from './HomePage.vue';
 import LoginForm from './user/LoginForm.vue';

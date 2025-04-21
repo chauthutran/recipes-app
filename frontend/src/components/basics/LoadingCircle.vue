@@ -5,12 +5,11 @@
 </template>
 
 <script setup lang="ts">
-
 const props = defineProps({
-  size: {
-    type: [Number, String] as const,  // `as const` is important for preserving the exact types
-    default: 50,  // Default value
-  },
+    size: {
+        type: [Number, String] as const, // `as const` is important for preserving the exact types
+        default: 50, // Default value
+    },
 });
 
 // Calculate styles based on size prop
@@ -18,7 +17,6 @@ const circleStyles = {
     width: `${props.size}px`,
     height: `${props.size}px`,
 };
-
 </script>
 
 <style scoped>
@@ -32,7 +30,11 @@ const circleStyles = {
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 </style>

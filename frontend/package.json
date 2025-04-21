@@ -12,6 +12,7 @@
         "@heroicons/vue": "^2.2.0",
         "@tailwindcss/postcss": "^4.1.4",
         "@tailwindcss/vite": "^4.1.4",
+        "@types/qs": "^6.9.18",
         "@types/react-icons": "^3.0.0",
         "autoprefixer": "^10.4.21",
         "axios": "^1.8.4",

@@ -17,7 +17,7 @@ Common Strategies for Recommendation
 
 <template>
      <h2
-        className="text-2xl font-semibold mb-4 border-b border-leaf-green w-fit pr-3"
+        className="text-2xl font-semibold mb-4 border-b border-leaf-green w-fit pr-5"
     >
         Recommended Recipes
     </h2>

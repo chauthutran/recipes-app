@@ -50,6 +50,12 @@ export class RecipesController {
         return this.recipeService.findRecommended(userId, limitNumber);
     }
     
+    
+    @Get('/:userId')
+    findByUser(@Param('userId') userId: string, @Query('limit') limit = 10, @Query('page') page = 1) {
+        return this.recipeService.findByUser({userId, limit, page});
+    }
+    
     @Get("popular-users-amount")
     findByUserSaves(@Query('limit') limit: string) {
         const limitNumber = parseInt(limit) || 5; // Default to 5 if not provided

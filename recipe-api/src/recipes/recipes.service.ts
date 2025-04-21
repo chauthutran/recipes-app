@@ -64,6 +64,17 @@ export class RecipesService {
         ]);
     }
 
+    
+    async findByUser({userId, limit, page}): Promise<Recipe[]> {
+        return await this.recipeModel.find({
+           user: new Types.ObjectId(userId),
+        })
+        .sort({ createdAt: -1 })  // newest recommended first
+        .limit(limit)
+        .skip((page - 1) * limit)
+        .exec();
+    }
+    
     async findRecommended(userId: string, limit = 10): Promise<Recipe[]> {
         const userRecipes = await this.recipeModel.find({
             $or: [{ 'ratings.user': userId }, { saves: userId }],

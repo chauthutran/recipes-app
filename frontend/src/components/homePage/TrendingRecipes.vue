@@ -9,7 +9,7 @@ Showcase recipes that are currently popular — these could be:
 
 <template>
     <h2
-        class="flex space-x-4 text-2xl font-semibold mb-4 border-b border-leaf-green w-fit pr-3 justify-center items-center whitespace-nowrap"
+        class="flex space-x-4 text-2xl font-semibold mb-4 border-b border-leaf-green w-fit pr-5 justify-center items-center whitespace-nowrap"
     >
         <img src="../../assets/tag-price-svgrepo-com.svg" class="w-10" alt="new-recipes" /> 
         <div class="">Trending Recipes</div>

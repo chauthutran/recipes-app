@@ -1,7 +1,7 @@
 <!-- Recipes that are saved/bookmarked the most. -->
 <template>
     <h2
-        class="flex space-x-4 text-2xl font-semibold mb-4 border-b border-leaf-green w-fit pr-3 justify-center items-center whitespace-nowrap"
+        class="flex space-x-4 text-2xl font-semibold mb-4 border-b border-leaf-green w-fit pr-5 justify-center items-center whitespace-nowrap"
     >
         <img src="../../assets/heart-love-marriage-29-svgrepo-com.svg" class="w-12" alt="new-recipes" /> 
         <div class="">User Favorites</div>

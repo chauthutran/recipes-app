@@ -36,16 +36,16 @@
             
             <div className="mb-8">
                 <h2
-                    class="flex space-x-4 text-2xl font-semibold mb-4 border-b border-leaf-green w-fit pr-3 justify-center items-center whitespace-nowrap"
+                    class="flex space-x-4 text-2xl font-semibold mb-4 pr-4 border-b border-leaf-green w-fit justify-center items-center whitespace-nowrap"
                 >
                     <img src="../assets/category-2-svgrepo-com.svg" class="w-8" alt="new-recipes" /> 
                     <div class="">Categories</div>
                 </h2>
-                <CategoriesNavigation />
+                <CategoryNav />
             </div>
 
             <!-- {user !== null && <div className="mb-8">
-                <h2 className="text-2xl font-semibold mb-4 border-b border-leaf-green w-fit pr-3">Just for You</h2>
+                <h2 className="text-2xl font-semibold mb-4 border-b border-leaf-green w-fit pr-5">Just for You</h2>
                 A dedicated space for personalized meal suggestions powered by AI.
                 
             
@@ -62,7 +62,7 @@ import TrendingRecipes from './homePage/TrendingRecipes.vue';
 import NewRecipeList from './homePage/NewRecipeList.vue';
 import PopularCategories from './homePage/PopularCategories.vue';
 import UserFavorites from './homePage/UserFavorites.vue';
-import CategoriesNavigation from './homePage/CategoriesNavigation.vue';
+import CategoryNav from './categories/CategoryNav.vue';
 
 const { user } = useAuthContext();
 

@@ -20,7 +20,7 @@ export class Recipe {
     @Prop({ type: MongooseSchema, ref: 'Category', required: true })
     categories: Types.ObjectId[];
 
-    @Prop({ type: MongooseSchema, ref: 'Category', required: true })
+    @Prop({ type: [String], required: true })
     mealTypes: string[];
 
     @Prop({
@@ -29,6 +29,9 @@ export class Recipe {
     })
     dietaryRestrictions: string[];
 
+    @Prop({type: MongooseSchema, ref: 'User', required: true})
+    user: Types.ObjectId;
+    
     @Prop({
         type: [
             {

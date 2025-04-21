@@ -1,6 +1,6 @@
 <template>
     <h2
-        class="flex space-x-4 text-2xl font-semibold mb-4 border-b border-leaf-green w-fit pr-3 justify-center items-center whitespace-nowrap"
+        class="flex space-x-4 text-2xl font-semibold mb-4 border-b border-leaf-green w-fit pr-5 justify-center items-center whitespace-nowrap"
     >
         <img src="../../assets/stars-star-svgrepo-com.svg" class="w-14" alt="new-recipes" /> 
         <div class="">Popular Categories</div>

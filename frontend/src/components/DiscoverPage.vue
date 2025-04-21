@@ -1,102 +1,109 @@
 <template>
     <div className="flex flex-col flex-1">
-        <!-- 🔍 Search + Filters -->
-        <div class="mb-8">
-            <div class="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-                <!-- Search -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1"
-                        >Recipes</label
-                    >
-                    <input
-                        v-model="filters.search"
-                        type="text"
-                        placeholder="Search recipes..."
-                        class="border border-gray-300 p-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-green-500"
-                    />
-                </div>
+        <!-- Filters Section -->
+        <section class="mb-10 grid gap-3 grid-cols-2 items-stretch">
+            <!-- Search -->
+            <div>
+                <label
+                    class="block text-sm font-medium text-gray-700 mb-1 text-left"
+                >
+                    Search Recipes
+                </label>
+                <input
+                    v-model="filters.search"
+                    type="text"
+                    placeholder="e.g. Pasta, Chicken Curry..."
+                    class="w-full border border-gray-300 p-2 rounded-md focus:ring-2 focus:ring-green-500 focus:outline-none"
+                />
+            </div>
 
-                <!-- Ingredients -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1"
-                        >Ingredients</label
-                    >
-                    <input
-                        v-model="filters.ingredients"
-                        type="text"
-                        placeholder="Ingredients (comma-separated)"
-                        class="border border-gray-300 p-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-green-500"
-                    />
-                </div>
+            <!-- Ingredients -->
+            <div>
+                <label
+                    class="block text-sm font-medium text-gray-700 mb-1 text-left"
+                >
+                    Ingredients
+                </label>
+                <input
+                    v-model="filters.ingredients"
+                    type="text"
+                    placeholder="e.g. tomato, garlic"
+                    class="w-full border border-gray-300 p-2 rounded-md focus:ring-2 focus:ring-green-500 focus:outline-none"
+                />
+            </div>
 
-                <!-- Dietary Options -->
-
-                <div class="col-span-1 md:col-span-2 lg:col-span-3">
-                    <h3 class="text-lg font-semibold mb-2">Dietary</h3>
-                    <div
-                        class="grid justify-start grid-cols-[repeat(auto-fit,_minmax(140px,_1fr))] gap-x-3 gap-y-2"
+            <!-- Categories Filters -->
+            <div class="flex flex-col h-full">
+                <label
+                    class="block text-sm font-medium text-gray-700 mb-1 text-left"
+                    >Categories</label
+                >
+                <div
+                    class="flex flex-wrap gap-3 border border-gray-200 p-3 rounded-md bg-gray-50 space-x-5 whitespace-nowrap flex-1"
+                >
+                    <label
+                        v-for="category in categories"
+                        :key="category._id"
+                        class="flex items-center gap-2 text-sm text-gray-800"
                     >
-                        <label
-                            class="flex flex-row items-start gap-2 text-left"
-                            v-for="option in dietaryOptions"
-                            :key="option"
-                        >
-                            <input
-                                type="checkbox"
-                                v-model="filters.dietary"
-                                :value="option"
-                                class="w-1 mt-0.5"
-                            />
-                            <span
-                                class="text-sm text-gray-700 whitespace-nowrap"
-                                >{{ option }}</span
-                            >
-                        </label>
-                    </div>
-                </div>
-
-                <!-- Categories -->
-                <div class="col-span-1 md:col-span-2 lg:col-span-3">
-                    <h3 class="text-lg font-semibold mb-2">Categories</h3>
-                    <div
-                        class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3"
-                    >
-                        <label
-                            class="flex items-center space-x-2"
-                            v-for="category in categories"
-                            :key="category._id"
-                        >
-                            <input
-                                type="checkbox"
-                                v-model="filters.category"
-                                :value="category._id"
-                                class="form-checkbox text-green-600"
-                            />
-                            <span class="text-sm text-gray-700">{{
-                                category.name
-                            }}</span>
-                        </label>
-                    </div>
-                </div>
-
-                <!-- Action Button -->
-                <div class="col-span-1 md:col-span-2 lg:col-span-3">
-                    <button
-                        @click="fetchRecipes"
-                        class="mt-4 bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded shadow-md transition w-full sm:w-auto"
-                    >
-                        Search
-                    </button>
+                        <input
+                            type="checkbox"
+                            v-model="filters.category"
+                            :value="category._id"
+                            class="form-checkbox text-green-600"
+                        />
+                        {{ category.name }}
+                    </label>
                 </div>
             </div>
-        </div>
+
+            <!-- Dietary Filters -->
+            <div class="flex flex-col h-full">
+                <label
+                    class="block text-sm font-medium text-gray-700 mb-1 text-left"
+                    >Dietary Preferences</label
+                >
+                <div
+                    class="flex flex-wrap gap-3 border border-gray-200 p-3 rounded-md bg-gray-50 space-x-5 whitespace-nowrap flex-1"
+                >
+                    <label
+                        v-for="option in dietaryOptions"
+                        :key="option"
+                        class="flex items-center gap-2 text-sm text-gray-800"
+                    >
+                        <input
+                            type="checkbox"
+                            v-model="filters.dietary"
+                            :value="option"
+                            class="form-checkbox text-green-600"
+                        />
+                        {{ option }}
+                    </label>
+                </div>
+            </div>
+
+            <!-- Search Button -->
+            <div class="text-left">
+                <button
+                    @click="fetchRecipes"
+                    class="mt-2 bg-leaf-green hover:bg-green-700 text-white px-6 py-2 rounded shadow-sm transition"
+                >
+                    Search Recipes
+                </button>
+            </div>
+        </section>
 
         <!-- Results -->
         <div className="mb-8">
             <h2
-                className="text-2xl font-semibold mb-4 border-b border-leaf-green w-fit pr-3"
+                className="text-2xl font-semibold mb-4 border-b border-leaf-green w-fit flex space-x-4 whitespace-nowrap items-center pr-8"
             >
-                🍛 Recipes
+                <img
+                    src="../assets/recipe-book-svgrepo-com.svg"
+                    alt="search_result"
+                    class="w-10"
+                />
+                <div>Search Result</div>
             </h2>
             <GridLayout v-if="recipes.length">
                 <RecipeCard
@@ -110,7 +117,7 @@
             </div>
         </div>
 
-        <!-- 📄 Pagination -->
+        <!-- Pagination -->
         <section class="flex justify-center items-center space-x-4 mt-6">
             <button
                 @click="page--"

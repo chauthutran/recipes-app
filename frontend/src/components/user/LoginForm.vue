@@ -17,7 +17,7 @@
                         v-model="email"
                         placeholder="Enter your email"
                         required
-                        class="peer block w-full rounded-md border border-gray-300 py-2 pl-10 pr-3 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-leaf-green focus:border-leaf-green"
+                        class="peer block w-full rounded-md border border-gray-300 py-2 pl-10 pr-5 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-leaf-green focus:border-leaf-green"
                     />
                     <UserIcon
                         class="pointer-events-none absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 peer-focus:text-leaf-green"
@@ -42,7 +42,7 @@
                         placeholder="Enter password"
                         required
                         minlength="4"
-                        class="peer block w-full rounded-md border border-gray-300 py-2 pl-10 pr-3 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-leaf-green focus:border-leaf-green"
+                        class="peer block w-full rounded-md border border-gray-300 py-2 pl-10 pr-5 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-leaf-green focus:border-leaf-green"
                     />
                     <KeyIcon
                         class="pointer-events-none absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 peer-focus:text-leaf-green"

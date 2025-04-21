@@ -13,17 +13,20 @@
         </div>
 
         <!-- Navigation Menus -->
-        <nav class="hidden md:flex space-x-4">
+        <nav class="flex space-x-4">
             <MenuButton :text="'Home'" :name="PAGE_HOME" />
             <MenuButton :text="'Discover'" :name="PAGE_DISCOVER" />
             <MenuButton :text="'Categories'" :name="PAGE_RECIPES_BY_CATEGORY" />
-            <MenuButton
+            <MenuButton :text="'My Recipes'" v-if="user" :name="PAGE_MY_RECIPES" />
+            <MenuButton :text="'Favorites'" v-if="user" :name="PAGE_FAVORITES" />
+            
+            
+            <!-- <MenuButton
                 :text="'Dietary Preferences'"
                 :name="PAGE_DIETARY_RESTRICTION"
             />
-            <MenuButton :text="'Meal Types'" :name="PAGE_MEAL_TYPE" />
-            <MenuButton :text="'Favorite'" :name="PAGE_FAVORITES" />
-            <MenuButton :text="'Meal Planner'" :name="PAGE_MEAL_PLANNER" />
+            <MenuButton :text="'Meal Types'" :name="PAGE_MEAL_TYPE" /> -->
+            <!-- <MenuButton :text="'Meal Planner'" :name="PAGE_MEAL_PLANNER" /> -->
         </nav>
 
         <!-- Auth Buttons -->
@@ -56,12 +59,10 @@ import { useAuthContext } from '../../composables/useAuthContext';
 import {
     PAGE_HOME,
     PAGE_RECIPES_BY_CATEGORY,
-    PAGE_MEAL_TYPE,
     PAGE_DISCOVER,
-    PAGE_DIETARY_RESTRICTION,
     PAGE_FAVORITES,
-    PAGE_MEAL_PLANNER,
     PAGE_LOGIN,
+PAGE_MY_RECIPES,
 } from '../../constants/constants';
 import MenuButton from '../basics/MenuButton.vue';
 

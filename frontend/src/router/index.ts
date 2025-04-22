@@ -16,7 +16,7 @@ const routes = [
     { path: '/favorites', name: 'Favorites', component: FavoritesPage },
 
     { path: '/login', name: 'Login', component: LoginForm },
-    { path: '/recipe-details', name: 'Details', component: RecipeDetails },
+    { path: '/recipes/:id', name: 'Recipe Details', component: RecipeDetails },
 ];
 
 const router = createRouter({

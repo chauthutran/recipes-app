@@ -19,8 +19,6 @@
             v-for="recipe in recipes"
             :key="'new_' + recipe._id"
             :recipe="recipe"
-            @edit="onEdit"
-            @delete="onShowDetails"
         />
     </RowGridLayout>
 </template>
@@ -34,14 +32,6 @@ import { HOME_PAGE_RECIPE_LIMIT } from '../../constants/constants';
 import RowGridLayout from '../layout/RowGridLayout.vue';
 
 const recipes = ref<IRecipe[] | null>(null);
-
-const onEdit = (recipe: IRecipe) => {
-    console.log('edit: ', recipe);
-};
-
-const onShowDetails = (recipe: IRecipe) => {
-    console.log('showDetails: ', recipe);
-};
 
 onMounted(async () => {
     try {

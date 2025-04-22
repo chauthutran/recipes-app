@@ -33,7 +33,7 @@ export class RecipesController {
         });
     }
 
-    @Get()
+    @Get("/:id")
     findOne(@Param('id') id: string) {
         return this.recipeService.findOne(id);
     }

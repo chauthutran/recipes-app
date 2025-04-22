@@ -31,8 +31,6 @@ Common Strategies for Recommendation
             v-for="recipe in recommendedRecipes"
             :key="'trending_' + recipe._id"
             :recipe="recipe"
-            @edit="onEdit"
-            @delete="onShowDetails"
         />
     </RowGridLayout>
 </template>
@@ -56,11 +54,4 @@ onMounted(async () => {
     recommendedRecipes.value = res.data;
 });
 
-const onEdit = (recipe: IRecipe) => {
-    console.log('edit: ', recipe);
-};
-
-const onShowDetails = (recipe: IRecipe) => {
-    console.log('showDetails: ', recipe);
-};
 </script>

@@ -29,8 +29,6 @@ Showcase recipes that are currently popular — these could be:
             v-for="recipe in trendingRecipes"
             :key="'trending_' + recipe._id"
             :recipe="recipe"
-            @edit="onEdit"
-            @delete="onShowDetails"
         />
     </RowGridLayout>
 </template>
@@ -51,12 +49,4 @@ onMounted(async () => {
     );
     trendingRecipes.value = res.data;
 });
-
-const onEdit = (recipe: IRecipe) => {
-    console.log('edit: ', recipe);
-};
-
-const onShowDetails = (recipe: IRecipe) => {
-    console.log('showDetails: ', recipe);
-};
 </script>

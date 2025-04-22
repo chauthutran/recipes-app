@@ -24,7 +24,7 @@ export class RecipesService {
     }
 
     findOne(id: string): Promise<Recipe | null> {
-        return this.recipeModel.findById(id).exec();
+        return this.recipeModel.findById(id).populate("categories ratings").exec();
     }
 
     findByCategory(categoryIds: string[]): Promise<Recipe[]> {

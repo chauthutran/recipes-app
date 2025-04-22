@@ -2,7 +2,7 @@
     <div
         class="p-4 border-2 border-leaf-green rounded-md shadow-sm w-full h-full flex flex-col justify-between space-y-3 max-w-md"
     >
-        <img
+        <!-- <img
             v-if="recipe.imageUrl"
             :src="recipe.imageUrl"
             alt="Recipe Image"
@@ -14,8 +14,10 @@
             src="../../assets/default-recipe-image.png"
             alt="Recipe Image"
             class="w-full h-48 object-cover"
-        />
+        /> -->
 
+        <RecipeImage :recipe="recipe" />
+        
         <div class="">
             <RecipeActionBar :data="recipe" />
 
@@ -30,9 +32,11 @@
             </p>
 
             <div class="mt-2 flex justify-between items-center">
-                <button class="text-blue-500 hover:underline">Details</button>
                 <button
-                    @click="$emit('edit', recipe)"
+                    @click="showDetails(recipe)"
+                    class="text-blue-500 hover:underline"
+                >Details</button>
+                <button
                     class="text-blue-500 hover:underline"
                 >
                     Edit
@@ -45,16 +49,20 @@
 <script setup lang="ts">
 import type { IRecipe } from '../../types/types';
 import { formatDate } from '../../utils/dateUtils';
+import RecipeImage from '../basics/RecipeImage.vue';
 import RecipeActionBar from './RecipeActionBar.vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 defineProps<{
     recipe: IRecipe;
 }>();
 
-defineEmits<{
-    (e: 'edit', recipe: IRecipe): void;
-    (e: 'showDetails', recipe: IRecipe): void;
-}>();
+const showDetails = (recipe: IRecipe) => {
+    console.log("===== showDetails");
+    router.push(`/recipes/${recipe._id}`);
+}
 </script>
 
 <style scoped>

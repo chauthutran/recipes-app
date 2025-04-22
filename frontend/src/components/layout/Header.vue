@@ -39,7 +39,7 @@
         <!-- Auth Buttons -->
         <div class="flex items-center space-x-3">
             <button
-                v-if="!user"
+                v-if="appPage !== PAGE_LOGIN"
                 class="bg-leaf-green hover:bg-leaf-green/90 text-white px-4 py-1.5 rounded transition"
                 @click="appPage = PAGE_LOGIN"
             >
@@ -47,7 +47,7 @@
             </button>
 
             <button
-                v-else
+                v-if="user"
                 class="relative text-green-500 px-4 py-1.5 rounded transition"
                 @click="handleLogout"
             >

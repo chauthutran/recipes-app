@@ -15,7 +15,7 @@
                 category.icon.replace('<svg', `<svg width='32' height='32'`)
             "
         />
-        <span className="whitespace-nowrap text-left">{{ category.name }}</span>
+        <span className="text-left">{{ category.name }}</span>
     </div>
 </template>
 

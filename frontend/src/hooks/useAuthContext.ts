@@ -1,4 +1,4 @@
-import { AuthKey } from './../providers/useAuthProvider';
+import { AuthKey } from '../providers/useAuthProvider';
 import { inject } from 'vue';
 
 export function useAuthContext() {

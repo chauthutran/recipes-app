@@ -1,6 +1,6 @@
 <template>
     <div
-        :class="['grid grid-cols-[repeat(auto-fit,_minmax(200px,_1fr))]', gap]"
+        :class="['grid', `grid-cols-[repeat(auto-fit,_minmax(${min}px,_1fr))]`, gap]"
     >
         <slot />
     </div>
@@ -10,9 +10,11 @@
 withDefaults(
     defineProps<{
         gap?: string;
+        min?: string;
     }>(),
     {
         gap: 'gap-6',
+        min: "200"
     },
 );
 </script>

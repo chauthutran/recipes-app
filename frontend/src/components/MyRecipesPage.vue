@@ -1,12 +1,10 @@
 <template>
     <div class="w-full">
-      <div className="mb-8">
-          <h2 className="text-xl font-semibold text-left">
-              Find My Recipes
-          </h2>
-          <FindRecipes @on-search="handleOnSearch" />
-      </div>
-            
+        <div className="mb-8">
+            <h2 className="text-xl font-semibold text-left">Find My Recipes</h2>
+            <FindRecipes @on-search="handleOnSearch" />
+        </div>
+
         <RecipesPaging
             :recipes="recipes"
             :page="page"
@@ -30,29 +28,26 @@ import FindRecipes from './homePage/FindRecipes.vue';
 
 const { user } = useAuthContext();
 const page = ref(1);
-const searchQuery = ref("");
+const searchQuery = ref('');
 
 const recipes = ref<IRecipe[]>([]);
 
 const fetchUserRecipes = async () => {
-    const res = await axios.get(
-        "http://localhost:3000/recipes/query",
-        {
-            params: {
-               userId: user.value!._id,
-               search: searchQuery.value,
-              limit: HOME_PAGE_RECIPE_LIMIT,
-              page: page.value,
-            },
+    const res = await axios.get('http://localhost:3000/recipes/query', {
+        params: {
+            userId: user.value!._id,
+            search: searchQuery.value,
+            limit: HOME_PAGE_RECIPE_LIMIT,
+            page: page.value,
         },
-    );
+    });
     recipes.value = res.data;
 };
 
 const handleOnSearch = async (searchValue: string) => {
-  searchQuery.value = searchValue;
-  await fetchUserRecipes();
-}
+    searchQuery.value = searchValue;
+    await fetchUserRecipes();
+};
 
 /** const deleteRecipe = async (id: string) => {
     await axios.delete(`/recipes/${id}`)

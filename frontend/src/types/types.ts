@@ -23,3 +23,5 @@ export interface ICategory {
     description: string;
     icon: string;
 }
+
+export type JSONObject = { [key: string]: any };

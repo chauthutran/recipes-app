@@ -24,10 +24,13 @@ export class RecipesController {
     }
 
     @Get()
-    findAll( @Query('limit') limit: string, @Query('page') page: string,) {
-        const limitNumber = getLimit(limit); 
-        const pageNumber = parseInt(page) || 1; 
-        return this.recipeService.findAll({limit: limitNumber, page: pageNumber});
+    findAll(@Query('limit') limit: string, @Query('page') page: string) {
+        const limitNumber = getLimit(limit);
+        const pageNumber = parseInt(page) || 1;
+        return this.recipeService.findAll({
+            limit: limitNumber,
+            page: pageNumber,
+        });
     }
 
     @Get()
@@ -39,69 +42,58 @@ export class RecipesController {
     findByRating(@Query('top') top: string) {
         return this.recipeService.findByRating(getLimit(top));
     }
-    
+
     @Get('trending')
     findTrending(@Query('limit') limit: string) {
         return this.recipeService.findTrending(getLimit(limit));
     }
-    
-    @Get('recommended/:userId')
-    findRecommended(
-        @Param('userId') userId: string,
-        @Query('limit') limit: string
-    ) {
-        const limitNumber = getLimit(limit); // Default to 10 if not provided
-        return this.recipeService.findRecommended(userId, limitNumber);
-    }
-    
-    
-    @Get('user/:userId')
-    findByUser(
-        @Param('userId') userId: string,
-        @Query('limit') limit: string,
-        @Query('page') page: string
-    ) {
-        const limitNumber = getLimit(limit);
-        const pageNumber = getPage(page);
-        return this.recipeService.findByUser({userId, limit: limitNumber, page: pageNumber});
-    }
-    
-    @Get("popular-users-amount")
+
+    @Get('popular-users-amount')
     findByUserSaves(@Query('limit') limit: string) {
         const limitNumber = getLimit(limit);
-        return this.recipeService.findPopularCategoriesByRecipeSaves(limitNumber);
+        return this.recipeService.findPopularCategoriesByRecipeSaves(
+            limitNumber,
+        );
     }
-    
-    @Get("popular-recipes-amount")
+
+    @Get('popular-recipes-amount')
     findByRecipesAmount(@Query() limit: string) {
         const limitNumber = getLimit(limit); // Default to 5 if not provided
-        return this.recipeService.findPopularCategoriesByRecipeAmount(limitNumber);
+        return this.recipeService.findPopularCategoriesByRecipeAmount(
+            limitNumber,
+        );
     }
-    
+
     @Get('favorites')
     findUserFavoriteRecipes(@Query('limit') limit: string): Promise<Recipe[]> {
         const limitNumber = getLimit(limit); // Default to 5 if not provided
         return this.recipeService.findUserFavorite(limitNumber);
     }
 
-    @Get("query")
+    @Get('query')
     async searchRecipes(
         @Query('userId') userId?: string,
         @Query('search') search?: string,
         @Query('ingredients') ingredients?: string[], // comma separated in URL
-        
-        @Query('categories', new ParseArrayPipe({
-            items: String,
-            separator: ',',      // split on commas
-            optional: true,      // so missing param doesn’t error
-        }))
+
+        @Query(
+            'categories',
+            new ParseArrayPipe({
+                items: String,
+                separator: ',', // split on commas
+                optional: true, // so missing param doesn’t error
+            }),
+        )
         categories?: string[],
-        
-        @Query('dietary', new ParseArrayPipe({
-            items: String,
-            separator: ',',      // split on commas
-            optional: true,      // so missing param doesn’t error
-        }))
+
+        @Query(
+            'dietary',
+            new ParseArrayPipe({
+                items: String,
+                separator: ',', // split on commas
+                optional: true, // so missing param doesn’t error
+            }),
+        )
         dietary?: string[],
         @Query('limit') limit = RECIPES_PER_PAGE,
         @Query('page') page = 1,

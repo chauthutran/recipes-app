@@ -51,7 +51,7 @@ const { user } = useAuthContext();
 const recommendedRecipes = ref<IRecipe[] | null>(null);
 onMounted(async () => {
     const res = await axios.get(
-        `http://localhost:3000/recipes/recommended/${user.value?._id}?limit=${HOME_PAGE_RECIPE_LIMIT}`,
+        `http://localhost:3000/users/recommended/${user.value?._id}?limit=${HOME_PAGE_RECIPE_LIMIT}`,
     );
     recommendedRecipes.value = res.data;
 });

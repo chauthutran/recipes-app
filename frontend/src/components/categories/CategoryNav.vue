@@ -4,10 +4,10 @@
         <div v-else-if="errMsg !== ''" class="text-red-600 italic">
             {{ errMsg }}
         </div>
-        <GridLayout v-else gap="gap-0">
+        <GridLayout v-else gap="gap-0" min="100">
             <CategoryCard
                 v-for="category in categories"
-                key="category._id"
+                :key="category._id"
                 :category="category"
                 @click="handleOnClick"
             />

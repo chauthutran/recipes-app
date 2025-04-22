@@ -64,73 +64,30 @@ export class RecipesService {
         ]);
     }
 
-    
-    async findByUser({userId, limit, page}): Promise<Recipe[]> {
-        if (!Types.ObjectId.isValid(userId)) {
-            throw new BadRequestException('Invalid user ID format');
-        }
-          
-        return await this.recipeModel
-            .find({ user: new Types.ObjectId(userId) })
-            .sort({ createdAt: -1 }) // newest first
-            .limit(limit)
-            .skip((page - 1) * limit)
-            .exec();
-    }
-    
-    async findRecommended(userId: string, limit: number): Promise<Recipe[]> {
-        const userRecipes = await this.recipeModel.find({
-            $or: [{ 'ratings.user': userId }, { saves: userId }],
-        });
-
-        if (userRecipes.length === 0) {
-            // fallback if user has no activity yet
-            return this.findTrending(limit);
-        }
-
-        // 2. Extract user's preferred categories, meal types, and dietary filters
-        const categories = userRecipes.flatMap((r) => r.categories).map(String);
-        const mealTypes = userRecipes.flatMap((r) => r.mealTypes);
-        const restrictions = userRecipes.flatMap((r) => r.dietaryRestrictions);
-
-        // 3. Find similar recipes
-        return this.recipeModel
-            .find({
-                $or: [
-                    { categories: { $in: categories } },
-                    { mealTypes: { $in: mealTypes } },
-                    { dietaryRestrictions: { $in: restrictions } },
-                ],
-                saves: { $ne: userId }, // optionally exclude already saved
-            })
-            .sort({ updatedAt: -1 }) // newest recommended first
-            .limit(limit);
-    }
-
     async findUserFavorite(limit: number): Promise<Recipe[]> {
         return this.recipeModel.aggregate([
             {
-              $addFields: {
-                saveCount: { $size: { $ifNull: ['$saves', []] } },
-              },
+                $addFields: {
+                    saveCount: { $size: { $ifNull: ['$saves', []] } },
+                },
             },
             {
-              $sort: { saveCount: -1, createdAt: -1 },
+                $sort: { saveCount: -1, createdAt: -1 },
             },
             {
-              $limit: +limit,
+                $limit: +limit,
             },
             {
-              $lookup: {
-                from: 'categories',
-                localField: 'categories',
-                foreignField: '_id',
-                as: 'categories',
-              },
-            }
-          ]);
+                $lookup: {
+                    from: 'categories',
+                    localField: 'categories',
+                    foreignField: '_id',
+                    as: 'categories',
+                },
+            },
+        ]);
     }
-    
+
     findByRating(topN: number): Promise<Recipe[]> {
         return this.recipeModel.aggregate([
             {
@@ -177,7 +134,6 @@ export class RecipesService {
         ]);
     }
 
-    
     //  count how many recipes are in each category, and that count can be our "popularity" metric.
     findPopularCategoriesByRecipeAmount(limit: number): Promise<Recipe[]> {
         return this.recipeModel.aggregate([
@@ -208,48 +164,49 @@ export class RecipesService {
             },
         ]);
     }
-    
+
     // Get the categories with the "saves" count
     findPopularCategoriesByRecipeSaves(limit: number): Promise<Recipe[]> {
         try {
             return this.recipeModel.aggregate([
                 {
-                $addFields: {
-                    saveCount: { $size: { $ifNull: ['$saves', []] } }
-                }
+                    $addFields: {
+                        saveCount: { $size: { $ifNull: ['$saves', []] } },
+                    },
                 },
                 {
-                $addFields: {
-                    categories: {
-                    $map: {
-                        input: '$categories',
-                        as: 'cat',
-                        in: { $toObjectId: '$$cat' }
-                    }
-                    }
-                }
+                    $addFields: {
+                        categories: {
+                            $map: {
+                                input: '$categories',
+                                as: 'cat',
+                                in: { $toObjectId: '$$cat' },
+                            },
+                        },
+                    },
                 },
                 {
-                $sort: { saveCount: -1, createdAt: -1 }
+                    $sort: { saveCount: -1, createdAt: -1 },
                 },
                 {
-                $limit: limit
+                    $limit: limit,
                 },
                 {
-                $lookup: {
-                    from: 'categories',
-                    localField: 'categories',
-                    foreignField: '_id',
-                    as: 'categories'
-                }
-                }
+                    $lookup: {
+                        from: 'categories',
+                        localField: 'categories',
+                        foreignField: '_id',
+                        as: 'categories',
+                    },
+                },
             ]);
+        } catch (err) {
+            throw new BadRequestException(
+                `Failed to fetch popular categories by recipe saves: ${err.message || err}`,
+            );
         }
-        catch (err) {
-            throw new BadRequestException( `Failed to fetch popular categories by recipe saves: ${err.message || err}`);
-        } 
     }
-    
+
     search({
         userId,
         search,
@@ -261,10 +218,10 @@ export class RecipesService {
     }): Promise<Recipe[]> {
         const query: any = {};
 
-        if(userId) {
+        if (userId) {
             query.user = new Types.ObjectId(userId);
         }
-        
+
         if (search) {
             query.name = { $regex: search, $options: 'i' };
         }
@@ -274,7 +231,9 @@ export class RecipesService {
         }
 
         if (categories && categories.length) {
-            const categoryObjIds = categories.map((id: string) => new Types.ObjectId(id));
+            const categoryObjIds = categories.map(
+                (id: string) => new Types.ObjectId(id),
+            );
             query.categories = { $in: categoryObjIds };
         }
 

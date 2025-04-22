@@ -3,6 +3,30 @@
         <!-- Categories -->
 
         <CategoryNav @itemsOnClick="handleCategoryOnClick" />
+        
+         <!-- Search -->
+         <div>
+            <label
+                class="block text-sm font-medium text-gray-700 mb-1 text-left whitespace-nowrap text-leaf-green"
+            >
+                Search by name
+            </label>
+            <div class="flex justify-between space-x-3">
+                <input
+                    v-model="searchQuery"
+                    type="text"
+                    placeholder="e.g. Pasta, Chicken Curry..."
+                    class="w-full border border-gray-300 p-2 rounded-md focus:ring-2 focus:ring-green-500 focus:outline-none"
+                />
+                
+                <button
+                    @click="fetchRecipes"
+                    class="bg-leaf-green hover:bg-green-700 text-white px-6 rounded shadow-sm transition"
+                >
+                    Search
+                </button>
+            </div>
+        </div>
 
         <!-- Search Result -->
         <h2
@@ -38,6 +62,7 @@ import RecipesPaging from './basics/RecipesPaging.vue';
 
 const recipes = ref<IRecipe[]>([]);
 const page = ref(1);
+const searchQuery = ref("");
 const selectedCategories = ref<string[]>([]);
 
 const handleCategoryOnClick = async (selectedIds: string[]) => {
@@ -49,7 +74,7 @@ const handleCategoryOnClick = async (selectedIds: string[]) => {
 const fetchRecipes = async () => {
     const res = await axios.get('http://localhost:3000/recipes/query', {
         params: {
-            search: '',
+            search: searchQuery.value,
             ingredients: '',
             categories: selectedCategories.value,
             dietary: [],

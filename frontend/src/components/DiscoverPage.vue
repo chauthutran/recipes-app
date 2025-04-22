@@ -141,7 +141,7 @@ import RecipeCard from './recipes/RecipeCard.vue';
 import GridLayout from './layout/GridLayout.vue';
 import type { IRecipe } from '../types/types';
 import { HOME_PAGE_RECIPE_LIMIT } from '../constants/constants';
-import { useAppContext } from '../composables/useAppContext';
+import { useAppContext } from '../hooks/useAppContext';
 import qs from 'qs';
 
 const { categories } = useAppContext();

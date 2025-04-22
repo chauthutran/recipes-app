@@ -19,7 +19,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import axios from 'axios';
-import { useAuthContext } from '../composables/useAuthContext';
+import { useAuthContext } from '../hooks/useAuthContext';
 import { HOME_PAGE_RECIPE_LIMIT } from '../constants/constants';
 import type { IRecipe } from '../types/types';
 import RecipesPaging from './basics/RecipesPaging.vue';

@@ -76,8 +76,8 @@ import { ref } from 'vue';
 import LoadingCircle from '../basics/LoadingCircle.vue';
 import { KeyIcon, UserIcon } from '@heroicons/vue/24/solid';
 import { PAGE_HOME } from '../../constants/constants';
-import { useAppContext } from '../../composables/useAppContext';
-import { useAuthContext } from '../../composables/useAuthContext';
+import { useAppContext } from '../../hooks/useAppContext';
+import { useAuthContext } from '../../hooks/useAuthContext';
 
 const { appPage } = useAppContext();
 const { user, login, loading, errMsg } = useAuthContext();

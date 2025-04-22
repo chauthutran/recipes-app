@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-import { useAppContext } from '../../composables/useAppContext';
+import { useAppContext } from '../../hooks/useAppContext';
 
 defineProps<{
     text: string;

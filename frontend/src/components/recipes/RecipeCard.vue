@@ -48,7 +48,7 @@
 </template>
 
 <script setup lang="ts">
-import { useAppContext } from '../../composables/useAppContext';
+import { useAppContext } from '../../hooks/useAppContext';
 import { PAGE_RECIPE_DETAILS } from '../../constants/constants';
 import type { IRecipe } from '../../types/types';
 import { formatDate } from '../../utils/dateUtils';

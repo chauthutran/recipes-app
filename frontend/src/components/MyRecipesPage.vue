@@ -21,7 +21,7 @@
 import { ref, onMounted, watch } from 'vue';
 import axios from 'axios';
 import type { IRecipe } from '../types/types';
-import { useAuthContext } from '../composables/useAuthContext';
+import { useAuthContext } from '../hooks/useAuthContext';
 import RecipesPaging from './basics/RecipesPaging.vue';
 import { HOME_PAGE_RECIPE_LIMIT } from '../constants/constants';
 import FindRecipes from './homePage/FindRecipes.vue';

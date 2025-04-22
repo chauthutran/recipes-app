@@ -41,7 +41,7 @@ Common Strategies for Recommendation
 import { onMounted, ref } from 'vue';
 import type { IRecipe } from '../../types/types';
 import axios from 'axios';
-import { useAuthContext } from '../../composables/useAuthContext';
+import { useAuthContext } from '../../hooks/useAuthContext';
 import RecipeCard from '../recipes/RecipeCard.vue';
 import { HOME_PAGE_RECIPE_LIMIT } from '../../constants/constants';
 import RowGridLayout from '../layout/RowGridLayout.vue';

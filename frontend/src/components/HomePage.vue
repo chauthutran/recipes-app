@@ -60,7 +60,7 @@
 
 <script setup lang="ts">
 import FindRecipes from './homePage/FindRecipes.vue';
-import { useAuthContext } from '../composables/useAuthContext';
+import { useAuthContext } from '../hooks/useAuthContext';
 import RecommendedRecipes from './homePage/RecommendedRecipes.vue';
 import TrendingRecipes from './homePage/TrendingRecipes.vue';
 import NewRecipeList from './homePage/NewRecipeList.vue';

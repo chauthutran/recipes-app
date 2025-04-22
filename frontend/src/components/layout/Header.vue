@@ -61,8 +61,8 @@
 
 <script setup lang="ts">
 import { UserCircleIcon } from '@heroicons/vue/24/solid';
-import { useAppContext } from '../../composables/useAppContext';
-import { useAuthContext } from '../../composables/useAuthContext';
+import { useAppContext } from '../../hooks/useAppContext';
+import { useAuthContext } from '../../hooks/useAuthContext';
 import {
     PAGE_HOME,
     PAGE_RECIPES_BY_CATEGORY,

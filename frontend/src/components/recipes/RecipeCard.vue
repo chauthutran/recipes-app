@@ -30,12 +30,7 @@
             </p>
 
             <div class="mt-2 flex justify-between items-center">
-                <button
-                    @click="appPage = PAGE_RECIPE_DETAILS"
-                    class="text-blue-500 hover:underline"
-                >
-                    Details
-                </button>
+                <button class="text-blue-500 hover:underline">Details</button>
                 <button
                     @click="$emit('edit', recipe)"
                     class="text-blue-500 hover:underline"
@@ -48,13 +43,9 @@
 </template>
 
 <script setup lang="ts">
-import { useAppContext } from '../../hooks/useAppContext';
-import { PAGE_RECIPE_DETAILS } from '../../constants/constants';
 import type { IRecipe } from '../../types/types';
 import { formatDate } from '../../utils/dateUtils';
 import RecipeActionBar from './RecipeActionBar.vue';
-
-const { appPage } = useAppContext();
 
 defineProps<{
     recipe: IRecipe;

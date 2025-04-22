@@ -4,7 +4,6 @@ import axios from 'axios';
 import { PAGE_HOME } from '../constants/constants';
 
 export type AppContext = {
-    appPage: Ref<string>;
     categories: Ref<ICategory[] | null>;
     loading: Ref<boolean>;
     errMsg: Ref<string>;
@@ -14,8 +13,6 @@ export const AppKey: InjectionKey<AppContext> = Symbol('app');
 
 // Create a setup function to call inside your component
 export function useAppProvider() {
-    const appPage = ref<string>(PAGE_HOME);
-
     const categories = ref<ICategory[] | null>(null);
     const loading = ref(true);
     const errMsg = ref('');
@@ -31,5 +28,5 @@ export function useAppProvider() {
         loading.value = false;
     });
 
-    provide(AppKey, { appPage, loading, categories, errMsg });
+    provide(AppKey, { loading, categories, errMsg });
 }

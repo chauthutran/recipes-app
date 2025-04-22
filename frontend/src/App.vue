@@ -2,7 +2,6 @@
 import { useAppProvider } from './providers/useAppProvider';
 import Footer from './components/layout/Footer.vue';
 import Header from './components/layout/Header.vue';
-import AppWrapper from './components/AppWrapper.vue';
 import { useAuthProvider } from './providers/useAuthProvider';
 
 useAppProvider();
@@ -14,7 +13,7 @@ useAuthProvider();
         <Header />
 
         <main className="flex-1 flex p-4">
-            <AppWrapper />
+            <router-view />
         </main>
         <Footer />
     </div>

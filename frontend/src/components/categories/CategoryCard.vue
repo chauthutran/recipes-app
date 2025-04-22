@@ -2,9 +2,9 @@
     <!-- Render icon if it exists -->
     <div
         :class="[
-            'p-4 w-full h-full flex flex-col justify-between space-y-3 cursor-pointer',
+            'p-3 flex flex-col justify-between space-y-3 cursor-pointer items-center',
             selected
-                ? 'text-leaf-green font-semibold bg-green-200 bg-opacity-50 border-green-300'
+                ? 'font-semibold bg-green-200'
                 : '',
         ]"
         @click="handleOnClick"

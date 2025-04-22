@@ -3,11 +3,11 @@
         <!-- Categories -->
 
         <CategoryNav @itemsOnClick="handleCategoryOnClick" />
-        
-         <!-- Search -->
-         <div>
+
+        <!-- Search -->
+        <div class="mt-5">
             <label
-                class="block text-sm font-medium text-gray-700 mb-1 text-left whitespace-nowrap text-leaf-green"
+                class="block text-sm font-medium mb-1 text-left whitespace-nowrap text-leaf-green"
             >
                 Search by name
             </label>
@@ -18,7 +18,7 @@
                     placeholder="e.g. Pasta, Chicken Curry..."
                     class="w-full border border-gray-300 p-2 rounded-md focus:ring-2 focus:ring-green-500 focus:outline-none"
                 />
-                
+
                 <button
                     @click="fetchRecipes"
                     class="bg-leaf-green hover:bg-green-700 text-white px-6 rounded shadow-sm transition"
@@ -62,7 +62,7 @@ import RecipesPaging from './basics/RecipesPaging.vue';
 
 const recipes = ref<IRecipe[]>([]);
 const page = ref(1);
-const searchQuery = ref("");
+const searchQuery = ref('');
 const selectedCategories = ref<string[]>([]);
 
 const handleCategoryOnClick = async (selectedIds: string[]) => {

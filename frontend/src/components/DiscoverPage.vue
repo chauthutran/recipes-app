@@ -105,13 +105,13 @@
                 />
                 <div>Search Result</div>
             </h2>
-            <GridLayout v-if="recipes.length">
+            <RecipesGridLayout v-if="recipes.length">
                 <RecipeCard
                     v-for="recipe in recipes"
                     :key="recipe._id"
                     :recipe="recipe"
                 />
-            </GridLayout>
+            </RecipesGridLayout>
             <div v-else class="italic text-gray-500">
                 No recipes found. Try adjusting your filters.
             </div>
@@ -138,7 +138,7 @@
 import { ref, watch } from 'vue';
 import axios from 'axios';
 import RecipeCard from './recipes/RecipeCard.vue';
-import GridLayout from './layout/GridLayout.vue';
+import RecipesGridLayout from './layout/RecipesGridLayout.vue';
 import type { IRecipe } from '../types/types';
 import { HOME_PAGE_RECIPE_LIMIT } from '../constants/constants';
 import { useAppContext } from '../hooks/useAppContext';

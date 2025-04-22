@@ -1,5 +1,5 @@
 <template>
-    <div class="p-4 space-y-6 w-full">
+    <div class="space-y-6 w-full">
         <CategoryNav @itemsOnClick="handleCategoryOnClick" />
 
         <!-- Recipe List -->

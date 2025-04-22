@@ -1,6 +1,6 @@
 <template>
     <div className="mb-8">
-        <GridLayout v-if="recipes.length">
+        <RecipesGridLayout v-if="recipes.length">
             <RecipeCard
                 v-for="recipe in recipes"
                 :key="'search_' + recipe._id"
@@ -8,7 +8,7 @@
                 @edit="console.log('edit')"
                 @delete="console.log('details')"
             />
-        </GridLayout>
+        </RecipesGridLayout>
         <div v-else class="italic text-gray-500">No recipes found.</div>
     </div>
 
@@ -33,7 +33,7 @@
 
 <script setup lang="ts">
 import type { IRecipe } from '../../types/types';
-import GridLayout from '../layout/GridLayout.vue';
+import RecipesGridLayout from '../layout/RecipesGridLayout.vue';
 import RecipeCard from '../recipes/RecipeCard.vue';
 
 defineProps<{

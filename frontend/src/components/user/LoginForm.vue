@@ -75,16 +75,15 @@
 import { ref } from 'vue';
 import LoadingCircle from '../basics/LoadingCircle.vue';
 import { KeyIcon, UserIcon } from '@heroicons/vue/24/solid';
-import { PAGE_HOME } from '../../constants/constants';
-import { useAppContext } from '../../hooks/useAppContext';
 import { useAuthContext } from '../../hooks/useAuthContext';
+import { useRouter } from 'vue-router';
 
-const { appPage } = useAppContext();
 const { user, login, loading, errMsg } = useAuthContext();
 
 const email = ref<string>('test2@example.com');
 const password = ref<string>('1234');
 const error = ref<string | null>(null);
+const router = useRouter();
 
 const handleLogin = async () => {
     if (!email.value || !password.value) {
@@ -93,8 +92,8 @@ const handleLogin = async () => {
     }
 
     await login(email.value, password.value);
-    if (user) {
-        appPage.value = PAGE_HOME;
+    if (user.value) {
+        router.back();
     }
 };
 </script>

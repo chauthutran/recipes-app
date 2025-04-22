@@ -1,3 +1,4 @@
+import { CloudinaryService } from './../cloudinary/cloudinary.service';
 import { Module } from '@nestjs/common';
 import { RecipesService } from './recipes.service';
 import { RecipesController } from './recipes.controller';
@@ -11,6 +12,6 @@ import { Recipe, RecipeSchema } from '../schemas/recipe.schema';
         ]),
     ],
     controllers: [RecipesController],
-    providers: [RecipesService],
+    providers: [RecipesService, CloudinaryService],
 })
 export class RecipesModule {}

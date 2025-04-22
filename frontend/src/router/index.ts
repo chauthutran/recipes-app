@@ -7,6 +7,7 @@ import MyRecipesPage from '../components/MyRecipesPage.vue';
 import FavoritesPage from '../components/FavoritesPage.vue';
 import LoginForm from '../components/user/LoginForm.vue';
 import RecipeDetails from '../components/recipes/RecipeDetails.vue';
+import RecipeForm from '../components/recipes/RecipeForm.vue';
 
 const routes = [
     { path: '/', name: 'Home', component: HomePage },
@@ -17,6 +18,11 @@ const routes = [
 
     { path: '/login', name: 'Login', component: LoginForm },
     { path: '/recipes/:id', name: 'Recipe Details', component: RecipeDetails },
+    {
+        path: '/recipes/form/:id',
+        name: 'Add New Recipe',
+        component: RecipeForm,
+    },
 ];
 
 const router = createRouter({

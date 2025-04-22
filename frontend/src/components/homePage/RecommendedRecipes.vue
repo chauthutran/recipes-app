@@ -17,10 +17,16 @@ Common Strategies for Recommendation
 
 <template>
     <h2
-        className="text-2xl font-semibold mb-4 border-b border-leaf-green w-fit pr-5"
+        class="flex space-x-4 text-2xl font-semibold mb-4 border-b border-leaf-green w-fit pr-5 justify-center items-center whitespace-nowrap"
     >
-        Recommended Recipes
+        <img
+            src="../../assets/like-svgrepo-com.svg"
+            class="w-9"
+            alt="new-recipes"
+        />
+        <div class="">Recommended Recipes</div>
     </h2>
+
     <div v-if="recommendedRecipes === null" class="italic p-4">Loading ...</div>
     <div v-else-if="recommendedRecipes.length === 0" class="italic p-4">
         No recommended recipes found.
@@ -53,5 +59,4 @@ onMounted(async () => {
     );
     recommendedRecipes.value = res.data;
 });
-
 </script>

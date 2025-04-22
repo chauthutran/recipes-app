@@ -1,22 +1,22 @@
 <template>
     <header
-        class="font-montserrat px-6 md:px-12 py-4 bg-white shadow flex items-center justify-between text-black"
+        class="font-montserrat px-6 md:px-12 py-2 bg-white shadow flex items-center justify-between text-black"
     >
         <!-- Left: Logo -->
-        <div class="flex items-center space-x-4">
+        <div class="flex flex-col items-center space-x-4 justify-center">
             <img
-                src="../../assets/food-svgrepo-com.svg"
+                src="../../assets/smile-bowl-icon.jpg"
                 alt="recipe"
                 class="w-12 h-12"
             />
             <span class="text-xl font-semibold text-leaf-green"
-                >FoodieHeaven</span
+                >YummiVerse</span
             >
         </div>
 
         <!-- Center: Navigation Menus -->
         <nav
-            class="absolute left-1/2 transform -translate-x-1/2 flex space-x-4"
+            class="absolute left-1/2 transform -translate-x-1/2 flex space-x-7"
         >
             <router-link
                 to="/"

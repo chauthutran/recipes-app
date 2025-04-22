@@ -15,6 +15,7 @@ export interface IRecipe {
     ratings: string[];
     saves: string[];
     createdAt?: string;
+    user: IUser;
 }
 
 export interface ICategory {

@@ -17,7 +17,11 @@ export class Recipe {
     @Prop()
     imageUrl: string;
 
-    @Prop({ type: MongooseSchema, ref: 'Category', required: true })
+    @Prop({
+        type: [MongooseSchema.Types.ObjectId],
+        ref: 'Category',
+        required: true,
+    })
     categories: Types.ObjectId[];
 
     @Prop({ type: [String], required: true })
@@ -29,7 +33,7 @@ export class Recipe {
     })
     dietaryRestrictions: string[];
 
-    @Prop({ type: MongooseSchema, ref: 'User', required: true })
+    @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User', required: true })
     user: Types.ObjectId;
 
     @Prop({

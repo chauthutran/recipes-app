@@ -3,9 +3,7 @@
     <div
         :class="[
             'p-3 flex flex-col justify-between space-y-3 cursor-pointer items-center',
-            selected
-                ? 'font-semibold bg-green-200'
-                : '',
+            selected ? 'font-semibold bg-green-200' : '',
         ]"
         @click="handleOnClick"
     >

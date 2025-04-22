@@ -11,7 +11,7 @@ import { Recipe, RecipeSchema } from 'src/schemas/recipe.schema';
     imports: [
         MongooseModule.forFeature([
             { name: User.name, schema: UserSchema },
-            { name: Recipe.name, schema: RecipeSchema }
+            { name: Recipe.name, schema: RecipeSchema },
         ]),
     ],
     controllers: [UsersController],

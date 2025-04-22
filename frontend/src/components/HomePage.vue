@@ -3,7 +3,7 @@
         <main className="flex-grow">
             <div className="space-y-1 mb-6 text-leaf-green">
                 <div className="text-xl font-semibold">
-                    Welcome to FoodieHeaven!
+                    Welcome to NomNomHub! Tasty finds, all in one place.
                 </div>
             </div>
 

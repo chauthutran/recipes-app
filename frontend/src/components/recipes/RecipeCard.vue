@@ -2,22 +2,8 @@
     <div
         class="p-4 border-2 border-leaf-green rounded-md shadow-sm w-full h-full flex flex-col justify-between space-y-3 max-w-md"
     >
-        <!-- <img
-            v-if="recipe.imageUrl"
-            :src="recipe.imageUrl"
-            alt="Recipe Image"
-            class="w-full h-48 object-cover"
-        />
-
-        <img
-            v-else
-            src="../../assets/default-recipe-image.png"
-            alt="Recipe Image"
-            class="w-full h-48 object-cover"
-        /> -->
-
         <RecipeImage :recipe="recipe" />
-        
+
         <div class="">
             <RecipeActionBar :data="recipe" />
 
@@ -31,13 +17,20 @@
                 Created at: {{ formatDate(recipe.createdAt) }}
             </p>
 
-            <div class="mt-2 flex justify-between items-center">
+            <div class="mt-2 flex justify-between items-center gap-x-2">
                 <button
-                    @click="showDetails(recipe)"
-                    class="text-blue-500 hover:underline"
-                >Details</button>
+                    @click="showDetailsForm()"
+                    :class="[
+                        'bg-green-100 text-green-700 hover:bg-green-200 py-1 rounded text-center',
+                        user ? 'w-1/2' : 'w-full',
+                    ]"
+                >
+                    Details
+                </button>
                 <button
-                    class="text-blue-500 hover:underline"
+                    v-if="allowToEdit()"
+                    @click="showEditForm()"
+                    class="w-1/2 py-1 rounded bg-green-100 text-green-700 hover:bg-green-200 text-center hover:underline"
                 >
                     Edit
                 </button>
@@ -47,6 +40,7 @@
 </template>
 
 <script setup lang="ts">
+import { useAuthContext } from '../../hooks/useAuthContext';
 import type { IRecipe } from '../../types/types';
 import { formatDate } from '../../utils/dateUtils';
 import RecipeImage from '../basics/RecipeImage.vue';
@@ -54,15 +48,24 @@ import RecipeActionBar from './RecipeActionBar.vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
+const { user } = useAuthContext();
 
-defineProps<{
+const props = defineProps<{
     recipe: IRecipe;
 }>();
 
-const showDetails = (recipe: IRecipe) => {
-    console.log("===== showDetails");
-    router.push(`/recipes/${recipe._id}`);
-}
+const allowToEdit = () => {
+    console.log("props.recipe.user._id: " + props.recipe.user._id + " \t user._id: " + user.value?._id);
+    return props.recipe.user._id === user.value?._id;
+};
+
+const showDetailsForm = () => {
+    router.push(`/recipes/${props.recipe._id}`);
+};
+
+const showEditForm = () => {
+    router.push(`/recipes/form/${props.recipe._id}`);
+};
 </script>
 
 <style scoped>

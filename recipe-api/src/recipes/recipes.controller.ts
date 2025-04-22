@@ -1,22 +1,32 @@
+import { CloudinaryService } from './../cloudinary/cloudinary.service';
 import { getLimit, getPage } from './../utils/recipeUtils';
 import {
     Body,
     Controller,
     Delete,
     Get,
+    Logger,
     Param,
     ParseArrayPipe,
     Post,
     Put,
     Query,
+    UploadedFile,
+    UploadedFiles,
+    UseInterceptors,
 } from '@nestjs/common';
 import { RecipesService } from './recipes.service';
 import { Recipe } from 'src/schemas/recipe.schema';
 import { RECIPES_PER_PAGE } from 'src/constants/app.constant';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { memoryStorage } from 'multer';
 
 @Controller('recipes')
 export class RecipesController {
-    constructor(private readonly recipeService: RecipesService) {}
+    constructor(
+        private readonly recipeService: RecipesService,
+        private readonly cloudinaryService: CloudinaryService,
+    ) {}
 
     @Post()
     create(@Body() data: Partial<Recipe>) {
@@ -33,7 +43,7 @@ export class RecipesController {
         });
     }
 
-    @Get("/:id")
+    @Get('view/:id')
     findOne(@Param('id') id: string) {
         return this.recipeService.findOne(id);
     }
@@ -122,5 +132,26 @@ export class RecipesController {
     @Delete()
     delete(@Param('id') id: string) {
         return this.recipeService.delete(id);
+    }
+
+    @Post('upload')
+    @UseInterceptors(FileInterceptor('file', {
+        storage: memoryStorage(),
+        limits: { fileSize: 5 * 1024 * 1024 }, // Optional: 5MB limit
+    }))
+    async uploadImage(@UploadedFile() file: Express.Multer.File) {
+        
+        const logger = new Logger("=============== ");
+        logger.log("file: " , file);
+        
+        
+        if (!file || !file.buffer) {
+            throw new Error('No file or file buffer provided');
+        }
+        const uploadedImage = await this.cloudinaryService.uploadToCloudinary(file);
+        return {
+            url: uploadedImage.secure_url,
+            public_id: uploadedImage.public_id,
+        };
     }
 }

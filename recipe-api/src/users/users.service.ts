@@ -57,6 +57,11 @@ export class UsersService {
 
         return await this.recipeModel
             .find({ user: new Types.ObjectId(userId) })
+            .populate('categories ratings')
+            .populate({
+                path: 'user',
+                select: '_id email',
+            })
             .sort({ createdAt: -1 }) // newest first
             .limit(limit)
             .skip((page - 1) * limit)
@@ -108,6 +113,28 @@ export class UsersService {
                         as: 'categories',
                     },
                 },
+                {
+                  $lookup: {
+                    from: 'users',
+                    localField: 'user',
+                    foreignField: '_id',
+                    as: 'userDetails',
+                  },
+                },
+                {
+                  $unwind: {
+                    path: '$userDetails',
+                    preserveNullAndEmptyArrays: true,
+                  },
+                },
+                {
+                  $addFields: {
+                    user: {
+                      _id: '$userDetails._id',
+                      email: '$userDetails.email',
+                    },
+                  },
+                },
             ])
             .exec();
     }
@@ -131,6 +158,11 @@ export class UsersService {
                     { dietaryRestrictions: { $in: restrictions } },
                 ],
                 saves: { $ne: userId }, // optionally exclude already saved
+            })
+            .populate('categories ratings')
+            .populate({
+                path: 'user',
+                select: '_id email',
             })
             .sort({ updatedAt: -1 }) // newest recommended first
             .limit(limit);

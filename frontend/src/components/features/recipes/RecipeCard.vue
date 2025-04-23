@@ -5,16 +5,19 @@
         <RecipeImage :recipe="recipe" />
 
         <div class="">
-            <RecipeActionBar :data="recipe" />
+            <RecipeRating
+                :rating="calculateAverageRating(recipe)"
+                :ratingUserNo="recipe.ratings?.length"
+            />
 
             <h3 class="mt-4 text-lg font-semibold text-gray-800">
                 {{ recipe.name }}
             </h3>
-            <!-- <p class="text-sm text-gray-600 mt-1 line-clamp-2">
-                {{ recipe._id }}
-            </p> -->
+            <p v-if="recipe.categories" class="text-sm text-gray-600 mt-1 line-clamp-2">
+                {{ recipe.categories.map((item: ICategory) => item.name).join(", ") }}
+            </p>
             <p class="text-gray-500 text-sm mt-2">
-                Created at: {{ formatDate(recipe.createdAt) }}
+                Created at: {{ formatDate(recipe.createdAt!) }}
             </p>
 
             <div class="mt-2 flex justify-between items-center gap-x-2">
@@ -40,12 +43,13 @@
 </template>
 
 <script setup lang="ts">
-import { useAuthContext } from '../../hooks/useAuthContext';
-import type { IRecipe } from '../../types/types';
-import { formatDate } from '../../utils/dateUtils';
-import RecipeImage from '../basics/RecipeImage.vue';
-import RecipeActionBar from './RecipeActionBar.vue';
 import { useRouter } from 'vue-router';
+import RecipeRating from './RecipeRating.vue';
+import { useAuthContext } from '../../../hooks/useAuthContext';
+import type { ICategory, IRecipe } from '../../../types/types';
+import { calculateAverageRating } from '../../../utils/recipeUtils';
+import { formatDate } from '../../../utils/dateUtils';
+import RecipeImage from '../../basics/RecipeImage.vue';
 
 const router = useRouter();
 const { user } = useAuthContext();
@@ -55,7 +59,6 @@ const props = defineProps<{
 }>();
 
 const allowToEdit = () => {
-    console.log("props.recipe.user._id: " + props.recipe.user._id + " \t user._id: " + user.value?._id);
     return props.recipe.user._id === user.value?._id;
 };
 

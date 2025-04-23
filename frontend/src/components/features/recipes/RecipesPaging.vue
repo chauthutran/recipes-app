@@ -32,9 +32,9 @@
 </template>
 
 <script setup lang="ts">
-import type { IRecipe } from '../../types/types';
-import RecipesGridLayout from '../layout/RecipesGridLayout.vue';
-import RecipeCard from '../recipes/RecipeCard.vue';
+import type { IRecipe } from '../../../types/types';
+import RecipesGridLayout from '../../layout/RecipesGridLayout.vue';
+import RecipeCard from './RecipeCard.vue';
 
 defineProps<{
     recipes: IRecipe[];

@@ -105,48 +105,34 @@
                 />
                 <div>Search Result</div>
             </h2>
-            <RecipesGridLayout v-if="recipes.length">
-                <RecipeCard
-                    v-for="recipe in recipes"
-                    :key="recipe._id"
-                    :recipe="recipe"
-                />
-            </RecipesGridLayout>
-            <div v-else class="italic text-gray-500">
-                No recipes found. Try adjusting your filters.
-            </div>
+            
+            <div v-if="errMsg !== ''" class="error">{{ errMsg }}</div>
+            <RecipesPaging
+                v-else
+                :recipes="recipes"
+                :page="page"
+                @update:page="
+                    (newPage) => {
+                        page = newPage;
+                    }
+                "
+            />
         </div>
-
-        <!-- Pagination -->
-        <section class="flex justify-center items-center space-x-4 mt-6">
-            <button
-                @click="page--"
-                :disabled="page <= 1"
-                class="px-4 py-2 border rounded disabled:opacity-50"
-            >
-                Prev
-            </button>
-            <span class="font-medium text-gray-700">Page {{ page }}</span>
-            <button @click="page++" class="px-4 py-2 border rounded">
-                Next
-            </button>
-        </section>
     </div>
 </template>
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import axios from 'axios';
-import RecipeCard from './recipes/RecipeCard.vue';
-import RecipesGridLayout from './layout/RecipesGridLayout.vue';
 import type { IRecipe } from '../types/types';
 import { HOME_PAGE_RECIPE_LIMIT } from '../constants/constants';
 import { useAppContext } from '../hooks/useAppContext';
-import qs from 'qs';
+import { searchRecipes } from '../utils/RESTUtils';
+import RecipesPaging from './features/recipes/RecipesPaging.vue';
 
 const { categories } = useAppContext();
 const recipes = ref<IRecipe[]>([]);
 const page = ref(1);
+const errMsg = ref("");
 
 const filters = ref({
     search: '',
@@ -163,24 +149,28 @@ const dietaryOptions = [
     'Nut-Free',
 ];
 
-const fetchRecipes = async () => {
-    const res = await axios.get('http://localhost:3000/recipes/query', {
-        params: {
-            search: filters.value.search,
-            ingredients: filters.value.ingredients
-                .split(',')
-                .map((i) => i.trim())
-                .filter(Boolean),
-            categories: filters.value.category,
-            dietary: filters.value.dietary,
-            limit: HOME_PAGE_RECIPE_LIMIT,
-            page: page.value,
-        },
-        paramsSerializer: (params) =>
-            qs.stringify(params, { arrayFormat: 'comma' }),
-    });
 
-    recipes.value = res.data;
+const fetchRecipes = async () => {
+    const params = {
+        search: filters.value.search,
+        ingredients: filters.value.ingredients
+            .split(',')
+            .map((i) => i.trim())
+            .filter(Boolean),
+        categories: filters.value.category,
+        dietary: filters.value.dietary,
+        limit: HOME_PAGE_RECIPE_LIMIT,
+        page: page.value,
+    };
+    const responseData = await searchRecipes(params);
+    
+    if( responseData.success ) {
+        recipes.value = responseData.data!;
+    }
+    else {
+        errMsg.value = responseData.errMsg!;
+    }
+    
 };
 
 // Whenever page changes (e.g., user clicks 'Next' or 'Prev'), call the fetchRecipes() function

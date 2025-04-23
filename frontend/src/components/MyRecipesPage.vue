@@ -4,8 +4,10 @@
             <h2 className="text-xl font-semibold text-left">Find My Recipes</h2>
             <FindRecipes @on-search="handleOnSearch" />
         </div>
-
+        
+        <div v-if="errMsg !== ''" class="error">{{ errMsg }}</div>
         <RecipesPaging
+            e-else
             :recipes="recipes"
             :page="page"
             @update:page="
@@ -19,29 +21,34 @@
 
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue';
-import axios from 'axios';
 import type { IRecipe } from '../types/types';
 import { useAuthContext } from '../hooks/useAuthContext';
-import RecipesPaging from './basics/RecipesPaging.vue';
+import RecipesPaging from './features/recipes/RecipesPaging.vue';
 import { HOME_PAGE_RECIPE_LIMIT } from '../constants/constants';
 import FindRecipes from './homePage/FindRecipes.vue';
+import { searchRecipes } from '../utils/RESTUtils';
 
 const { user } = useAuthContext();
 const page = ref(1);
 const searchQuery = ref('');
-
+const errMsg = ref("");
 const recipes = ref<IRecipe[]>([]);
 
 const fetchUserRecipes = async () => {
-    const res = await axios.get('http://localhost:3000/recipes/query', {
-        params: {
-            userId: user.value!._id,
-            search: searchQuery.value,
-            limit: HOME_PAGE_RECIPE_LIMIT,
-            page: page.value,
-        },
-    });
-    recipes.value = res.data;
+    const params = {
+        userId: user.value!._id,
+        search: searchQuery.value,
+        limit: HOME_PAGE_RECIPE_LIMIT,
+        page: page.value,
+    };
+    
+    const repsonseData = await searchRecipes(params);
+    if( repsonseData.success ) {
+        recipes.value = repsonseData.data!;
+    }
+    else {
+        errMsg.value = repsonseData.errMsg!;
+    }
 };
 
 const handleOnSearch = async (searchValue: string) => {

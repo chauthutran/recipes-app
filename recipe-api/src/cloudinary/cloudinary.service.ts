@@ -19,9 +19,6 @@ export class CloudinaryService {
     async uploadToCloudinary(
         file: Express.Multer.File,
     ): Promise<UploadApiResponse> {
-        const logger = new Logger("fasfsadfasdfsdaf sadfsa 234234");
-        logger.log("asdfasdfasdfa: " , this.configService.get<string>('CLOUDINARY_CLOUD_NAME'));
-        
         return new Promise((resolve, reject) => {
             const uploadStream = cloudinary.uploader.upload_stream(
                 { folder: 'recipes' },

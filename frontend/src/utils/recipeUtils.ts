@@ -1,4 +1,4 @@
-import type { IRecipe } from '../types/types';
+import type { ICategory, IRecipe } from '../types/types';
 
 export const calculateAverageRating = (recipe: IRecipe): number => {
     if (recipe.ratings && (recipe.ratings as string[]).length === 0) return 0; // If there are no ratings, return 0
@@ -8,4 +8,14 @@ export const calculateAverageRating = (recipe: IRecipe): number => {
         0,
     ); // Sum of all ratings
     return parseFloat((total / recipe.ratings.length).toFixed(1)); // Calculate average and round to 1 decimal place
+};
+
+export const emptyRecipe: Partial<IRecipe> = {
+    name: '',
+    ingredients: [],
+    method: [],
+    imageUrl: '',
+    categories: [] as ICategory[],
+    mealTypes: [] as string[],
+    dietaryRestrictions: [] as string[],
 };

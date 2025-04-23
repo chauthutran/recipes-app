@@ -86,15 +86,37 @@ export class RecipesService {
               },
             },
             {
-              $project: {
-                name: 1,
-                saves: 1,
-                ratings: 1,
-                totalSaves: 1,
-                averageRating: 1,
-                'user._id': '$userDetails._id',
-                'user.email': '$userDetails.email',
+              $addFields: {
+                user: {
+                  _id: '$userDetails._id',
+                  email: '$userDetails.email',
+                },
               },
+            },
+            {
+              $lookup: {
+                from: 'categories',
+                let: { categoryIds: '$categories' },
+                pipeline: [
+                  {
+                    $match: {
+                      $expr: { $in: ['$_id', '$$categoryIds'] },
+                    },
+                  },
+                  {
+                    $project: {
+                      _id: 1,
+                      name: 1,
+                    },
+                  },
+                ],
+                as: 'categoryDetails',
+              },
+            },
+            {
+                $addFields: {
+                  categories: '$categoryDetails',
+                },
             },
             {
               $sort: {
@@ -151,12 +173,7 @@ export class RecipesService {
                   email: '$userDetails.email',
                 },
               },
-            },
-            {
-              $project: {
-                userDetails: 0, // optional: remove raw joined data
-              },
-            },
+            }
         ]);
     }
 

@@ -1,6 +1,6 @@
 <template>
     <div class="space-y-6 w-full">
-        <CategoryNav @itemsOnClick="handleCategoryOnClick" />
+        <CategorySelector @itemsOnClick="handleCategoryOnClick" />
 
         <!-- Recipe List -->
         <RecipesPaging
@@ -18,41 +18,33 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import axios from 'axios';
 import { useAuthContext } from '../hooks/useAuthContext';
-import { HOME_PAGE_RECIPE_LIMIT } from '../constants/constants';
-import type { IRecipe } from '../types/types';
-import RecipesPaging from './basics/RecipesPaging.vue';
-import CategoryNav from './categories/CategoryNav.vue';
-import qs from 'qs';
+import type { ICategory, IRecipe } from '../types/types';
+import RecipesPaging from './features/recipes/RecipesPaging.vue';
+import { retrieveFavoritesByUser } from '../utils/RESTUtils';
+import CategorySelector from './features/categories/CategorySelector.vue';
 
 const { user } = useAuthContext();
 const page = ref(1);
+const errMsg = ref("");
 
 const recipes = ref<IRecipe[] | null>([]);
-const selectedCategoryIds = ref<string[]>([]);
+const selectedCategoryIds = ref<ICategory[]>([]);
 
-const handleCategoryOnClick = async (selectedIds: string[]) => {
+const handleCategoryOnClick = async (selectedIds: ICategory[]) => {
     selectedCategoryIds.value = selectedIds;
     page.value = 1; // Reset to first page when filters change
     await fetchRecipes();
 };
 
 const fetchRecipes = async () => {
-    const res = await axios.get(
-        `http://localhost:3000/users/favorites/${user.value!._id}`,
-        {
-            params: {
-                categories: selectedCategoryIds.value,
-                limit: HOME_PAGE_RECIPE_LIMIT,
-                page: page.value,
-            },
-            paramsSerializer: (params) =>
-                qs.stringify(params, { arrayFormat: 'comma' }),
-        },
-    );
-
-    recipes.value = res.data;
+    const repsonseData = await retrieveFavoritesByUser(user.value!._id, selectedCategoryIds.value, page.value );
+    if( repsonseData.success ) {
+        recipes.value = repsonseData.data!;
+    }
+    else {
+        errMsg.value = repsonseData.errMsg!;
+    }
 };
 
 watch(selectedCategoryIds, fetchRecipes);

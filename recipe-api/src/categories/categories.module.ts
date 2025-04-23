@@ -9,7 +9,6 @@ import { Recipe, RecipeSchema } from 'src/schemas/recipe.schema';
     imports: [
         MongooseModule.forFeature([
             { name: Category.name, schema: CategorySchema },
-            { name: Recipe.name, schema: RecipeSchema },
         ]),
     ],
     providers: [CategoriesService],

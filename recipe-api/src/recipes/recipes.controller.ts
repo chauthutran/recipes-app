@@ -5,6 +5,8 @@ import {
     Controller,
     Delete,
     Get,
+    HttpException,
+    HttpStatus,
     Logger,
     Param,
     ParseArrayPipe,
@@ -105,18 +107,23 @@ export class RecipesController {
             }),
         )
         dietary?: string[],
+        
         @Query('limit') limit = RECIPES_PER_PAGE,
         @Query('page') page = 1,
     ): Promise<Recipe[]> {
-        return this.recipeService.search({
-            userId,
-            search,
-            ingredients,
-            categories,
-            dietary,
-            limit: Number(limit),
-            page: Number(page),
-        });
+        try {
+            return this.recipeService.search({
+                userId,
+                search,
+                ingredients,
+                categories,
+                dietary,
+                limit: Number(limit),
+                page: Number(page),
+            }); 
+        } catch (error) {
+            throw new HttpException('Failed to fetch recipes', error.message || error);
+        }
     }
 
     @Get('categories')
@@ -140,11 +147,6 @@ export class RecipesController {
         limits: { fileSize: 5 * 1024 * 1024 }, // Optional: 5MB limit
     }))
     async uploadImage(@UploadedFile() file: Express.Multer.File) {
-        
-        const logger = new Logger("=============== ");
-        logger.log("file: " , file);
-        
-        
         if (!file || !file.buffer) {
             throw new Error('No file or file buffer provided');
         }

@@ -2,7 +2,7 @@
     <div className="mb-8 w-full">
         <!-- Categories -->
 
-        <CategoryNav @itemsOnClick="handleCategoryOnClick" />
+        <CategorySelector @itemsOnClick="handleCategoryOnClick" />
 
         <!-- Search -->
         <div class="mt-5">
@@ -39,7 +39,9 @@
             />
             <div>Search Result</div>
         </h2>
+        <div v-if="errMsg !== ''" class="error">{{ errMsg }}</div>
         <RecipesPaging
+            v-else
             :recipes="recipes"
             :page="page"
             @update:page="
@@ -52,40 +54,44 @@
 </template>
 
 <script setup lang="ts">
-import axios from 'axios';
-import type { IRecipe } from '../types/types';
-import CategoryNav from './categories/CategoryNav.vue';
+import type { ICategory, IRecipe } from '../types/types';
 import { HOME_PAGE_RECIPE_LIMIT } from '../constants/constants';
 import { ref, watch } from 'vue';
-import qs from 'qs';
-import RecipesPaging from './basics/RecipesPaging.vue';
+import RecipesPaging from './features/recipes/RecipesPaging.vue';
+import { searchRecipes } from '../utils/RESTUtils.ts';
+import CategorySelector from './features/categories/CategorySelector.vue';
 
 const recipes = ref<IRecipe[]>([]);
 const page = ref(1);
 const searchQuery = ref('');
-const selectedCategories = ref<string[]>([]);
+const selectedCategories = ref<ICategory[]>([]);
+const errMsg = ref("");
 
-const handleCategoryOnClick = async (selectedIds: string[]) => {
-    selectedCategories.value = selectedIds;
+const handleCategoryOnClick = async (selectedItems: ICategory[]) => {
+    errMsg.value = "";
+    recipes.value = [];
+    selectedCategories.value = selectedItems;
     page.value = 1; // Reset to first page when filters change
     await fetchRecipes();
 };
 
 const fetchRecipes = async () => {
-    const res = await axios.get('http://localhost:3000/recipes/query', {
-        params: {
-            search: searchQuery.value,
-            ingredients: '',
-            categories: selectedCategories.value,
-            dietary: [],
-            limit: HOME_PAGE_RECIPE_LIMIT,
-            page: page.value,
-        },
-        paramsSerializer: (params) =>
-            qs.stringify(params, { arrayFormat: 'comma' }),
-    });
-
-    recipes.value = res.data;
+    const params = {
+        search: searchQuery.value,
+        ingredients: '',
+        categories: selectedCategories.value.map((item) => item._id),
+        dietary: [],
+        limit: HOME_PAGE_RECIPE_LIMIT,
+        page: page.value,
+    };
+    const repsonseData = await searchRecipes(params);
+    if( repsonseData.success ) {
+        recipes.value = repsonseData.data!;
+    }
+    else {
+        errMsg.value = repsonseData.errMsg!;
+    }
+    
 };
 
 // Whenever page changes (e.g., user clicks 'Next' or 'Prev'), call the fetchRecipes() function

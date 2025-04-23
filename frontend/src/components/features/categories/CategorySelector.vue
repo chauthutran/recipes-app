@@ -9,6 +9,9 @@
                 v-for="category in categories"
                 :key="category._id"
                 :category="category"
+                :item-size="itemSize"
+                :hasCheckBox="hasCheckBox"
+                :selected="selectedIds && selectedIds.includes(category._id)"
                 @click="handleOnClick"
             />
         </div>
@@ -17,12 +20,18 @@
 
 <script setup lang="ts">
 import { inject, ref } from 'vue';
-import type { ICategory } from '../../types/types';
-import { AppKey } from '../../providers/useAppProvider';
 import CategoryCard from './CategoryCard.vue';
+import type { ICategory } from '../../../types/types';
+import { AppKey } from '../../../providers/useAppProvider';
+
+defineProps<{
+    hasCheckBox?: boolean;
+    itemSize?: number;
+    selectedIds?: string[];
+}>();
 
 const emit = defineEmits<{
-    (e: 'itemsOnClick', data: string[]): void;
+    (e: 'itemsOnClick', data: ICategory[]): void;
 }>();
 
 const appContext = inject(AppKey);
@@ -32,14 +41,18 @@ if (!appContext) {
 
 const { loading, categories, errMsg } = appContext;
 
-const selectedCategories = ref<string[]>([]);
+const selectedCategories = ref<ICategory[]>([]);
 
 const handleOnClick = (category: ICategory, selected: boolean) => {
-    const { _id } = category;
+    const exists = selectedCategories.value.some(c => c._id === category._id);
 
-    selectedCategories.value = selected
-        ? [...selectedCategories.value, _id]
-        : selectedCategories.value.filter((id) => id !== _id);
+    if (selected && !exists) {
+        selectedCategories.value.push(category);
+    } else if (!selected && exists) {
+        selectedCategories.value = selectedCategories.value.filter(
+            (c) => c._id !== category._id,
+        );
+    }
 
     emit('itemsOnClick', selectedCategories.value);
 };

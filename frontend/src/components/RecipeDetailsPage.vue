@@ -22,7 +22,10 @@
                     Created at: {{ formatDate(recipe.createdAt!) }}
                 </p>
 
-                <RecipeActionBar :data="recipe" />
+                <RecipeRating
+                    :rating="calculateAverageRating(recipe)"
+                    :ratingUserNo="recipe.ratings?.length"
+                />
             </div>
         </div>
 
@@ -62,66 +65,49 @@
         >
             Recommended Recipes
         </h2>
-        <div v-if="recommendedRecipes === null" class="italic p-4">
-            Loading ...
-        </div>
-        <div v-else-if="recommendedRecipes.length === 0" class="italic p-4">
-            No recommended recipes found.
-        </div>
-
-        <RowGridLayout v-else>
-            <RecipeCard
-                v-for="rep in recommendedRecipes"
-                :key="'rcm_' + rep._id"
-                :recipe="rep"
-            />
-        </RowGridLayout>
+        <RecipeFetcher 
+            v-if="recipe" 
+            :fetch-method="getSuggestionRecipes" 
+            :fetch-args="[recipe!.categories]"
+        />
     </div>
 </template>
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import type { ICategory, IRecipe } from '../../types/types';
 import { useRoute } from 'vue-router';
-import LoadingCircle from '../basics/LoadingCircle.vue';
-import RecipeImage from '../basics/RecipeImage.vue';
-import { formatDate } from '../../utils/dateUtils';
-import RecipeActionBar from './RecipeActionBar.vue';
-import axios from 'axios';
-import { HOME_PAGE_RECIPE_LIMIT } from '../../constants/constants';
-import qs from 'qs';
-import RecipeCard from './RecipeCard.vue';
-import RowGridLayout from '../layout/RowGridLayout.vue';
+import type { ICategory, IRecipe } from '../types/types';
+import { formatDate } from '../utils/dateUtils';
+import { calculateAverageRating } from '../utils/recipeUtils';
+import { HOME_PAGE_RECIPE_LIMIT } from '../constants/constants';
+import LoadingCircle from './basics/LoadingCircle.vue';
+import RecipeImage from './basics/RecipeImage.vue';
+import RecipeRating from './features/recipes/RecipeRating.vue';
+import { retrieveRecipeDetails, searchRecipes } from '../utils/RESTUtils';
+import RecipeFetcher from './features/recipes/RecipeFetcher.vue';
 
 const route = useRoute();
-const recipeId = route.params.id;
+const recipeId = route.params.id as string;
 
 const recipe = ref<IRecipe | null>(null);
-const recommendedRecipes = ref<IRecipe[] | null>(null);
+const errMsg = ref("");
 
 onMounted(async () => {
-    const data = await getDetails();
-    recipe.value = data;
-
-    await getSuggestionRecipes(data.categories);
+    const repsonseData = await retrieveRecipeDetails(recipeId);
+    if( repsonseData.success) {
+        recipe.value = repsonseData.data!;
+    }
+    else {
+        errMsg.value = repsonseData.errMsg!;
+    }
 });
-
-const getDetails = async () => {
-    const res = await fetch(`http://localhost:3000/recipes/view/${recipeId}`);
-    return await res.json();
-};
 
 const getSuggestionRecipes = async (categories: ICategory[]) => {
     const categoryIds = categories.map((item) => item._id);
-    const res = await axios.get('http://localhost:3000/recipes/query', {
-        params: {
-            categories: categoryIds,
-            limit: HOME_PAGE_RECIPE_LIMIT,
-        },
-        paramsSerializer: (params) =>
-            qs.stringify(params, { arrayFormat: 'comma' }),
-    });
-
-    recommendedRecipes.value = res.data;
+    const params =  {
+        categories: categoryIds,
+        limit: HOME_PAGE_RECIPE_LIMIT,
+    };
+    return await searchRecipes(params);
 };
 </script>

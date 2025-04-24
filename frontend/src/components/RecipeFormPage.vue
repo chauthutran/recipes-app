@@ -55,12 +55,14 @@
                 />
             </div>
         </div>
-        
+
         <div>
             <label class="block font-semibold mb-1">Ingredients</label>
             <div class="space-y-1">
                 <div
-                    v-for="(ingredient, i) in recipe.ingredients?.length ? recipe.ingredients : ['']"
+                    v-for="(ingredient, i) in recipe.ingredients?.length
+                        ? recipe.ingredients
+                        : ['']"
                     :key="i + '_' + ingredient"
                     class="flex gap-2"
                 >
@@ -77,7 +79,7 @@
                         Remove
                     </button>
                 </div>
-                
+
                 <button
                     type="button"
                     class="text-green-600 underline"
@@ -92,7 +94,9 @@
             <label class="block font-semibold mb-1">Method</label>
             <div class="space-y-1">
                 <div
-                    v-for="(method, i) in recipe.method?.length ? recipe.method : ['']"
+                    v-for="(method, i) in recipe.method?.length
+                        ? recipe.method
+                        : ['']"
                     :key="i + '_' + method"
                     class="flex gap-2"
                 >
@@ -129,14 +133,17 @@
             />
         </div> -->
 
-
         <div>
             <label class="block font-semibold text-lg">Categories</label>
             <CategorySelector
                 :hasCheckBox="true"
                 :itemSize="32"
                 @itemsOnClick="handleCategoryOnClick"
-                :selectedIds="recipe.categories?.length ? recipe.categories.map((item: ICategory) => item._id) : []"
+                :selectedIds="
+                    recipe.categories?.length
+                        ? recipe.categories.map((item: ICategory) => item._id)
+                        : []
+                "
             />
         </div>
 
@@ -148,8 +155,12 @@
         </div>
 
         <div>
-            <label class="text-lg font-semibold text-gray-800">Dietary Restrictions</label>
-            <DietaryRestrictionSelector @itemsOnClick="handleDietaryRestrictionChange" />
+            <label class="text-lg font-semibold text-gray-800"
+                >Dietary Restrictions</label
+            >
+            <DietaryRestrictionSelector
+                @itemsOnClick="handleDietaryRestrictionChange"
+            />
         </div>
 
         <div class="flex justify-end gap-4 mt-4">
@@ -174,9 +185,12 @@ import { useRoute } from 'vue-router';
 import type { ICategory, IRecipe } from '../types/types';
 import CategorySelector from './features/categories/CategorySelector.vue';
 import { emptyRecipe } from '../utils/recipeUtils';
-import DietaryRestrictionSelector from './features/DietaryRestrictionSelector.vue';
+import DietaryRestrictionSelector from './features/dietary/DietaryRestrictionSelector.vue';
 import MealTypeSelector from './features/MealTypeSelector.vue';
-import { retrieveRecipeDetails, uploadImage } from '../utils/RESTUtils';
+import {
+    retrieveRecipeDetails,
+    uploadImage,
+} from '../utils/request/recipeRequest';
 
 const emit = defineEmits(['update:modelValue']);
 const route = useRoute();
@@ -192,21 +206,19 @@ const route = useRoute();
 const recipeId = route.params.id as string | undefined;
 const isEditMode = !!recipeId;
 const recipe = ref<Partial<IRecipe>>(emptyRecipe);
-const errMsg = ref("");
-    
+const errMsg = ref('');
 
 // If in edit mode, fetch the recipe
 onMounted(async () => {
     if (isEditMode) {
         const repsonseData = await retrieveRecipeDetails(recipeId);
-            
-        if( repsonseData.success ) {
+
+        if (repsonseData.success) {
             recipe.value = repsonseData.data!;
-        }
-        else {
+        } else {
             errMsg.value = repsonseData.errMsg!;
         }
-    
+
         // recipe = await getDetails();
         // name.value = recipe.name;
         // ingredients.value = recipe.ingredients
@@ -222,14 +234,13 @@ const handleCategoryOnClick = async (selectedIds: ICategory[]) => {
     recipe.value.categories = selectedIds;
 };
 
-
 const handleMealTypeChange = (selected: string[]) => {
     recipe.value.mealTypes = selected;
-}
+};
 
 const handleDietaryRestrictionChange = (selected: string[]) => {
     recipe.value.dietaryRestrictions = selected;
-}
+};
 
 const file = ref<File | null>(null);
 function onFileChange(event: Event) {
@@ -257,7 +268,6 @@ function onFileChange(event: Event) {
 //     console.log(data.url); // Cloudinary image URL
 // }
 
-
 async function handleUpload() {
     if (!file.value) {
         console.error('No file selected');
@@ -268,14 +278,11 @@ async function handleUpload() {
     formData.append('file', file.value); // now it's guaranteed to be a File
 
     const repsonseData = await uploadImage(formData);
-    if( repsonseData.success && repsonseData.data) {
+    if (repsonseData.success && repsonseData.data) {
         console.log(repsonseData.data.url); // Cloudinary image URL
-    }
-    else {
+    } else {
         errMsg.value = repsonseData.errMsg!;
     }
-    
-    
 }
 
 ///
@@ -313,7 +320,7 @@ function onSubmit() {
     // const recipeData = {
     //     ...form
     // };
-    console.log("============ recipeData");
+    console.log('============ recipeData');
     console.log(recipe.value);
     handleUpload();
     // props.onSave(recipe);

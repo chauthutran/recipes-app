@@ -33,52 +33,41 @@
             </div>
 
             <!-- Categories Filters -->
-            <div class="flex flex-col h-full">
+            <div class="flex flex-col">
                 <label
                     class="block text-sm font-medium text-gray-700 mb-1 text-left"
                     >Categories</label
                 >
                 <div
-                    class="flex flex-wrap gap-3 border border-gray-200 p-3 rounded-md bg-gray-50 space-x-5 whitespace-nowrap flex-1"
+                    class="border border-gray-200 p-2 rounded-md bg-gray-50"
                 >
-                    <label
-                        v-for="category in categories"
-                        :key="category._id"
-                        class="flex items-center gap-2 text-sm text-gray-800"
-                    >
-                        <input
-                            type="checkbox"
-                            v-model="filters.category"
-                            :value="category._id"
-                            class="form-checkbox text-green-600"
-                        />
-                        {{ category.name }}
-                    </label>
+                    <CategorySelector
+                        :hasCheckBox="true"
+                        :itemSize="30"
+                        @itemsOnClick="handleCategoryOnClick"
+                        :selectedIds="
+                            filters.category.length
+                                ? filters.category.map((item: ICategory) => item._id)
+                                : []
+                        "
+                    />
                 </div>
             </div>
 
             <!-- Dietary Filters -->
-            <div class="flex flex-col h-full">
+            <div class="flex flex-col">
                 <label
                     class="block text-sm font-medium text-gray-700 mb-1 text-left"
                     >Dietary Preferences</label
                 >
                 <div
-                    class="flex flex-wrap gap-3 border border-gray-200 p-3 rounded-md bg-gray-50 space-x-5 whitespace-nowrap flex-1"
+                    class="border border-gray-200 p-2 rounded-md bg-gray-50"
                 >
-                    <label
-                        v-for="option in dietaryOptions"
-                        :key="option"
-                        class="flex items-center gap-2 text-sm text-gray-800"
-                    >
-                        <input
-                            type="checkbox"
-                            v-model="filters.dietary"
-                            :value="option"
-                            class="form-checkbox text-green-600"
-                        />
-                        {{ option }}
-                    </label>
+                    <DietaryRestrictionSelector
+                        :item-size="28"
+                        :has-check-box="true"
+                        @itemsOnClick="handleDietaryRestrictionChange"
+                    />
                 </div>
             </div>
 
@@ -105,7 +94,7 @@
                 />
                 <div>Search Result</div>
             </h2>
-            
+
             <div v-if="errMsg !== ''" class="error">{{ errMsg }}</div>
             <RecipesPaging
                 v-else
@@ -123,32 +112,23 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import type { IRecipe } from '../types/types';
+import type { ICategory, IRecipe } from '../types/types';
 import { HOME_PAGE_RECIPE_LIMIT } from '../constants/constants';
-import { useAppContext } from '../hooks/useAppContext';
-import { searchRecipes } from '../utils/RESTUtils';
+import { searchRecipes } from '../utils/request/recipeRequest';
 import RecipesPaging from './features/recipes/RecipesPaging.vue';
+import DietaryRestrictionSelector from './features/dietary/DietaryRestrictionSelector.vue';
+import CategorySelector from './features/categories/CategorySelector.vue';
 
-const { categories } = useAppContext();
 const recipes = ref<IRecipe[]>([]);
 const page = ref(1);
-const errMsg = ref("");
+const errMsg = ref('');
 
 const filters = ref({
     search: '',
     ingredients: '',
-    category: [] as string[],
+    category: [] as ICategory[],
     dietary: [] as string[],
 });
-
-const dietaryOptions = [
-    'Vegetarian',
-    'Vegan',
-    'Gluten-Free',
-    'Dairy-Free',
-    'Nut-Free',
-];
-
 
 const fetchRecipes = async () => {
     const params = {
@@ -157,20 +137,26 @@ const fetchRecipes = async () => {
             .split(',')
             .map((i) => i.trim())
             .filter(Boolean),
-        categories: filters.value.category,
+        categories: filters.value.category.map((item) => item._id),
         dietary: filters.value.dietary,
         limit: HOME_PAGE_RECIPE_LIMIT,
         page: page.value,
     };
     const responseData = await searchRecipes(params);
-    
-    if( responseData.success ) {
+
+    if (responseData.success) {
         recipes.value = responseData.data!;
-    }
-    else {
+    } else {
         errMsg.value = responseData.errMsg!;
     }
-    
+};
+
+const handleCategoryOnClick = async (selectedIds: ICategory[]) => {
+    filters.value.category = selectedIds;
+};
+
+const handleDietaryRestrictionChange = (selected: string[]) => {
+    filters.value.dietary = selected;
 };
 
 // Whenever page changes (e.g., user clicks 'Next' or 'Prev'), call the fetchRecipes() function

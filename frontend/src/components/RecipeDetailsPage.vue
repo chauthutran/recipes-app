@@ -65,9 +65,9 @@
         >
             Recommended Recipes
         </h2>
-        <RecipeFetcher 
-            v-if="recipe" 
-            :fetch-method="getSuggestionRecipes" 
+        <RecipeFetcher
+            v-if="recipe"
+            :fetch-method="getSuggestionRecipes"
             :fetch-args="[recipe!.categories]"
         />
     </div>
@@ -83,28 +83,30 @@ import { HOME_PAGE_RECIPE_LIMIT } from '../constants/constants';
 import LoadingCircle from './basics/LoadingCircle.vue';
 import RecipeImage from './basics/RecipeImage.vue';
 import RecipeRating from './features/recipes/RecipeRating.vue';
-import { retrieveRecipeDetails, searchRecipes } from '../utils/RESTUtils';
+import {
+    retrieveRecipeDetails,
+    searchRecipes,
+} from '../utils/request/recipeRequest';
 import RecipeFetcher from './features/recipes/RecipeFetcher.vue';
 
 const route = useRoute();
 const recipeId = route.params.id as string;
 
 const recipe = ref<IRecipe | null>(null);
-const errMsg = ref("");
+const errMsg = ref('');
 
 onMounted(async () => {
     const repsonseData = await retrieveRecipeDetails(recipeId);
-    if( repsonseData.success) {
+    if (repsonseData.success) {
         recipe.value = repsonseData.data!;
-    }
-    else {
+    } else {
         errMsg.value = repsonseData.errMsg!;
     }
 });
 
 const getSuggestionRecipes = async (categories: ICategory[]) => {
     const categoryIds = categories.map((item) => item._id);
-    const params =  {
+    const params = {
         categories: categoryIds,
         limit: HOME_PAGE_RECIPE_LIMIT,
     };

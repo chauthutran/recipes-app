@@ -17,7 +17,11 @@ const routes = [
     { path: '/favorites', name: 'Favorites', component: FavoritesPage },
 
     { path: '/login', name: 'Login', component: LoginForm },
-    { path: '/recipes/:id', name: 'Recipe Details', component: RecipeDetailsPage },
+    {
+        path: '/recipes/:id',
+        name: 'Recipe Details',
+        component: RecipeDetailsPage,
+    },
     {
         path: '/recipes/form/:id',
         name: 'Add New Recipe',

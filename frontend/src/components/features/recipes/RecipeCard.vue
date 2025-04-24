@@ -13,8 +13,15 @@
             <h3 class="mt-4 text-lg font-semibold text-gray-800">
                 {{ recipe.name }}
             </h3>
-            <p v-if="recipe.categories" class="text-sm text-gray-600 mt-1 line-clamp-2">
-                {{ recipe.categories.map((item: ICategory) => item.name).join(", ") }}
+            <p
+                v-if="recipe.categories"
+                class="text-sm text-gray-600 mt-1 line-clamp-2"
+            >
+                {{
+                    recipe.categories
+                        .map((item: ICategory) => item.name)
+                        .join(', ')
+                }}
             </p>
             <p class="text-gray-500 text-sm mt-2">
                 Created at: {{ formatDate(recipe.createdAt!) }}

@@ -25,7 +25,7 @@
                     />
                     <div class="">Trending Recipes</div>
                 </h2>
-                    
+
                 <RecipeFetcher :fetchMethod="trendingRecipes" :page="1" />
             </div>
 
@@ -41,7 +41,7 @@
                     <div class="">Recommended Recipes</div>
                 </h2>
 
-                <RecipeFetcher 
+                <RecipeFetcher
                     :fetchMethod="retrieveRecommenedRecipes"
                     :fetchArgs="[user?._id]"
                 />
@@ -59,7 +59,7 @@
                     <div class="">New Recipes</div>
                 </h2>
 
-                <RecipeFetcher 
+                <RecipeFetcher
                     :fetchMethod="retrieveRecipes"
                     :fetchArgs="[1]"
                 />
@@ -95,9 +95,7 @@
                     <div class="">User Favorites</div>
                 </h2>
 
-                <RecipeFetcher
-                    :fetchMethod="retrieveFavorites"
-                />
+                <RecipeFetcher :fetchMethod="retrieveFavorites" />
             </div>
 
             <div className="mb-8">
@@ -127,7 +125,13 @@
 <script setup lang="ts">
 import FindRecipes from './homePage/FindRecipes.vue';
 import { useAuthContext } from '../hooks/useAuthContext';
-import { trendingRecipes, retrieveRecommenedRecipes, retrieveRecipes, retrieveFavorites, retrievePopularRecipesByUserAmount } from '../utils/RESTUtils';
+import {
+    trendingRecipes,
+    retrieveRecommenedRecipes,
+    retrieveRecipes,
+    retrieveFavorites,
+    retrievePopularRecipesByUserAmount,
+} from '../utils/request/recipeRequest';
 import RecipeFetcher from './features/recipes/RecipeFetcher.vue';
 
 const { user } = useAuthContext();

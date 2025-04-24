@@ -34,7 +34,7 @@ export interface IIngredient {
 export type JSONObject = { [key: string]: any };
 
 export type ResponseData<T> = {
-    success: boolean,
-    data?: T,
-    errMsg?: string,
-}
+    success: boolean;
+    data?: T;
+    errMsg?: string;
+};

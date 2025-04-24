@@ -58,17 +58,17 @@ import type { ICategory, IRecipe } from '../types/types';
 import { HOME_PAGE_RECIPE_LIMIT } from '../constants/constants';
 import { ref, watch } from 'vue';
 import RecipesPaging from './features/recipes/RecipesPaging.vue';
-import { searchRecipes } from '../utils/RESTUtils.ts';
+import { searchRecipes } from '../utils/request/recipeRequest.ts';
 import CategorySelector from './features/categories/CategorySelector.vue';
 
 const recipes = ref<IRecipe[]>([]);
 const page = ref(1);
 const searchQuery = ref('');
 const selectedCategories = ref<ICategory[]>([]);
-const errMsg = ref("");
+const errMsg = ref('');
 
 const handleCategoryOnClick = async (selectedItems: ICategory[]) => {
-    errMsg.value = "";
+    errMsg.value = '';
     recipes.value = [];
     selectedCategories.value = selectedItems;
     page.value = 1; // Reset to first page when filters change
@@ -85,13 +85,11 @@ const fetchRecipes = async () => {
         page: page.value,
     };
     const repsonseData = await searchRecipes(params);
-    if( repsonseData.success ) {
+    if (repsonseData.success) {
         recipes.value = repsonseData.data!;
-    }
-    else {
+    } else {
         errMsg.value = repsonseData.errMsg!;
     }
-    
 };
 
 // Whenever page changes (e.g., user clicks 'Next' or 'Prev'), call the fetchRecipes() function

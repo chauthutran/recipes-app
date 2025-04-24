@@ -1,6 +1,6 @@
 <template>
     <div class="w-full">
-        <div v-if="loading" class="italic p-4">Loading ...</div>
+        <LoadingCircle v-if="loading" />
         <div v-else-if="errMsg !== ''" class="text-red-600 italic">
             {{ errMsg }}
         </div>
@@ -23,6 +23,7 @@ import { inject, ref } from 'vue';
 import CategoryCard from './CategoryCard.vue';
 import type { ICategory } from '../../../types/types';
 import { AppKey } from '../../../providers/useAppProvider';
+import LoadingCircle from '../../basics/LoadingCircle.vue';
 
 defineProps<{
     hasCheckBox?: boolean;
@@ -44,7 +45,7 @@ const { loading, categories, errMsg } = appContext;
 const selectedCategories = ref<ICategory[]>([]);
 
 const handleOnClick = (category: ICategory, selected: boolean) => {
-    const exists = selectedCategories.value.some(c => c._id === category._id);
+    const exists = selectedCategories.value.some((c) => c._id === category._id);
 
     if (selected && !exists) {
         selectedCategories.value.push(category);

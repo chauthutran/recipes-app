@@ -4,7 +4,7 @@
             <h2 className="text-xl font-semibold text-left">Find My Recipes</h2>
             <FindRecipes @on-search="handleOnSearch" />
         </div>
-        
+
         <div v-if="errMsg !== ''" class="error">{{ errMsg }}</div>
         <RecipesPaging
             e-else
@@ -26,12 +26,12 @@ import { useAuthContext } from '../hooks/useAuthContext';
 import RecipesPaging from './features/recipes/RecipesPaging.vue';
 import { HOME_PAGE_RECIPE_LIMIT } from '../constants/constants';
 import FindRecipes from './homePage/FindRecipes.vue';
-import { searchRecipes } from '../utils/RESTUtils';
+import { searchRecipes } from '../utils/request/recipeRequest';
 
 const { user } = useAuthContext();
 const page = ref(1);
 const searchQuery = ref('');
-const errMsg = ref("");
+const errMsg = ref('');
 const recipes = ref<IRecipe[]>([]);
 
 const fetchUserRecipes = async () => {
@@ -41,12 +41,11 @@ const fetchUserRecipes = async () => {
         limit: HOME_PAGE_RECIPE_LIMIT,
         page: page.value,
     };
-    
+
     const repsonseData = await searchRecipes(params);
-    if( repsonseData.success ) {
+    if (repsonseData.success) {
         recipes.value = repsonseData.data!;
-    }
-    else {
+    } else {
         errMsg.value = repsonseData.errMsg!;
     }
 };
@@ -74,7 +73,6 @@ watch(page, fetchUserRecipes);
 <style scoped>
 .line-clamp-3 {
     display: -webkit-box;
-    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }

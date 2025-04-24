@@ -1,5 +1,5 @@
 <template>
-    <div v-if="recipes === null" class="italic p-4">Loading ...</div>
+    <LoadingCircle v-if="recipes === null" />
     <div v-else-if="errMsg !== ''" class="error">{{ errMsg }}</div>
     <div v-else-if="recipes.length === 0" class="italic p-4">
         No new recipes found.
@@ -20,9 +20,9 @@ import RowGridLayout from '../../layout/RowGridLayout.vue';
 import RecipeCard from './RecipeCard.vue';
 
 const props = defineProps<{
-    fetchMethod: (...args: any[]) => Promise<ResponseData<IRecipe[]>>,
+    fetchMethod: (...args: any[]) => Promise<ResponseData<IRecipe[]>>;
     fetchArgs?: any[]; // optional arguments for flexibility
-}>()
+}>();
 
 const isLoading = ref(false);
 const errMsg = ref('');
@@ -31,13 +31,12 @@ const recipes = ref<IRecipe[]>([]);
 onMounted(async () => {
     isLoading.value = true;
     const repsonseData = await props.fetchMethod(...(props.fetchArgs || []));
-    if( repsonseData.success ) {
+    if (repsonseData.success) {
         recipes.value = repsonseData.data!;
-    }
-    else {
+    } else {
         errMsg.value = repsonseData.errMsg!;
     }
-    
+
     isLoading.value = false;
 });
 </script>

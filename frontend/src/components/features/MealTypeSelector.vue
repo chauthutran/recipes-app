@@ -26,7 +26,7 @@ const selectedList = ref<string[]>([]);
 
 defineProps<{
     selectedIds?: string[];
-}>()
+}>();
 
 const emit = defineEmits<{
     (e: 'itemsOnClick', data: string[]): void;

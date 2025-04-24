@@ -1,6 +1,6 @@
 import { provide, ref, type InjectionKey, type Ref } from 'vue';
 import type { IUser } from '../types/types';
-import axios from 'axios';
+import * as UserRequest from '../utils/request/userRequest';
 
 export type AuthContext = {
     user: Ref<IUser | null>;
@@ -20,14 +20,11 @@ export function useAuthProvider() {
     const errMsg = ref('');
 
     const login = async (email: string, password: string) => {
-        try {
-            const res = await axios.post('http://localhost:3000/users/login', {
-                email,
-                password,
-            });
-            user.value = res.data;
-        } catch (err: any) {
-            errMsg.value = `Failed to load categories: ${err.message}`;
+        const repsonseData = await UserRequest.login(email, password);
+        if (repsonseData.success) {
+            user.value = repsonseData.data!;
+        } else {
+            errMsg.value = repsonseData.errMsg!;
         }
 
         loading.value = false;
@@ -40,11 +37,11 @@ export function useAuthProvider() {
     const register = async (data: IUser) => {
         loading.value = true;
 
-        try {
-            const res = await axios.post('http://localhost:3000/users', data);
-            user.value = res.data;
-        } catch (err: any) {
-            errMsg.value = `Failed to load categories: ${err.message}`;
+        const repsonseData = await UserRequest.register(data);
+        if (repsonseData.success) {
+            user.value = repsonseData.data!;
+        } else {
+            errMsg.value = repsonseData.errMsg!;
         }
 
         loading.value = false;

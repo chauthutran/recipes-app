@@ -12,9 +12,10 @@ useAuthProvider();
     <div class="flex h-screen flex-col">
         <Header />
 
-        <main className="p-4">
+        <main className="p-4 flex flex-1 ">
             <router-view />
         </main>
+        
         <Footer />
     </div>
 </template>

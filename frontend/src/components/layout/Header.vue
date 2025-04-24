@@ -65,7 +65,7 @@
         <!-- Right: Auth -->
         <div class="flex items-center space-x-3">
             <router-link
-                v-if="!user"
+                 v-if="!user && route.path !== '/login'"
                 to="/login"
                 class="ml-4 bg-leaf-green text-white font-semibold px-4 py-2 rounded hover:bg-green-700 transition"
                 exact
@@ -74,7 +74,7 @@
             </router-link>
 
             <button
-                v-else
+                v-if="user"
                 class="relative text-green-500 px-4 py-1.5 rounded transition"
                 @click="handleLogout"
             >
@@ -89,7 +89,9 @@
 <script setup lang="ts">
 import { UserCircleIcon } from '@heroicons/vue/24/solid';
 import { useAuthContext } from '../../hooks/useAuthContext';
+import { useRoute } from 'vue-router';
 
+const route = useRoute();
 const { user, logout } = useAuthContext();
 
 const handleLogout = () => {

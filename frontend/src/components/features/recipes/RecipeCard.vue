@@ -32,7 +32,7 @@
                     @click="showDetailsForm()"
                     :class="[
                         'bg-green-100 text-green-700 hover:bg-green-200 py-1 rounded text-center',
-                        user ? 'w-1/2' : 'w-full',
+                        allowToEdit() ? 'w-1/2' : 'w-full',
                     ]"
                 >
                     Details

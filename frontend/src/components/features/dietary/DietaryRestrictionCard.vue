@@ -1,12 +1,12 @@
 <template>
     <div
         :class="[
-            'p-3 flex flex-col justify-between space-y-3 cursor-pointer items-center hover:bg-gray-200 bg-gray-100 transition rounded-xl shadow-sm m-2',
+            'p-3 flex flex-col justify-between space-y-2 cursor-pointer items-center hover:bg-gray-200 bg-gray-100 transition rounded-xl shadow-sm m-2',
             selected ? 'font-semibold bg-gray-200' : '',
         ]"
         @click="handleOnClick"
     >
-        <div class="flex items-center space-x-3 p-1">
+        <div class="flex items-center space-x-3">
             <input
                 v-if="hasCheckBox"
                 type="checkbox"

@@ -4,7 +4,7 @@
         <div v-else-if="errMsg !== ''" class="text-red-600 italic">
             {{ errMsg }}
         </div>
-        <div class="grid grid-cols-[repeat(auto-fit,_minmax(120px,1fr))]">
+        <div class="grid grid-cols-[repeat(auto-fit,_minmax(110px,1fr))]">
             <CategoryCard
                 v-for="category in categories"
                 :key="category._id"

@@ -1,5 +1,5 @@
 <template>
-    <LoadingCircle v-if="recipes === null" />
+    <LoadingCircle v-if="isLoading" />
     <div v-else-if="errMsg !== ''" class="error">{{ errMsg }}</div>
     <div v-else-if="recipes.length === 0" class="italic p-4">
         No new recipes found.
@@ -18,6 +18,7 @@ import { onMounted, ref } from 'vue';
 import type { IRecipe, ResponseData } from '../../../types/types';
 import RowGridLayout from '../../layout/RowGridLayout.vue';
 import RecipeCard from './RecipeCard.vue';
+import LoadingCircle from '../../basics/LoadingCircle.vue';
 
 const props = defineProps<{
     fetchMethod: (...args: any[]) => Promise<ResponseData<IRecipe[]>>;

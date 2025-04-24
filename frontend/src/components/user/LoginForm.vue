@@ -1,6 +1,10 @@
 <template>
-    <div class="w-full h-full flex items-center justify-center">
-        <div class="w-96 p-6 bg-white rounded-lg shadow-md">
+    <div class="w-full flex items-center flex-col pt-6">
+        <div class="space-y-1 mb-6 text-leaf-green text-xl font-semibold">
+            Welcome to YummiVerse!
+        </div>
+        
+        <div class="w-96">
             <!-- Email -->
             <div class="mb-5 w-full text-left">
                 <label
@@ -67,7 +71,7 @@
             </div>
         </div>
 
-        <p v-if="errMsg !== ''">{{ errMsg }}</p>
+        <p v-if="errMsg !== ''" class="text-red-600 italic">{{ errMsg }}</p>
     </div>
 </template>
 

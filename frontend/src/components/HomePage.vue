@@ -1,20 +1,20 @@
 <template>
-    <div className="flex flex-col flex-1">
-        <main className="flex-grow">
-            <div className="space-y-1 mb-6 text-leaf-green">
-                <div className="text-xl font-semibold">
+    <div class="flex flex-col flex-1">
+        <main class="flex-grow">
+            <div class="space-y-1 mb-6 text-leaf-green">
+                <div class="text-xl font-semibold">
                     Welcome to YummiVerse! Tasty finds, all in one place.
                 </div>
             </div>
 
-            <div className="mb-8">
-                <h2 className="text-2xl font-semibold">
+            <div class="mb-8">
+                <h2 class="text-2xl font-semibold">
                     Find Your Perfect Recipe
                 </h2>
                 <FindRecipes />
             </div>
 
-            <div className="mb-8">
+            <div class="mb-8">
                 <h2
                     class="flex space-x-4 text-2xl font-semibold mb-4 border-b border-leaf-green w-fit pr-5 justify-center items-center whitespace-nowrap"
                 >
@@ -29,7 +29,7 @@
                 <RecipeFetcher :fetchMethod="trendingRecipes" :page="1" />
             </div>
 
-            <div className="mb-8" v-if="user">
+            <div class="mb-8" v-if="user">
                 <h2
                     class="flex space-x-4 text-2xl font-semibold mb-4 border-b border-leaf-green w-fit pr-5 justify-center items-center whitespace-nowrap"
                 >
@@ -47,7 +47,7 @@
                 />
             </div>
 
-            <div className="mb-8">
+            <div class="mb-8">
                 <h2
                     class="flex space-x-4 text-2xl font-semibold mb-4 border-b border-leaf-green w-fit pr-5 justify-center items-center whitespace-nowrap"
                 >
@@ -65,7 +65,7 @@
                 />
             </div>
 
-            <div className="mb-8">
+            <div class="mb-8">
                 <h2
                     class="flex space-x-4 text-2xl font-semibold mb-4 border-b border-leaf-green w-fit pr-5 justify-center items-center whitespace-nowrap"
                 >
@@ -83,7 +83,7 @@
                 />
             </div>
 
-            <div className="mb-8">
+            <div class="mb-8">
                 <h2
                     class="flex space-x-4 text-2xl font-semibold mb-4 border-b border-leaf-green w-fit pr-5 justify-center items-center whitespace-nowrap"
                 >
@@ -98,7 +98,7 @@
                 <RecipeFetcher :fetchMethod="retrieveFavorites" />
             </div>
 
-            <div className="mb-8">
+            <div class="mb-8">
                 <h2
                     class="flex space-x-4 text-2xl font-semibold mb-4 pr-4 border-b border-leaf-green w-fit justify-center items-center whitespace-nowrap"
                 >
@@ -112,8 +112,8 @@
                 <CategorySelector />
             </div>
 
-            <!-- {user !== null && <div className="mb-8">
-                <h2 className="text-2xl font-semibold mb-4 border-b border-leaf-green w-fit pr-5">Just for You</h2>
+            <!-- {user !== null && <div class="mb-8">
+                <h2 class="text-2xl font-semibold mb-4 border-b border-leaf-green w-fit pr-5">Just for You</h2>
                 A dedicated space for personalized meal suggestions powered by AI.
                 
             

@@ -120,16 +120,6 @@
             </div>
         </div>
 
-        <!-- <div>
-            <label class="block font-semibold mb-1">Image URL</label>
-            <input
-                v-model="recipe.imageUrl"
-                type="text"
-                class="input"
-                placeholder="https://..."
-            />
-        </div> -->
-
         <div>
             <label class="block font-semibold text-lg">Categories</label>
             <CategorySelector
@@ -171,10 +161,6 @@
         </div>
     </form>
 
-    <!-- <form @submit.prevent="handleUpload">
-        <input type="file" @change="onFileChange" />
-        <button type="submit">Upload</button>
-    </form> -->
 </template>
 
 <script setup lang="ts">
@@ -196,14 +182,6 @@ import { useAuthContext } from '../hooks/useAuthContext';
 const emit = defineEmits(['update:modelValue']);
 const route = useRoute();
 const { user } = useAuthContext();
-
-// const name = ref(''),
-// const ingredients = ref<string[]> (['']);
-// const method = ref<string[]> (['']);
-// const imageUrl = ref('');
-// const categories= ref<ICategory[]> ([]);
-// const mealTypes = ref<string[]> (['']);
-// const dietaryRestrictions = ref<string[]> (['']);
 
 const recipeId = route.params.id as string | undefined;
 const isEditMode = !!recipeId;
@@ -282,37 +260,6 @@ async function saveRecipe () {
         errMsg.value = responseData.errMsg!;
     }
 }
-// async function handleUpload() {
-//     if (!file.value) {
-//         console.error('No file selected');
-//         return;
-//     }
-
-//     const formData = new FormData();
-//     formData.append('file', file.value); // now it's guaranteed to be a File
-
-//     const repsonseData = await uploadImage(formData);
-//     if (repsonseData.success && repsonseData.data) {
-//         console.log(repsonseData.data.url); // Cloudinary image URL
-//     } else {
-//         errMsg.value = repsonseData.errMsg!;
-//     }
-// }
-
-///
-
-// watch(
-//     () => props.modelValue,
-//     (val) => {
-//         if (val) {
-//             Object.assign(form, {
-//                 ...val,
-//                 categories: Object.assign(form, val),
-//             });
-//         }
-//     },
-//     { immediate: true },
-// );
 
 function addIngredient() {
     recipe.value.ingredients?.push('');
@@ -330,13 +277,4 @@ function removeMethod(index: number) {
     recipe.value.method?.splice(index, 1);
 }
 
-// function onSubmit() {
-//     // const recipeData = {
-//     //     ...form
-//     // };
-//     console.log('============ recipeData');
-//     console.log(recipe.value);
-//     handleUpload();
-//     // props.onSave(recipe);
-// }
 </script>

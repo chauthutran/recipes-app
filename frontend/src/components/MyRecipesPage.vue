@@ -1,23 +1,30 @@
 <template>
     <div class="w-full">
-        <div className="mb-8">
+        <div className="mb-8 flex items-center justify-between">
             <h2 className="text-xl font-semibold text-left">Find My Recipes</h2>
-            <FindRecipes @on-search="handleOnSearch" />
+
+            <!-- Add New Link -->
+            <router-link
+                to="/recipes/add"
+                class="bg-leaf-green text-white font-semibold px-4 py-2 rounded hover:bg-green-700 transition"
+            >
+                + Add New
+            </router-link>
         </div>
 
+        <FindRecipes @on-search="handleOnSearch" />
+
         <div v-if="errMsg !== ''" class="error">{{ errMsg }}</div>
+
         <RecipesPaging
-            e-else
+            v-else
             :recipes="recipes"
             :page="page"
-            @update:page="
-                (newPage: number) => {
-                    page = newPage;
-                }
-            "
+            @update:page="(newPage: number) => { page = newPage }"
         />
     </div>
 </template>
+
 
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue';

@@ -97,6 +97,19 @@ export const retrievePopularRecipesByUserAmount = async (
     }
 };
 
+
+// -----------------------------------------------------------------------------------------------------
+// For Add/Update recipe
+
+export const addRecipe = async (data: Partial<IRecipe>): Promise<ResponseData<IRecipe>> => {
+    try {
+        const res = await axios.post(`${API_BASE_URL}/recipes`, data);
+        return { success: true, data: res.data };
+    } catch (error) {
+        return { success: false, errMsg: getErrMsg(error) };
+    }
+}
+
 // Upload file
 export const uploadImage = async (
     formData: FormData,

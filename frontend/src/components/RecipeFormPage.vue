@@ -6,6 +6,7 @@
         @submit.prevent="onSubmit"
         class="space-y-5 p-4 bg-white shadow rounded-md text-left"
     >
+        <!-- Name -->
         <div>
             <label class="block font-semibold mb-1">Recipe Name</label>
             <input
@@ -15,27 +16,14 @@
                 required
             />
         </div>
-
+        
+        <!-- Image -->
         <div>
             <label class="block font-semibold mb-1">Image</label>
-            <!-- <div class="flex items-center gap-4">
-                <input
-                    v-model="recipe.imageUrl"
-                    type="text"
-                    class="input flex-1 hidden"
-                    placeholder="https://..."
-                    readonly
-                />
-                <input
-                    type="file"
-                    @change="handleUpload"
-                    class="block text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-leaf-green file:text-white hover:file:bg-green-700"
-                />
-            </div> -->
-            <div class="flex items-center gap-4">
+            <div class="flex items-center gap-2">
                 <!-- Show file name or placeholder -->
-                <span class="text-sm text-gray-600 min-w-[140px] truncate">
-                    {{ recipe.imageUrl || 'No file chosen' }}
+                <span class="flex-1 text-sm text-gray-600 min-w-[140px] truncate italic border border-gray-300 py-2 px-3 rounded-md ">
+                    {{ recipe.imageUrl || file?.name || 'No file chosen' }}
                 </span>
 
                 <!-- Custom Upload Button -->
@@ -43,7 +31,7 @@
                     for="fileInput"
                     class="cursor-pointer bg-leaf-green text-white text-sm font-semibold px-4 py-2 rounded hover:bg-green-700"
                 >
-                    Choose File
+                    Choose Image
                 </label>
 
                 <!-- Hidden file input -->
@@ -53,6 +41,15 @@
                     class="hidden"
                     @change="onFileChange"
                 />
+                
+                <button 
+                    v-if="file"
+                    type="button"
+                    class="cursor-pointer bg-blue-600 text-white text-sm font-semibold px-4 py-2 rounded hover:bg-blue-700"
+                    @click="handleImageUpload"
+                >
+                    Upload
+                </button>
             </div>
         </div>
 
@@ -63,7 +60,7 @@
                     v-for="(ingredient, i) in recipe.ingredients?.length
                         ? recipe.ingredients
                         : ['']"
-                    :key="i + '_' + ingredient"
+                    :key="i"
                     class="flex gap-2"
                 >
                     <input
@@ -97,7 +94,7 @@
                     v-for="(method, i) in recipe.method?.length
                         ? recipe.method
                         : ['']"
-                    :key="i + '_' + method"
+                    :key="i"
                     class="flex gap-2"
                 >
                     <input
@@ -188,6 +185,7 @@ import { emptyRecipe } from '../utils/recipeUtils';
 import DietaryRestrictionSelector from './features/dietary/DietaryRestrictionSelector.vue';
 import MealTypeSelector from './features/MealTypeSelector.vue';
 import {
+addRecipe,
     retrieveRecipeDetails,
     uploadImage,
 } from '../utils/request/recipeRequest';
@@ -218,15 +216,6 @@ onMounted(async () => {
         } else {
             errMsg.value = repsonseData.errMsg!;
         }
-
-        // recipe = await getDetails();
-        // name.value = recipe.name;
-        // ingredients.value = recipe.ingredients
-        // method.value = recipe.method;
-        // imageUrl.value = recipe?.imageUrl || "";
-        // categories.value = recipe.categories;
-        // mealTypes.value = recipe.mealTypes;
-        // dietaryRestrictions.value = recipe.dietaryRestrictions;
     }
 });
 
@@ -243,6 +232,7 @@ const handleDietaryRestrictionChange = (selected: string[]) => {
 };
 
 const file = ref<File | null>(null);
+
 function onFileChange(event: Event) {
     const target = event.target as HTMLInputElement;
     if (target && target.files && target.files[0]) {
@@ -250,6 +240,34 @@ function onFileChange(event: Event) {
     }
 }
 
+async function handleImageUpload() {
+    if (!file.value) {
+        console.error('No file selected');
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', file.value); // now it's guaranteed to be a File
+
+    const responseData = await uploadImage(formData);
+    if( responseData.success && responseData.data) {
+        recipe.value.imageUrl = responseData.data.url; // Cloudinary image URL
+        file.value = null;
+    }
+    else {
+        errMsg.value = responseData.errMsg!;
+    }
+}
+
+async function saveRecipe () {
+    const payload = recipe.value;
+    if(payload._id) { // Update
+        
+    }
+    else { // Add new
+        const responseData = await addRecipe(payload);
+    }
+}
 // async function handleUpload() {
 //     if (!file.value) {
 //         console.error('No file selected');
@@ -259,31 +277,13 @@ function onFileChange(event: Event) {
 //     const formData = new FormData();
 //     formData.append('file', file.value); // now it's guaranteed to be a File
 
-//     const res = await fetch('http://localhost:3000/recipes/upload', {
-//         method: 'POST',
-//         body: formData,
-//     });
-
-//     const data = await res.json();
-//     console.log(data.url); // Cloudinary image URL
+//     const repsonseData = await uploadImage(formData);
+//     if (repsonseData.success && repsonseData.data) {
+//         console.log(repsonseData.data.url); // Cloudinary image URL
+//     } else {
+//         errMsg.value = repsonseData.errMsg!;
+//     }
 // }
-
-async function handleUpload() {
-    if (!file.value) {
-        console.error('No file selected');
-        return;
-    }
-
-    const formData = new FormData();
-    formData.append('file', file.value); // now it's guaranteed to be a File
-
-    const repsonseData = await uploadImage(formData);
-    if (repsonseData.success && repsonseData.data) {
-        console.log(repsonseData.data.url); // Cloudinary image URL
-    } else {
-        errMsg.value = repsonseData.errMsg!;
-    }
-}
 
 ///
 

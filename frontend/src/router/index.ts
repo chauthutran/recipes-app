@@ -24,6 +24,11 @@ const routes = [
     },
     {
         path: '/recipes/form/:id',
+        name: 'Edit Recipe',
+        component: RecipeFormPage,
+    },
+    {
+        path: '/recipes/add',
         name: 'Add New Recipe',
         component: RecipeFormPage,
     },

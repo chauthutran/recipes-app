@@ -3,7 +3,7 @@
 
     <form
         v-else
-        @submit.prevent="onSubmit"
+        @submit.prevent="saveRecipe"
         class="space-y-5 p-4 bg-white shadow rounded-md text-left"
     >
         <!-- Name -->
@@ -57,7 +57,7 @@
             <label class="block font-semibold mb-1">Ingredients</label>
             <div class="space-y-1">
                 <div
-                    v-for="(ingredient, i) in recipe.ingredients?.length
+                    v-for="(_, i) in recipe.ingredients?.length
                         ? recipe.ingredients
                         : ['']"
                     :key="i"
@@ -91,7 +91,7 @@
             <label class="block font-semibold mb-1">Method</label>
             <div class="space-y-1">
                 <div
-                    v-for="(method, i) in recipe.method?.length
+                    v-for="(_, i) in recipe.method?.length
                         ? recipe.method
                         : ['']"
                     :key="i"
@@ -157,6 +157,7 @@
             >
             <DietaryRestrictionSelector
                 @itemsOnClick="handleDietaryRestrictionChange"
+                :has-check-box="true"
             />
         </div>
 
@@ -185,13 +186,16 @@ import { emptyRecipe } from '../utils/recipeUtils';
 import DietaryRestrictionSelector from './features/dietary/DietaryRestrictionSelector.vue';
 import MealTypeSelector from './features/MealTypeSelector.vue';
 import {
-addRecipe,
+    addRecipe,
+    updateRecipe,
     retrieveRecipeDetails,
     uploadImage,
 } from '../utils/request/recipeRequest';
+import { useAuthContext } from '../hooks/useAuthContext';
 
 const emit = defineEmits(['update:modelValue']);
 const route = useRoute();
+const { user } = useAuthContext();
 
 // const name = ref(''),
 // const ingredients = ref<string[]> (['']);
@@ -261,11 +265,21 @@ async function handleImageUpload() {
 
 async function saveRecipe () {
     const payload = recipe.value;
+    let responseData;
+    console.log(payload);
     if(payload._id) { // Update
-        
+        responseData = await updateRecipe(payload);
     }
     else { // Add new
-        const responseData = await addRecipe(payload);
+        payload.user = user.value!;
+        responseData = await addRecipe(payload);
+    }
+
+    if( responseData.success ) {
+        alert("The recipe is saved !");
+    }
+    else {
+        errMsg.value = responseData.errMsg!;
     }
 }
 // async function handleUpload() {
@@ -316,13 +330,13 @@ function removeMethod(index: number) {
     recipe.value.method?.splice(index, 1);
 }
 
-function onSubmit() {
-    // const recipeData = {
-    //     ...form
-    // };
-    console.log('============ recipeData');
-    console.log(recipe.value);
-    handleUpload();
-    // props.onSave(recipe);
-}
+// function onSubmit() {
+//     // const recipeData = {
+//     //     ...form
+//     // };
+//     console.log('============ recipeData');
+//     console.log(recipe.value);
+//     handleUpload();
+//     // props.onSave(recipe);
+// }
 </script>

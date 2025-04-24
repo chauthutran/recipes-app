@@ -103,11 +103,30 @@ export const retrievePopularRecipesByUserAmount = async (
 
 export const addRecipe = async (data: Partial<IRecipe>): Promise<ResponseData<IRecipe>> => {
     try {
-        const res = await axios.post(`${API_BASE_URL}/recipes`, data);
+        const payload = generateRecipePayload(data);
+        const res = await axios.post(`${API_BASE_URL}/recipes`, payload);
         return { success: true, data: res.data };
     } catch (error) {
         return { success: false, errMsg: getErrMsg(error) };
     }
+}
+
+export const updateRecipe = async (data: Partial<IRecipe>): Promise<ResponseData<IRecipe>> => {
+    try {
+        const payload = generateRecipePayload(data);
+        const res = await axios.put(`${API_BASE_URL}/recipes/${data._id}`, payload);
+        return { success: true, data: res.data };
+    } catch (error) {
+        return { success: false, errMsg: getErrMsg(error) };
+    }
+}
+
+const generateRecipePayload = (data: Partial<IRecipe>): JSONObject => {
+    return {
+        ...data,
+        categories: data.categories?.map(cat => cat._id),
+        user: data.user?._id
+    } as JSONObject;
 }
 
 // Upload file

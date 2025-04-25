@@ -20,11 +20,14 @@
             v-else
             :recipes="recipes"
             :page="page"
-            @update:page="(newPage: number) => { page = newPage }"
+            @update:page="
+                (newPage: number) => {
+                    page = newPage;
+                }
+            "
         />
     </div>
 </template>
-
 
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue';

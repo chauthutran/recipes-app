@@ -6,6 +6,8 @@ import { AppService } from './app.service';
 import { RecipesModule } from './recipes/recipes.module';
 import { UsersModule } from './users/users.module';
 import { CategoriesModule } from './categories/categories.module';
+import { CloudinaryController } from './cloudinary/cloudinary.controller';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
 
 @Module({
     imports: [
@@ -23,8 +25,9 @@ import { CategoriesModule } from './categories/categories.module';
         RecipesModule,
         UsersModule,
         CategoriesModule,
+        CloudinaryModule,
     ],
-    controllers: [AppController],
+    controllers: [AppController, CloudinaryController],
     providers: [AppService],
 })
 export class AppModule {}

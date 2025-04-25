@@ -54,126 +54,125 @@ export class RecipesService {
     findTrending(limit = 10): Promise<Recipe[]> {
         return this.recipeModel.aggregate([
             {
-              $addFields: {
-                totalSaves: {
-                  $cond: {
-                    if: { $isArray: '$saves' },
-                    then: { $size: '$saves' },
-                    else: 0,
-                  },
-                },
-                averageRating: {
-                  $cond: {
-                    if: { $gt: [{ $size: '$ratings' }, 0] },
-                    then: { $avg: '$ratings.rating' },
-                    else: 0,
-                  },
-                },
-              },
-            },
-            {
-              $lookup: {
-                from: 'users',
-                localField: 'user',
-                foreignField: '_id',
-                as: 'userDetails',
-              },
-            },
-            {
-              $unwind: {
-                path: '$userDetails',
-                preserveNullAndEmptyArrays: true,
-              },
-            },
-            {
-              $addFields: {
-                user: {
-                  _id: '$userDetails._id',
-                  email: '$userDetails.email',
-                },
-              },
-            },
-            {
-              $lookup: {
-                from: 'categories',
-                let: { categoryIds: '$categories' },
-                pipeline: [
-                  {
-                    $match: {
-                      $expr: { $in: ['$_id', '$$categoryIds'] },
+                $addFields: {
+                    totalSaves: {
+                        $cond: {
+                            if: { $isArray: '$saves' },
+                            then: { $size: '$saves' },
+                            else: 0,
+                        },
                     },
-                  },
-                  {
-                    $project: {
-                      _id: 1,
-                      name: 1,
+                    averageRating: {
+                        $cond: {
+                            if: { $gt: [{ $size: '$ratings' }, 0] },
+                            then: { $avg: '$ratings.rating' },
+                            else: 0,
+                        },
                     },
-                  },
-                ],
-                as: 'categoryDetails',
-              },
+                },
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'user',
+                    foreignField: '_id',
+                    as: 'userDetails',
+                },
+            },
+            {
+                $unwind: {
+                    path: '$userDetails',
+                    preserveNullAndEmptyArrays: true,
+                },
             },
             {
                 $addFields: {
-                  categories: '$categoryDetails',
+                    user: {
+                        _id: '$userDetails._id',
+                        email: '$userDetails.email',
+                    },
                 },
             },
             {
-              $sort: {
-                totalSaves: -1,
-                averageRating: -1,
-              },
+                $lookup: {
+                    from: 'categories',
+                    let: { categoryIds: '$categories' },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: { $in: ['$_id', '$$categoryIds'] },
+                            },
+                        },
+                        {
+                            $project: {
+                                _id: 1,
+                                name: 1,
+                            },
+                        },
+                    ],
+                    as: 'categoryDetails',
+                },
             },
             {
-              $limit: limit,
+                $addFields: {
+                    categories: '$categoryDetails',
+                },
             },
-          ]);
-          
+            {
+                $sort: {
+                    totalSaves: -1,
+                    averageRating: -1,
+                },
+            },
+            {
+                $limit: limit,
+            },
+        ]);
     }
 
     async findUserFavorite(limit: number): Promise<Recipe[]> {
         return this.recipeModel.aggregate([
             {
-              $addFields: {
-                saveCount: { $size: { $ifNull: ['$saves', []] } },
-              },
-            },
-            {
-              $sort: { saveCount: -1, createdAt: -1 },
-            },
-            {
-              $limit: +limit,
-            },
-            {
-              $lookup: {
-                from: 'categories',
-                localField: 'categories',
-                foreignField: '_id',
-                as: 'categories',
-              },
-            },
-            {
-              $lookup: {
-                from: 'users',
-                localField: 'user',
-                foreignField: '_id',
-                as: 'userDetails',
-              },
-            },
-            {
-              $unwind: {
-                path: '$userDetails',
-                preserveNullAndEmptyArrays: true,
-              },
-            },
-            {
-              $addFields: {
-                user: {
-                  _id: '$userDetails._id',
-                  email: '$userDetails.email',
+                $addFields: {
+                    saveCount: { $size: { $ifNull: ['$saves', []] } },
                 },
-              },
-            }
+            },
+            {
+                $sort: { saveCount: -1, createdAt: -1 },
+            },
+            {
+                $limit: +limit,
+            },
+            {
+                $lookup: {
+                    from: 'categories',
+                    localField: 'categories',
+                    foreignField: '_id',
+                    as: 'categories',
+                },
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'user',
+                    foreignField: '_id',
+                    as: 'userDetails',
+                },
+            },
+            {
+                $unwind: {
+                    path: '$userDetails',
+                    preserveNullAndEmptyArrays: true,
+                },
+            },
+            {
+                $addFields: {
+                    user: {
+                        _id: '$userDetails._id',
+                        email: '$userDetails.email',
+                    },
+                },
+            },
         ]);
     }
 
@@ -208,31 +207,31 @@ export class RecipesService {
             },
             {
                 $lookup: {
-                  from: 'users',
-                  localField: 'user',
-                  foreignField: '_id',
-                  as: 'userDetails',
+                    from: 'users',
+                    localField: 'user',
+                    foreignField: '_id',
+                    as: 'userDetails',
                 },
             },
             {
-              $unwind: {
-                path: '$userDetails',
-                preserveNullAndEmptyArrays: true, // if you want to allow recipes with missing users
-              },
-            },
-            {
-              $addFields: {
-                user: {
-                  _id: '$userDetails._id',
-                  email: '$userDetails.email',
+                $unwind: {
+                    path: '$userDetails',
+                    preserveNullAndEmptyArrays: true, // if you want to allow recipes with missing users
                 },
-              },
             },
             {
                 $addFields: {
-                  categories: '$categoryDetails',
+                    user: {
+                        _id: '$userDetails._id',
+                        email: '$userDetails.email',
+                    },
                 },
-              },
+            },
+            {
+                $addFields: {
+                    categories: '$categoryDetails',
+                },
+            },
         ]);
     }
 
@@ -259,24 +258,24 @@ export class RecipesService {
             { $unwind: '$category' },
             {
                 $lookup: {
-                  from: 'users',
-                  localField: 'user',
-                  foreignField: '_id',
-                  as: 'userDetails',
+                    from: 'users',
+                    localField: 'user',
+                    foreignField: '_id',
+                    as: 'userDetails',
                 },
-              },
-              {
+            },
+            {
                 $unwind: {
-                  path: '$userDetails',
-                  preserveNullAndEmptyArrays: true,
+                    path: '$userDetails',
+                    preserveNullAndEmptyArrays: true,
                 },
-              },
-              {
+            },
+            {
                 $addFields: {
-                  user: {
-                    _id: '$userDetails._id',
-                    email: '$userDetails.email',
-                  },
+                    user: {
+                        _id: '$userDetails._id',
+                        email: '$userDetails.email',
+                    },
                 },
             },
             {
@@ -325,24 +324,24 @@ export class RecipesService {
                 },
                 {
                     $lookup: {
-                    from: 'users',
-                    localField: 'user',
-                    foreignField: '_id',
-                    as: 'userDetails',
+                        from: 'users',
+                        localField: 'user',
+                        foreignField: '_id',
+                        as: 'userDetails',
                     },
                 },
                 {
                     $unwind: {
-                    path: '$userDetails',
-                    preserveNullAndEmptyArrays: true,
+                        path: '$userDetails',
+                        preserveNullAndEmptyArrays: true,
                     },
                 },
                 {
                     $addFields: {
-                    user: {
-                        _id: '$userDetails._id',
-                        email: '$userDetails.email',
-                    },
+                        user: {
+                            _id: '$userDetails._id',
+                            email: '$userDetails.email',
+                        },
                     },
                 },
             ]);
@@ -401,7 +400,11 @@ export class RecipesService {
 
     update(id: string, data: Partial<Recipe>): Promise<Recipe | null> {
         return this.recipeModel
-            .findByIdAndUpdate(id, data, { new: true })
+            .findByIdAndUpdate(id, data, {
+                new: true,
+                // runValidators: true, // make sure all schema rules are applied
+                // context: 'query', // necessary for some validators (like 'required')
+            })
             .exec();
     }
 

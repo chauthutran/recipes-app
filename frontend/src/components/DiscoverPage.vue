@@ -38,16 +38,16 @@
                     class="block text-sm font-medium text-gray-700 mb-1 text-left"
                     >Categories</label
                 >
-                <div
-                    class="border border-gray-200 p-2 rounded-md bg-gray-50"
-                >
+                <div class="border border-gray-200 p-2 rounded-md bg-gray-50">
                     <CategorySelector
                         :hasCheckBox="true"
                         :itemSize="30"
                         @itemsOnClick="handleCategoryOnClick"
                         :selectedIds="
                             filters.category.length
-                                ? filters.category.map((item: ICategory) => item._id)
+                                ? filters.category.map(
+                                      (item: ICategory) => item._id,
+                                  )
                                 : []
                         "
                     />
@@ -60,9 +60,7 @@
                     class="block text-sm font-medium text-gray-700 mb-1 text-left"
                     >Dietary Preferences</label
                 >
-                <div
-                    class="border border-gray-200 p-2 rounded-md bg-gray-50"
-                >
+                <div class="border border-gray-200 p-2 rounded-md bg-gray-50">
                     <DietaryRestrictionSelector
                         :item-size="28"
                         :has-check-box="true"

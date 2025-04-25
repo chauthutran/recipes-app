@@ -8,9 +8,7 @@
             </div>
 
             <div class="mb-8">
-                <h2 class="text-2xl font-semibold">
-                    Find Your Perfect Recipe
-                </h2>
+                <h2 class="text-2xl font-semibold">Find Your Perfect Recipe</h2>
                 <FindRecipes />
             </div>
 

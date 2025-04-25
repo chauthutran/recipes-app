@@ -114,26 +114,26 @@ export class UsersService {
                     },
                 },
                 {
-                  $lookup: {
-                    from: 'users',
-                    localField: 'user',
-                    foreignField: '_id',
-                    as: 'userDetails',
-                  },
-                },
-                {
-                  $unwind: {
-                    path: '$userDetails',
-                    preserveNullAndEmptyArrays: true,
-                  },
-                },
-                {
-                  $addFields: {
-                    user: {
-                      _id: '$userDetails._id',
-                      email: '$userDetails.email',
+                    $lookup: {
+                        from: 'users',
+                        localField: 'user',
+                        foreignField: '_id',
+                        as: 'userDetails',
                     },
-                  },
+                },
+                {
+                    $unwind: {
+                        path: '$userDetails',
+                        preserveNullAndEmptyArrays: true,
+                    },
+                },
+                {
+                    $addFields: {
+                        user: {
+                            _id: '$userDetails._id',
+                            email: '$userDetails.email',
+                        },
+                    },
                 },
             ])
             .exec();

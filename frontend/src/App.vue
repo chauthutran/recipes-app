@@ -15,7 +15,7 @@ useAuthProvider();
         <main className="p-4 flex flex-1 ">
             <router-view />
         </main>
-        
+
         <Footer />
     </div>
 </template>

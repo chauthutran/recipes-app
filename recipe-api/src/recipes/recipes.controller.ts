@@ -27,7 +27,6 @@ import { memoryStorage } from 'multer';
 export class RecipesController {
     constructor(
         private readonly recipeService: RecipesService,
-        private readonly cloudinaryService: CloudinaryService,
     ) {}
 
     @Post()
@@ -107,7 +106,7 @@ export class RecipesController {
             }),
         )
         dietary?: string[],
-        
+
         @Query('limit') limit = RECIPES_PER_PAGE,
         @Query('page') page = 1,
     ): Promise<Recipe[]> {
@@ -120,9 +119,12 @@ export class RecipesController {
                 dietary,
                 limit: Number(limit),
                 page: Number(page),
-            }); 
+            });
         } catch (error) {
-            throw new HttpException('Failed to fetch recipes', error.message || error);
+            throw new HttpException(
+                'Failed to fetch recipes',
+                error.message || error,
+            );
         }
     }
 
@@ -131,29 +133,13 @@ export class RecipesController {
         return this.recipeService.findByCategory(ids);
     }
 
-    @Put()
+    @Put("/:id")
     update(@Param('id') id: string, @Body() data: Partial<Recipe>) {
         return this.recipeService.update(id, data);
     }
 
-    @Delete()
+    @Delete("/:id")
     delete(@Param('id') id: string) {
         return this.recipeService.delete(id);
-    }
-
-    @Post('upload')
-    @UseInterceptors(FileInterceptor('file', {
-        storage: memoryStorage(),
-        limits: { fileSize: 5 * 1024 * 1024 }, // Optional: 5MB limit
-    }))
-    async uploadImage(@UploadedFile() file: Express.Multer.File) {
-        if (!file || !file.buffer) {
-            throw new Error('No file or file buffer provided');
-        }
-        const uploadedImage = await this.cloudinaryService.uploadToCloudinary(file);
-        return {
-            url: uploadedImage.secure_url,
-            public_id: uploadedImage.public_id,
-        };
     }
 }

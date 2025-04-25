@@ -6,16 +6,13 @@ import { Readable } from 'stream';
 @Injectable()
 export class CloudinaryService {
     constructor(private configService: ConfigService) {
-        const logger = new Logger("fasfsadfasdfsdaf sadfsa");
-        logger.log("asdfasdfasdfa: " , this.configService.get<string>('CLOUDINARY_CLOUD_NAME'));
-        
         cloudinary.config({
-          cloud_name: this.configService.get<string>('CLOUDINARY_CLOUD_NAME'),
-          api_key: this.configService.get<string>('CLOUDINARY_API_KEY'),
-          api_secret: this.configService.get<string>('CLOUDINARY_API_SECRET'),
+            cloud_name: this.configService.get<string>('CLOUDINARY_CLOUD_NAME'),
+            api_key: this.configService.get<string>('CLOUDINARY_API_KEY'),
+            api_secret: this.configService.get<string>('CLOUDINARY_API_SECRET'),
         });
-      }
-      
+    }
+
     async uploadToCloudinary(
         file: Express.Multer.File,
     ): Promise<UploadApiResponse> {
@@ -32,9 +29,25 @@ export class CloudinaryService {
                 },
             );
 
-            if (!file.buffer) return reject(new Error('File buffer is missing'));
-            
+            if (!file.buffer)
+                return reject(new Error('File buffer is missing'));
+
             Readable.from(file.buffer).pipe(uploadStream);
         });
     }
+    
+    async deleteImageFromCloudinary (imageUrl: string) {
+        try {
+            const parts = imageUrl.split('/');
+            const fileName = parts[parts.length - 1].split('.')[0]; // remove extension
+            const folder = parts[parts.length - 2];
+            const publicId = `${folder}/${fileName}`;
+                
+            const result = await cloudinary.uploader.destroy(publicId);
+            return result; // { "result": "ok" }
+          
+        } catch (error) {
+            throw new Error(`Failed to delete image: ${error.message}`);
+        }
+    };
 }

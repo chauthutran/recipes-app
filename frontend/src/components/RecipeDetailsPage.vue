@@ -7,16 +7,42 @@
                 <!-- Small screen: title above image -->
                 <h2 class="text-xl font-semibold sm:hidden text-left">
                     {{ recipe.name }}
+                    <div class="flex gap-2">
+                        <button
+                            class="bg-blue-500 text-white text-sm font-semibold px-3 py-1 rounded hover:bg-blue-600"
+                        >
+                            Edit
+                        </button>
+                        <button
+                            class="bg-red-500 text-white text-sm font-semibold px-3 py-1 rounded hover:bg-red-600"
+                        >
+                            Delete
+                        </button>
+                    </div>
                 </h2>
-
+                
                 <!-- Recipe Image -->
                 <RecipeImage :recipe="recipe" />
 
                 <!-- Right side on large, below on small -->
                 <div class="flex flex-col justify-between text-left space-y-2">
                     <!-- Large screen: title -->
-                    <h2 class="text-xl font-semibold hidden sm:block">
-                        {{ recipe.name }}
+                    <h2 class="hidden sm:flex flex-row">
+                        <div class="text-xl font-semibold">{{ recipe.name }}</div>
+                        <div class="">
+                            <button
+                                @click="handleOnEdit"
+                                class="text-gray-400 font-semibold px-3 py-1 rounded hover:text-blue-500"
+                            >
+                                <PencilSquareIcon class="w-5 h-5" />
+                            </button>
+                            <button
+                                @click="handleOnDelete"
+                                class="text-gray-400 font-semibold py-1 rounded hover:text-red-500"
+                            >
+                                <TrashIcon class="w-5 h-5" />
+                            </button>
+                        </div>
                     </h2>
 
                     <p class="text-gray-500 text-sm">
@@ -47,7 +73,8 @@
 
             <div className="mt-5 text-left space-y-2">
                 <div class="text-lg font-semibold">
-                    {{ recipe.method.length }} steps to make {{ recipe.name }} are:
+                    {{ recipe.method.length }} steps to make
+                    {{ recipe.name }} are:
                 </div>
                 <ol className="list-decimal pl-6 space-y-2">
                     <li
@@ -77,7 +104,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import type { ICategory, IRecipe } from '../types/types';
 import { formatDate } from '../utils/dateUtils';
 import { calculateAverageRating } from '../utils/recipeUtils';
@@ -88,10 +115,15 @@ import RecipeRating from './features/recipes/RecipeRating.vue';
 import {
     retrieveRecipeDetails,
     searchRecipes,
+    deleteRecipe
 } from '../utils/request/recipeRequest';
 import RecipeFetcher from './features/recipes/RecipeFetcher.vue';
+import { deleteImageFromCloud } from '../utils/request/cloudinaryRequest';
+import { PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/solid';
 
 const route = useRoute();
+const router = useRouter();
+
 const recipeId = route.params.id as string;
 
 const recipe = ref<IRecipe | null>(null);
@@ -114,4 +146,30 @@ const getSuggestionRecipes = async (categories: ICategory[]) => {
     };
     return await searchRecipes(params);
 };
+
+const handleOnEdit = () => {
+    router.push(`/recipes/form/${recipeId}`);
+}
+
+const handleOnDelete = async () => {
+    const ok = confirm("Are you sure you want to delete this recipe ?");
+    if(ok) {
+        errMsg.value = "";
+        if(recipe.value?.imageUrl) {
+            const responseData = await deleteImageFromCloud(recipe.value.imageUrl);
+            if (!responseData.success) {
+                errMsg.value += responseData.errMsg!;
+            }
+        }
+        
+        const responseData = await deleteRecipe(recipe.value?._id!);
+        if( responseData.success ) {
+           alert(`The recipe ${recipe.value?.name} is deleted.`);
+           router.back();
+        }
+        else {
+            errMsg.value += responseData.errMsg!;
+        }
+    }
+}
 </script>

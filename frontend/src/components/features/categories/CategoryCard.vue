@@ -51,7 +51,6 @@ const props = withDefaults(
 
 const selected = ref(props.selected);
 
-
 const emit = defineEmits<{
     (e: 'click', category: ICategory, selected: boolean): void;
 }>();

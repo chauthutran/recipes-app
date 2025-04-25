@@ -13,7 +13,12 @@
                 class="form-checkbox accent-pink-600 w-5 h-5"
                 :checked="selected"
             />
-            <img :src="iconURL" :alt="label" :width="itemSize + 'px'" height="itemSize + 'px'" />
+            <img
+                :src="iconURL"
+                :alt="label"
+                :width="itemSize + 'px'"
+                height="itemSize + 'px'"
+            />
         </div>
 
         <span className="text-left whitespace-nowrap">{{ label }}</span>

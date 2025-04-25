@@ -10,7 +10,6 @@
                 class="accent-pink-600 w-5 h-5"
                 :value="type"
                 v-model="selectedList"
-                :checked="selectedIds && selectedIds.includes(type)"
             />
             <span class="text-gray-700 text-sm capitalize">{{ type }}</span>
         </label>
@@ -22,9 +21,7 @@ import { ref, watch } from 'vue';
 
 const mealTypeOptions = ['Breakfast', 'Lunch', 'Dinner', 'Snack', 'Dessert'];
 
-const selectedList = ref<string[]>([]);
-
-defineProps<{
+const props = defineProps<{
     selectedIds?: string[];
 }>();
 
@@ -32,7 +29,19 @@ const emit = defineEmits<{
     (e: 'itemsOnClick', data: string[]): void;
 }>();
 
-// Watch for changes and emit
+// Reactive selection
+const selectedList = ref<string[]>([]);
+
+// Sync props.selectedIds to selectedList when prop changes
+watch(
+    () => props.selectedIds,
+    (newVal) => {
+        selectedList.value = newVal ? [...newVal] : [];
+    },
+    { immediate: true },
+);
+
+// Emit when user interacts
 watch(selectedList, (newVal) => {
     emit('itemsOnClick', newVal);
 });

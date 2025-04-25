@@ -3,7 +3,7 @@
         <div class="space-y-1 mb-6 text-leaf-green text-xl font-semibold">
             Welcome to YummiVerse!
         </div>
-        
+
         <div class="w-96">
             <!-- Email -->
             <div class="mb-5 w-full text-left">

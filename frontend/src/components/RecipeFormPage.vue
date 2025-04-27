@@ -1,187 +1,194 @@
 <template>
     <div class="flex flex-col p-4">
-        <form
-            @submit.prevent="onSubmit"
-            class="space-y-5 text-left"
-        >
-            <!-- Name -->
-            <div>
-                <label class="block font-semibold mb-1">Recipe Name</label>
-                <input
-                    v-model="recipe.name"
-                    type="text"
-                    class="border border-gray-300 rounded-md w-full py-1 px-3"
-                    required
-                />
-            </div>
-
-            <!-- Image -->
-            <div>
-                <label class="block font-semibold mb-1">
-                    Image
-                </label>
-                
-                <div class="flex items-center gap-2">
-                    <!-- Image preview -->
-                    <span
-                        v-if="!previewUrl && !recipe.imageUrl"
-                        class="flex-1 text-sm text-gray-600 min-w-[140px] truncate italic border border-gray-300 py-2 px-3 rounded-md"
-                    >
-                        {{ recipe.imageUrl || file?.name || 'No file chosen' }}
-                    </span>
-                    
-                    <div v-else class="mt-4">
-                        <img
-                            :src="previewUrl || recipe.imageUrl"
-                            alt="Image Preview"
-                            class="w-48 h-48 object-cover rounded border"
-                        />
-                    </div>
-                    
-                    <!-- Custom Upload Button -->
-                    <label
-                        for="fileInput"
-                        class="text-green-600 bg-gray-100 py-2 px-3 font-semibold rounded hover:bg-gray-200 border border-gray-200"
-                    >
-                        Choose Image
-
-                        <!-- Hidden file input -->
-                        <input
-                            id="fileInput"
-                            type="file"
-                            class="hidden"
-                            @change="onFileChange"
-                        />
-                    </label>
-                </div>
-            </div>
-
-            <!-- Ingredients -->
-            <div>
-                <label class="block font-semibold mb-1">Ingredients</label>
-                <div class="space-y-1">
-                    <div
-                        v-for="(_, i) in recipe.ingredients"
-                        :key="'ing_' + i"
-                        class="flex gap-2"
-                    > {{ 'ing_' + i }}
-                        <input
-                            v-model="recipe.ingredients![i]"
-                            type="text"
-                            class="border border-gray-300 rounded-md w-full py-1 px-3"
-                        />
-                        <button
-                            type="button"
-                            class="text-red-500 bg-gray-100 py-2 px-3 font-semibold rounded hover:bg-gray-200 border border-gray-200"
-                            @click="removeIngredient(i)"
-                        >
-                            Remove
-                        </button>
-                    </div>
-
-                    <button
-                        type="button"
-                        class="text-green-600 underline"
-                        @click="addIngredient"
-                    >
-                        + Add Ingredient
-                    </button>
-                </div>
-            </div>
-
-            <!-- Method -->
-            <div>
-                <label class="block font-semibold mb-1">Method</label>
-                <div class="space-y-1">
-                    <div
-                        v-for="(_, i) in recipe.method?.length
-                            ? recipe.method
-                            : ['']"
-                        :key="i"
-                        class="flex gap-2"
-                    >
-                        <input
-                            v-model="recipe.method![i]"
-                            type="text"
-                            class="border border-gray-300 rounded-md w-full py-1 px-3"
-                        />
-                        <button
-                            type="button"
-                            class="text-red-500 bg-gray-100 py-2 px-3 font-semibold rounded hover:bg-gray-200 border border-gray-200"
-                            @click="removeMethod(i)"
-                        >
-                            Remove
-                        </button>
-                    </div>
-                    <button
-                        type="button"
-                        class="text-green-600 underline"
-                        @click="addMethod"
-                    >
-                        + Add Step
-                    </button>
-                </div>
-            </div>
-
-            <!-- Categories -->
-            <div>
-                <label class="block font-semibold text-lg">Categories</label>
-                <CategorySelector
-                    v-if="recipe.categories"
-                    :key="recipe._id + '-cat'"
-                    :hasCheckBox="true"
-                    :itemSize="32"
-                    @itemsOnClick="handleCategoryOnClick"
-                    :selectedIds="
-                        recipe.categories.map((item: ICategory) => item._id)
-                    "
-                />
-            </div>
-
-            <div>
-                <label class="text-lg font-semibold text-gray-800">
-                    Meal Types
-                </label>
-                <MealTypeSelector
-                    v-if="recipe.mealTypes"
-                    :key="recipe._id + '-meal'"
-                    @itemsOnClick="handleMealTypeChange"
-                    :selected="recipe.mealTypes.map((item: string) => item)"
-                />
-            </div>
-
-            <div>
-                <label class="text-lg font-semibold text-gray-800"
-                    >Dietary Restrictions</label
-                >
-                <DietaryRestrictionSelector
-                    v-if="recipe.dietaryRestrictions"
-                    :key="recipe._id + '-diet'"
-                    @items-on-click="handleDietaryRestrictionChange"
-                    :has-check-box="true"
-                    :selected="recipe.dietaryRestrictions.map((item: string) => item)"
-                />
-            </div>
-
-            <div class="flex justify-end gap-4 mt-4">
-                <button
-                    type="submit"
-                    class="bg-leaf-green text-white px-4 py-2 rounded hover:bg-green-700"
-                >
-                    {{ recipeId ? 'Update Recipe' : 'Add Recipe' }}
-                </button>
-            </div>
-        </form>
-        
-        <div 
-            v-if="errMsg.length > 0" 
-            v-for="(msg, index) in errMsg" 
-            class="error text-left"
-            :key="index"
-        >
-            {{ msg }}
+        <div v-if="!user" class="text-red-500 italic text-lg">
+            Please login to edit a recipe
         </div>
-        
+        <div v-else-if="user?._id !== recipe.user?._id">
+            Sorry! you don't have authority to edit this recipe
+        </div>
+        <div v-else>
+            <form
+                @submit.prevent="onSubmit"
+                class="space-y-5 text-left"
+            >
+                <!-- Name -->
+                <div>
+                    <label class="block font-semibold mb-1">Recipe Name</label>
+                    <input
+                        v-model="recipe.name"
+                        type="text"
+                        class="border border-gray-300 rounded-md w-full py-1 px-3"
+                        required
+                    />
+                </div>
+
+                <!-- Image -->
+                <div>
+                    <label class="block font-semibold mb-1">
+                        Image
+                    </label>
+                    
+                    <div class="flex items-center gap-2">
+                        <!-- Image preview -->
+                        <span
+                            v-if="!previewUrl && !recipe.imageUrl"
+                            class="flex-1 text-sm text-gray-600 min-w-[140px] truncate italic border border-gray-300 py-2 px-3 rounded-md"
+                        >
+                            {{ recipe.imageUrl || file?.name || 'No file chosen' }}
+                        </span>
+                        
+                        <div v-else class="mt-4">
+                            <img
+                                :src="previewUrl || recipe.imageUrl"
+                                alt="Image Preview"
+                                class="w-48 h-48 object-cover rounded border"
+                            />
+                        </div>
+                        
+                        <!-- Custom Upload Button -->
+                        <label
+                            for="fileInput"
+                            class="text-green-600 bg-gray-100 py-2 px-3 font-semibold rounded hover:bg-gray-200 border border-gray-200"
+                        >
+                            Choose Image
+
+                            <!-- Hidden file input -->
+                            <input
+                                id="fileInput"
+                                type="file"
+                                class="hidden"
+                                @change="onFileChange"
+                            />
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Ingredients -->
+                <div>
+                    <label class="block font-semibold mb-1">Ingredients</label>
+                    <div class="space-y-1">
+                        <div
+                            v-for="(_, i) in recipe.ingredients"
+                            :key="'ing_' + i"
+                            class="flex gap-2"
+                        >
+                            <input
+                                v-model="recipe.ingredients![i]"
+                                type="text"
+                                class="border border-gray-300 rounded-md w-full py-1 px-3"
+                            />
+                            <button
+                                type="button"
+                                class="text-red-500 bg-gray-100 py-2 px-3 font-semibold rounded hover:bg-gray-200 border border-gray-200"
+                                @click="removeIngredient(i)"
+                            >
+                                Remove
+                            </button>
+                        </div>
+
+                        <button
+                            type="button"
+                            class="text-green-600 underline"
+                            @click="addIngredient"
+                        >
+                            + Add Ingredient
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Method -->
+                <div>
+                    <label class="block font-semibold mb-1">Method</label>
+                    <div class="space-y-1">
+                        <div
+                            v-for="(_, i) in recipe.method?.length
+                                ? recipe.method
+                                : ['']"
+                            :key="i"
+                            class="flex gap-2"
+                        >
+                            <input
+                                v-model="recipe.method![i]"
+                                type="text"
+                                class="border border-gray-300 rounded-md w-full py-1 px-3"
+                            />
+                            <button
+                                type="button"
+                                class="text-red-500 bg-gray-100 py-2 px-3 font-semibold rounded hover:bg-gray-200 border border-gray-200"
+                                @click="removeMethod(i)"
+                            >
+                                Remove
+                            </button>
+                        </div>
+                        <button
+                            type="button"
+                            class="text-green-600 underline"
+                            @click="addMethod"
+                        >
+                            + Add Step
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Categories -->
+                <div>
+                    <label class="block font-semibold text-lg">Categories</label>
+                    <CategorySelector
+                        v-if="recipe.categories"
+                        :key="recipe._id + '-cat'"
+                        :hasCheckBox="true"
+                        :itemSize="32"
+                        @itemsOnClick="handleCategoryOnClick"
+                        :selectedIds="
+                            recipe.categories.map((item: ICategory) => item._id)
+                        "
+                    />
+                </div>
+
+                <div>
+                    <label class="text-lg font-semibold text-gray-800">
+                        Meal Types
+                    </label>
+                    <MealTypeSelector
+                        v-if="recipe.mealTypes"
+                        :key="recipe._id + '-meal'"
+                        @itemsOnClick="handleMealTypeChange"
+                        :selected="recipe.mealTypes.map((item: string) => item)"
+                    />
+                </div>
+
+                <div>
+                    <label class="text-lg font-semibold text-gray-800"
+                        >Dietary Restrictions</label
+                    >
+                    <DietaryRestrictionSelector
+                        v-if="recipe.dietaryRestrictions"
+                        :key="recipe._id + '-diet'"
+                        @items-on-click="handleDietaryRestrictionChange"
+                        :has-check-box="true"
+                        :selected="recipe.dietaryRestrictions.map((item: string) => item)"
+                    />
+                </div>
+
+                <div class="flex justify-end gap-4 mt-4">
+                    <button
+                        type="submit"
+                        class="bg-leaf-green text-white px-4 py-2 rounded hover:bg-green-700"
+                    >
+                        {{ recipeId ? 'Update Recipe' : 'Add Recipe' }}
+                    </button>
+                </div>
+            </form>
+            
+            <div 
+                v-if="errMsg.length > 0" 
+                v-for="(msg, index) in errMsg" 
+                class="error text-left"
+                :key="index"
+            >
+                {{ msg }}
+            </div>
+        </div>
     </div>
 </template>
 

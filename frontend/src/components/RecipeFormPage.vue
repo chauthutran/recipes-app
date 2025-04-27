@@ -292,6 +292,10 @@ async function onSubmit() {
 
 async function saveRecipe() {
     const payload = recipe.value;
+    payload.dietaryRestrictions = payload.dietaryRestrictions?.filter((item) => item.trim() !== "")
+    payload.ingredients = payload.ingredients?.filter((item) => item.trim() !== "");
+    payload.method = payload.method?.filter((item) => item.trim() !== "");
+    
     let responseData;
     if (isEditMode) {
         // Update

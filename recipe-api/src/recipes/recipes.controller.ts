@@ -1,27 +1,19 @@
-import { CloudinaryService } from './../cloudinary/cloudinary.service';
-import { getLimit, getPage } from './../utils/recipeUtils';
+import { getLimit } from './../utils/recipeUtils';
 import {
     Body,
     Controller,
     Delete,
     Get,
     HttpException,
-    HttpStatus,
-    Logger,
     Param,
     ParseArrayPipe,
     Post,
     Put,
     Query,
-    UploadedFile,
-    UploadedFiles,
-    UseInterceptors,
 } from '@nestjs/common';
 import { RecipesService } from './recipes.service';
 import { Recipe } from 'src/schemas/recipe.schema';
 import { RECIPES_PER_PAGE } from 'src/constants/app.constant';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { memoryStorage } from 'multer';
 
 @Controller('recipes')
 export class RecipesController {

@@ -7,7 +7,7 @@
             :hasCheckBox="hasCheckBox"
             :iconURL="option.iconURL!"
             :item-size="itemSize"
-            :selected="internalSelectedList.includes(option.name)"
+            :selected="selected.includes(option.name)"
             @click="handleItemsOnClick"
             class="inline-flex items-center space-x-3 bg-gray-100 px-3 py-3 rounded-xl shadow-sm cursor-pointer hover:bg-gray-200 transition m-2"
         />
@@ -15,14 +15,19 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 import DietaryRestrictionCard from './DietaryRestrictionCard.vue';
 
-const props = defineProps<{
-    hasCheckBox?: boolean;
-    itemSize?: number;
-    selectedList?: string[];
-}>();
+const props = withDefaults(
+    defineProps<{
+        hasCheckBox?: boolean;
+        itemSize?: number;
+        selected?: string[];
+    }>(),
+    {
+        selected: () => [],
+    }
+)
 
 const emit = defineEmits<{
     (e: 'itemsOnClick', data: string[]): void;
@@ -42,31 +47,17 @@ const dietaryOptions = [
     },
 ];
 
-// internal list that mirrors selectedList prop
-const internalSelectedList = ref<string[]>([]);
+const selected = ref(props.selected);
 
-watch(
-    () => props.selectedList,
-    (newVal) => {
-        internalSelectedList.value = newVal ? [...newVal] : [];
-    },
-    { immediate: true },
-);
-
-const handleItemsOnClick = (label: string, selected: boolean) => {
-  // e.g. toggle internalSelectedList
-  if (selected) {
-    internalSelectedList.value.push(label);
-  } else {
-    const index = internalSelectedList.value.indexOf(label);
-    if (index !== -1) internalSelectedList.value.splice(index, 1);
-  }
-  
-  emit('itemsOnClick', internalSelectedList.value);
+const handleItemsOnClick = (label: string, isSelected: boolean) => {
+    if( isSelected ) {
+        selected.value.push(label);
+    }
+    else {
+        selected.value = selected.value.filter((item) => item != label);
+    }
+    
+    emit('itemsOnClick', selected.value);
 };
 
-// emit whenever selection changes
-watch(internalSelectedList, (newVal) => {
-    emit('itemsOnClick', newVal);
-});
 </script>

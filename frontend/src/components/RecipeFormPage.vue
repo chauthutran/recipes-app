@@ -146,7 +146,7 @@
                     v-if="recipe.mealTypes"
                     :key="recipe._id + '-meal'"
                     @itemsOnClick="handleMealTypeChange"
-                    :selectedIds="recipe.mealTypes.map((item: string) => item)"
+                    :selected="recipe.mealTypes.map((item: string) => item)"
                 />
             </div>
 

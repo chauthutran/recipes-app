@@ -9,7 +9,8 @@
                 type="checkbox"
                 class="accent-pink-600 w-5 h-5"
                 :value="type"
-                v-model="selectedList"
+                v-model="selected"
+                @click="handleItemsOnClick(type)"
             />
             <span class="text-gray-700 text-sm capitalize">{{ type }}</span>
         </label>
@@ -17,32 +18,35 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 
 const mealTypeOptions = ['Breakfast', 'Lunch', 'Dinner', 'Snack', 'Dessert'];
 
-const props = defineProps<{
-    selectedIds?: string[];
-}>();
+const props = withDefaults(
+    defineProps<{
+        selected?: string[];
+    }>(), 
+    {
+        selected: () => [],
+    }
+)
 
 const emit = defineEmits<{
     (e: 'itemsOnClick', data: string[]): void;
 }>();
 
 // Reactive selection
-const selectedList = ref<string[]>([]);
+const selected = ref<string[]>(props.selected);
 
-// Sync props.selectedIds to selectedList when prop changes
-watch(
-    () => props.selectedIds,
-    (newVal) => {
-        selectedList.value = newVal ? [...newVal] : [];
-    },
-    { immediate: true },
-);
-
-// Emit when user interacts
-watch(selectedList, (newVal) => {
-    emit('itemsOnClick', newVal);
-});
+const handleItemsOnClick = (label: string) => {
+    const existed = selected.value.some((item) => item === label)
+    if( existed ) {
+        selected.value = selected.value.filter((item) => item != label); // remove from the list
+    }
+    else {
+        selected.value.push(label); // Add to the list
+    }
+    
+    emit('itemsOnClick', selected.value);
+};
 </script>

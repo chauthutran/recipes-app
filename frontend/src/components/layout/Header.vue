@@ -1,9 +1,14 @@
 <template>
     <header
-        class="font-montserrat px-6 md:px-12 py-2 bg-white shadow flex items-center justify-between text-black"
+        class="font-montserrat px-6 py-2 bg-white shadow flex items-center text-black"
     >
+        <!-- Dropdown Menu -->
+        <SlideBar />
+
         <!-- Left: Logo -->
-        <div class="flex flex-col items-center space-x-4 justify-center">
+        <div
+            class="flex flex-col items-center space-x-4 justify-center md:px-12"
+        >
             <img
                 src="../../assets/smile-bowl-icon.jpg"
                 alt="recipe"
@@ -15,55 +20,12 @@
         </div>
 
         <!-- Center: Navigation Menus -->
-        <nav
-            class="absolute left-1/2 transform -translate-x-1/2 flex space-x-7"
-        >
-            <router-link
-                to="/"
-                class="hover:border-b hover:border-leaf-green hover:text-leaf-green"
-                active-class="text-leaf-green font-semibold border-leaf-green border-b"
-                exact
-            >
-                Home
-            </router-link>
-            <router-link
-                to="/discovery"
-                class="hover:border-b hover:border-leaf-green hover:text-leaf-green"
-                active-class="text-leaf-green font-semibold border-leaf-green border-b"
-                exact
-            >
-                Discovery
-            </router-link>
-            <router-link
-                to="/categories"
-                class="hover:border-b hover:border-leaf-green hover:text-leaf-green"
-                active-class="text-leaf-green font-semibold border-leaf-green border-b"
-                exact
-            >
-                Categories
-            </router-link>
-            <router-link
-                v-if="user"
-                to="/my-recipes"
-                class="hover:border-b hover:border-leaf-green hover:text-leaf-green"
-                active-class="text-leaf-green font-semibold border-leaf-green border-b"
-                exact
-            >
-                My Recipes
-            </router-link>
-            <router-link
-                v-if="user"
-                to="/favorites"
-                class="hover:border-b hover:border-leaf-green hover:text-leaf-green"
-                active-class="text-leaf-green font-semibold border-leaf-green border-b"
-                exact
-            >
-                Favorites
-            </router-link>
-        </nav>
+        <ul class="hidden space-x-7 lg:flex">
+            <Nagivation />
+        </ul>
 
         <!-- Right: Auth -->
-        <div class="flex items-center space-x-3">
+        <div class="flex items-center space-x-3 ml-auto">
             <router-link
                 v-if="!user && route.path !== '/login'"
                 to="/login"
@@ -90,6 +52,8 @@
 import { UserCircleIcon } from '@heroicons/vue/24/solid';
 import { useAuthContext } from '../../hooks/useAuthContext';
 import { useRoute } from 'vue-router';
+import Nagivation from './Nagivation.vue';
+import SlideBar from './SlideBar.vue';
 
 const route = useRoute();
 const { user, logout } = useAuthContext();

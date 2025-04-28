@@ -6,8 +6,8 @@ export const getErrMsg = (error: any) => {
         return validationErrors;
         // Show in UI, for example:
         // user: "Path `user` is required."
-      }
-      
+    }
+
     const errMsg =
         error.response?.data?.errors ||
         error.response?.data?.message ||

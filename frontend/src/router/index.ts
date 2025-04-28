@@ -8,6 +8,7 @@ import FavoritesPage from '../components/FavoritesPage.vue';
 import LoginForm from '../components/user/LoginForm.vue';
 import RecipeDetailsPage from '../components/RecipeDetailsPage.vue';
 import RecipeFormPage from '../components/RecipeFormPage.vue';
+import MealPlannerPage from '../components/MealPlannerPage.vue';
 
 const routes = [
     { path: '/', name: 'Home', component: HomePage },
@@ -15,6 +16,7 @@ const routes = [
     { path: '/categories', name: 'Categories', component: CategoryPage },
     { path: '/my-recipes', name: 'My Recipes', component: MyRecipesPage },
     { path: '/favorites', name: 'Favorites', component: FavoritesPage },
+    { path: '/mealPlanner', name: 'Meal Planner', component: MealPlannerPage },
 
     { path: '/login', name: 'Login', component: LoginForm },
     {

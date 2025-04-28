@@ -25,11 +25,11 @@ const mealTypeOptions = ['Breakfast', 'Lunch', 'Dinner', 'Snack', 'Dessert'];
 const props = withDefaults(
     defineProps<{
         selected?: string[];
-    }>(), 
+    }>(),
     {
         selected: () => [],
-    }
-)
+    },
+);
 
 const emit = defineEmits<{
     (e: 'itemsOnClick', data: string[]): void;
@@ -39,14 +39,13 @@ const emit = defineEmits<{
 const selected = ref<string[]>(props.selected);
 
 const handleItemsOnClick = (label: string) => {
-    const existed = selected.value.some((item) => item === label)
-    if( existed ) {
+    const existed = selected.value.some((item) => item === label);
+    if (existed) {
         selected.value = selected.value.filter((item) => item != label); // remove from the list
-    }
-    else {
+    } else {
         selected.value.push(label); // Add to the list
     }
-    
+
     emit('itemsOnClick', selected.value);
 };
 </script>

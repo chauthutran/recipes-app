@@ -7,10 +7,7 @@
             Sorry! you don't have authority to edit this recipe
         </div>
         <div v-else>
-            <form
-                @submit.prevent="onSubmit"
-                class="space-y-5 text-left"
-            >
+            <form @submit.prevent="onSubmit" class="space-y-5 text-left">
                 <!-- Name -->
                 <div>
                     <label class="block font-semibold mb-1">Recipe Name</label>
@@ -24,19 +21,21 @@
 
                 <!-- Image -->
                 <div>
-                    <label class="block font-semibold mb-1">
-                        Image
-                    </label>
-                    
+                    <label class="block font-semibold mb-1"> Image </label>
+
                     <div class="flex items-center gap-2">
                         <!-- Image preview -->
                         <span
                             v-if="!previewUrl && !recipe.imageUrl"
                             class="flex-1 text-sm text-gray-600 min-w-[140px] truncate italic border border-gray-300 py-2 px-3 rounded-md"
                         >
-                            {{ recipe.imageUrl || file?.name || 'No file chosen' }}
+                            {{
+                                recipe.imageUrl ||
+                                file?.name ||
+                                'No file chosen'
+                            }}
                         </span>
-                        
+
                         <div v-else class="mt-4">
                             <img
                                 :src="previewUrl || recipe.imageUrl"
@@ -44,7 +43,7 @@
                                 class="w-48 h-48 object-cover rounded border"
                             />
                         </div>
-                        
+
                         <!-- Custom Upload Button -->
                         <label
                             for="fileInput"
@@ -132,7 +131,9 @@
 
                 <!-- Categories -->
                 <div>
-                    <label class="block font-semibold text-lg">Categories</label>
+                    <label class="block font-semibold text-lg"
+                        >Categories</label
+                    >
                     <CategorySelector
                         v-if="recipe.categories"
                         :key="recipe._id + '-cat'"
@@ -166,7 +167,11 @@
                         :key="recipe._id + '-diet'"
                         @items-on-click="handleDietaryRestrictionChange"
                         :has-check-box="true"
-                        :selected="recipe.dietaryRestrictions.map((item: string) => item)"
+                        :selected="
+                            recipe.dietaryRestrictions.map(
+                                (item: string) => item,
+                            )
+                        "
                     />
                 </div>
 
@@ -179,10 +184,10 @@
                     </button>
                 </div>
             </form>
-            
-            <div 
-                v-if="errMsg.length > 0" 
-                v-for="(msg, index) in errMsg" 
+
+            <div
+                v-if="errMsg.length > 0"
+                v-for="(msg, index) in errMsg"
                 class="error text-left"
                 :key="index"
             >
@@ -212,7 +217,6 @@ import {
 } from '../utils/request/cloudinaryRequest';
 import { useAuthContext } from '../hooks/useAuthContext';
 
-
 const emit = defineEmits(['update:modelValue']);
 const route = useRoute();
 const router = useRouter();
@@ -231,7 +235,7 @@ onMounted(async () => {
     if (isEditMode) {
         const repsonseData = await retrieveRecipeDetails(recipeId);
 
-        if (repsonseData.success) {
+        if (repsonseData.success && repsonseData.data) {
             recipe.value = repsonseData.data!;
         } else {
             errMsg.value.push(repsonseData.errMsg!);
@@ -253,7 +257,6 @@ const handleDietaryRestrictionChange = (selected: string[]) => {
 
 const file = ref<File | null>(null);
 
-
 async function uploadImage() {
     if (!file.value) {
         console.error('No file selected');
@@ -273,22 +276,21 @@ async function uploadImage() {
 }
 
 async function deleteRecipeImage() {
-    if(!recipe.value.imageUrl) return;
-    
+    if (!recipe.value.imageUrl) return;
+
     const responseData = await deleteImageFromCloud(recipe.value.imageUrl);
     if (!responseData.success) {
-        errMsg.value.push( responseData.errMsg!);
+        errMsg.value.push(responseData.errMsg!);
     }
 }
 
 async function onSubmit() {
     errMsg.value = [];
     const errMsgList = validateRecipe(recipe.value);
-    if( errMsgList.length > 0 ) {
+    if (errMsgList.length > 0) {
         errMsg.value = errMsgList;
-    }
-    else {
-        if( file.value ) {
+    } else {
+        if (file.value) {
             await uploadImage();
             // Delete existing image only if a new one is selected and uploaded successfully
             await deleteRecipeImage();
@@ -299,10 +301,14 @@ async function onSubmit() {
 
 async function saveRecipe() {
     const payload = recipe.value;
-    payload.dietaryRestrictions = payload.dietaryRestrictions?.filter((item) => item.trim() !== "")
-    payload.ingredients = payload.ingredients?.filter((item) => item.trim() !== "");
-    payload.method = payload.method?.filter((item) => item.trim() !== "");
-    
+    payload.dietaryRestrictions = payload.dietaryRestrictions?.filter(
+        (item) => item.trim() !== '',
+    );
+    payload.ingredients = payload.ingredients?.filter(
+        (item) => item.trim() !== '',
+    );
+    payload.method = payload.method?.filter((item) => item.trim() !== '');
+
     let responseData;
     if (isEditMode) {
         // Update
@@ -315,7 +321,7 @@ async function saveRecipe() {
 
     if (responseData.success) {
         alert('The recipe is saved !');
-        if(!isEditMode) {
+        if (!isEditMode) {
             router.push(`recipes/form/${responseData.data!._id}`);
         }
     } else {
@@ -348,7 +354,7 @@ function onFileChange(event: Event) {
         if (currentPreviewUrl.value) {
             URL.revokeObjectURL(currentPreviewUrl.value);
         }
-        
+
         file.value = selectedFile;
         const newUrl = URL.createObjectURL(selectedFile);
         previewUrl.value = newUrl;

@@ -20,7 +20,7 @@
                         </button>
                     </div>
                 </h2>
-                
+
                 <!-- Recipe Image -->
                 <RecipeImage :recipe="recipe" />
 
@@ -28,7 +28,9 @@
                 <div class="flex flex-col justify-between text-left space-y-2">
                     <!-- Large screen: title -->
                     <h2 class="hidden sm:flex flex-row">
-                        <div class="text-xl font-semibold">{{ recipe.name }}</div>
+                        <div class="text-xl font-semibold">
+                            {{ recipe.name }}
+                        </div>
                         <div class="">
                             <button
                                 @click="handleOnEdit"
@@ -115,7 +117,7 @@ import RecipeRating from './features/recipes/RecipeRating.vue';
 import {
     retrieveRecipeDetails,
     searchRecipes,
-    deleteRecipe
+    deleteRecipe,
 } from '../utils/request/recipeRequest';
 import RecipeFetcher from './features/recipes/RecipeFetcher.vue';
 import { deleteImageFromCloud } from '../utils/request/cloudinaryRequest';
@@ -149,27 +151,28 @@ const getSuggestionRecipes = async (categories: ICategory[]) => {
 
 const handleOnEdit = () => {
     router.push(`/recipes/form/${recipeId}`);
-}
+};
 
 const handleOnDelete = async () => {
-    const ok = confirm("Are you sure you want to delete this recipe ?");
-    if(ok) {
-        errMsg.value = "";
-        if(recipe.value?.imageUrl) {
-            const responseData = await deleteImageFromCloud(recipe.value.imageUrl);
+    const ok = confirm('Are you sure you want to delete this recipe ?');
+    if (ok) {
+        errMsg.value = '';
+        if (recipe.value?.imageUrl) {
+            const responseData = await deleteImageFromCloud(
+                recipe.value.imageUrl,
+            );
             if (!responseData.success) {
                 errMsg.value += responseData.errMsg!;
             }
         }
-        
+
         const responseData = await deleteRecipe(recipe.value?._id!);
-        if( responseData.success ) {
-           alert(`The recipe ${recipe.value?.name} is deleted.`);
-           router.back();
-        }
-        else {
+        if (responseData.success) {
+            alert(`The recipe ${recipe.value?.name} is deleted.`);
+            router.back();
+        } else {
             errMsg.value += responseData.errMsg!;
         }
     }
-}
+};
 </script>

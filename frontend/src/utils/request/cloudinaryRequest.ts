@@ -1,8 +1,10 @@
-import axios from "axios";
-import { API_BASE_URL, getErrMsg } from ".";
-import type { JSONObject, ResponseData } from "../../types/types";
+import axios from 'axios';
+import { API_BASE_URL, getErrMsg } from '.';
+import type { JSONObject, ResponseData } from '../../types/types';
 
-export const uploadImageToCloud = async ( formData: FormData ): Promise<ResponseData<JSONObject>> => {
+export const uploadImageToCloud = async (
+    formData: FormData,
+): Promise<ResponseData<JSONObject>> => {
     try {
         const res = await axios.post(
             `${API_BASE_URL}/cloudinary/upload`,
@@ -18,19 +20,18 @@ export const uploadImageToCloud = async ( formData: FormData ): Promise<Response
     } catch (error) {
         return { success: false, errMsg: getErrMsg(error) };
     }
-}
+};
 
-
-export const deleteImageFromCloud = async ( imageUrl: string ): Promise<ResponseData<JSONObject>> => {
+export const deleteImageFromCloud = async (
+    imageUrl: string,
+): Promise<ResponseData<JSONObject>> => {
     try {
-        const res = await axios.delete(
-            `${API_BASE_URL}/cloudinary/image`, {
-                data:  {imageUrl}
-            }
-        );
+        const res = await axios.delete(`${API_BASE_URL}/cloudinary/image`, {
+            data: { imageUrl },
+        });
 
         return { success: true, data: res.data };
     } catch (error) {
         return { success: false, errMsg: getErrMsg(error) };
     }
-}
+};

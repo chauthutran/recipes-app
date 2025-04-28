@@ -8,6 +8,8 @@ import { UsersModule } from './users/users.module';
 import { CategoriesModule } from './categories/categories.module';
 import { CloudinaryController } from './cloudinary/cloudinary.controller';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { MealPlanService } from './meal-plan/meal-plan.service';
+import { MealPlanModule } from './meal-plan/meal-plan.module';
 
 @Module({
     imports: [
@@ -26,8 +28,9 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
         UsersModule,
         CategoriesModule,
         CloudinaryModule,
+        MealPlanModule,
     ],
     controllers: [AppController, CloudinaryController],
-    providers: [AppService],
+    providers: [AppService, MealPlanService],
 })
 export class AppModule {}

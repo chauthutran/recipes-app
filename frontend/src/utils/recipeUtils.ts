@@ -22,21 +22,24 @@ export const emptyRecipe: Partial<IRecipe> = {
 
 export const validateRecipe = (recipe: Partial<IRecipe>): string[] => {
     const errMsgList = [];
-    if(!recipe.name?.trim()) {
-        errMsgList.push("Recipe name is required.");
+    if (!recipe.name?.trim()) {
+        errMsgList.push('Recipe name is required.');
     }
-    
-    if(!recipe.ingredients?.length || !recipe.ingredients.some(ing => ing.trim())) {
-        errMsgList.push("Please add at least one ingredient.");
+
+    if (
+        !recipe.ingredients?.length ||
+        !recipe.ingredients.some((ing) => ing.trim())
+    ) {
+        errMsgList.push('Please add at least one ingredient.');
     }
-    
-    if(!recipe.method?.length || !recipe.method.some(mth => mth.trim())) {
-        errMsgList.push("Method is required.");
+
+    if (!recipe.method?.length || !recipe.method.some((mth) => mth.trim())) {
+        errMsgList.push('Method is required.');
     }
-    
-    if(!recipe.categories?.length) {
-        errMsgList.push("Please add at least one catetory.");
+
+    if (!recipe.categories?.length) {
+        errMsgList.push('Please add at least one catetory.');
     }
-    
+
     return errMsgList;
-}
+};

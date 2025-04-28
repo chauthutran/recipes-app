@@ -1,3 +1,4 @@
+export type MealType = 'breakfast' | 'lunch' | 'snack' | 'dinner';
 export interface IUser {
     _id: string;
     email: string;
@@ -38,3 +39,22 @@ export type ResponseData<T> = {
     data?: T;
     errMsg?: string;
 };
+
+// For MealPlan
+export interface IMealPlan {
+    _id?: string;
+    user: IUser;
+    weekStartDate: Date;
+    weekEndDate: Date;
+    days: DayPlan;
+}
+
+export interface DayPlan {
+    day: string; // Monday, Tuesday, ...
+    meal: IMeal[];
+}
+
+export interface IMeal {
+    mealType: MealType,
+    recipe: IRecipe
+}

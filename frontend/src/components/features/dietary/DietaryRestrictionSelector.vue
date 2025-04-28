@@ -26,8 +26,8 @@ const props = withDefaults(
     }>(),
     {
         selected: () => [],
-    }
-)
+    },
+);
 
 const emit = defineEmits<{
     (e: 'itemsOnClick', data: string[]): void;
@@ -50,14 +50,12 @@ const dietaryOptions = [
 const selected = ref(props.selected);
 
 const handleItemsOnClick = (label: string, isSelected: boolean) => {
-    if( isSelected ) {
+    if (isSelected) {
         selected.value.push(label);
-    }
-    else {
+    } else {
         selected.value = selected.value.filter((item) => item != label);
     }
-    
+
     emit('itemsOnClick', selected.value);
 };
-
 </script>

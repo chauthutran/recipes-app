@@ -30,7 +30,7 @@ import { MealPlanModule } from './meal-plan/meal-plan.module';
         CloudinaryModule,
         MealPlanModule,
     ],
-    controllers: [AppController, CloudinaryController],
-    providers: [AppService, MealPlanService],
+    controllers: [AppController],
+    providers: [AppService],
 })
 export class AppModule {}

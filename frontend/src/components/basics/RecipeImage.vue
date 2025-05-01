@@ -3,18 +3,14 @@
         v-if="recipe.imageUrl"
         :src="recipe.imageUrl"
         alt="Recipe Image"
-        :class="['w-full object-cover',
-            size
-        ]"
+        :class="['w-full object-cover', size]"
     />
 
     <img
         v-else
         src="../../assets/default-recipe-image.png"
         alt="Recipe Image"
-        :class="['w-full object-cover',
-            size
-        ]"
+        :class="['w-full object-cover', size]"
     />
 </template>
 
@@ -27,8 +23,7 @@ withDefaults(
         size?: string;
     }>(),
     {
-        size: 'h-48'
-    }
-)
-;
+        size: 'h-48',
+    },
+);
 </script>

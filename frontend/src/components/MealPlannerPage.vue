@@ -1,24 +1,50 @@
 <template>
-    <div class="p-6" id="meal-plan">
-        <!-- Title -->
-        <div class="flex justify-between items-center mb-6">
-            <button
-                @click="exportToPDF"
-                class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded shadow"
-            >
-                Export to PDF
-            </button>
+    <div class="p-4 space-y-4">
+        <div class="flex gap-4 items-center">
+            <label>Week Start:</label>
+            <input
+                type="date"
+                v-model="weekStartDate"
+                class="border p-1 rounded"
+            />
+
+            <label>Week End:</label>
+            <input
+                type="date"
+                v-model="weekEndDate"
+                class="border p-1 rounded"
+            />
         </div>
 
-        <!-- Recipes to Drag -->
-        <div class="mb-8">
-            <h2 class="text-xl font-semibold mb-2">Available Recipes</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div
+                v-for="(day, dayIndex) in dayPlans"
+                :key="dayIndex"
+                class="border p-2 rounded shadow"
+            >
+                <h3 class="text-lg font-semibold mb-2">{{ day.day }}</h3>
+                <div v-for="mealType in mealTypes" :key="mealType" class="mb-2">
+                    <h4 class="font-medium">{{ mealType }}</h4>
+
+                    <Draggable
+                        v-model="dayPlans[dayIndex].meals[mealType]"
+                        group="recipes"
+                        class="min-h-[40px] p-2 bg-gray-50 border rounded"
+                        item-key="id"
+                    >
+                        <template #item="{ element }">
+                            <div class="p-1 bg-green-100 border rounded">
+                                {{ element.name }}
+                            </div>
+                        </template>
+                    </Draggable>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <h2 class="text-xl font-bold mb-2">Available Recipes</h2>
             <div>
-                <label
-                    class="block text-sm font-medium text-gray-700 mb-1 text-left"
-                >
-                    Search Recipes
-                </label>
                 <div class="flex space-x-3">
                     <input
                         v-model="searchQuery"
@@ -37,10 +63,21 @@
                     </div>
                 </div>
             </div>
+            <!-- <Draggable
+          v-model="availableRecipes"
+          group="{ name: 'recipes', pull: 'clone', put: false }"
+          item-key="id"
+          class="flex flex-wrap gap-2 border p-2 rounded"
+        >
+          <template #item="{ element }">
+            <div class="p-2 bg-white border rounded shadow cursor-grab">{{ element.name }}</div>
+          </template>
+        </Draggable> -->
+
+            <!-- :clone="cloneRecipe" -->
             <Draggable
                 :list="recipes"
-                :group="{name: 'recipes', pull: 'clone', put: false}"
-                :clone="cloneRecipe"
+                :group="{ name: 'recipes', pull: 'clone', put: false }"
                 item-key="id"
                 class="flex flex-wrap gap-4"
             >
@@ -54,69 +91,41 @@
             </Draggable>
         </div>
 
-        <!-- Weekly Calendar -->
-        <div class="grid grid-cols-7 gap-4">
-            <div
-                v-for="day in daysOfWeek"
-                :key="day"
-                class="border p-4 min-h-[200px] bg-white rounded shadow"
-            >
-                <h3 class="font-bold mb-3">{{ day }}</h3>
-
-                <Draggable
-                    :list="mealPlan[day]"
-                    group="recipes"
-                    item-key="id"
-                    class="space-y-2 min-h-[100px]"
-                    @change="updateMealPlan"
-                >
-                    <template #item="{ element }">
-                        <div class="p-2 bg-green-100 rounded">
-                            {{ element.name }}
-                        </div>
-                    </template>
-                </Draggable>
-            </div>
-        </div>
-
-        <!-- Shopping List -->
-        <div class="mt-10">
-            <h2 class="text-xl font-semibold mb-2">Shopping List</h2>
-            <ul class="list-disc list-inside">
-                <li v-for="item in shoppingList" :key="item">{{ item }}</li>
-            </ul>
-        </div>
+        <button
+            @click="submitPlan"
+            class="mt-4 px-4 py-2 bg-green-600 text-white rounded"
+        >
+            Save Meal Plan
+        </button>
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
+import { ref } from 'vue';
 import VueDraggableNext from 'vuedraggable';
-import html2pdf from 'html2pdf.js';
-import type { IRecipe } from '../types/types';
+import type { IRecipe, IDayPlan, IDayName, IMealsPerDay } from '../types/types';
 import { HOME_PAGE_RECIPE_LIMIT } from '../constants/constants';
 import { searchRecipes } from '../utils/request/recipeRequest';
+import { addMealPlan, generateEmptyMealPlan } from '../utils/request/mealPlanRequest';
+import { useAuthContext } from '../hooks/useAuthContext';
 
 
 const Draggable = VueDraggableNext;
 
-// Days of the week
-const daysOfWeek = [
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday',
-    'Sunday',
-];
+const mealTypes = ['breakfast', 'lunch', 'snack', 'dinner'];
 
-const searchQuery = ref("");
-const page = ref(1);
-const errMsg = ref('');
+const dayPlans = ref<IDayPlan[]>(generateEmptyMealPlan())
+  
+
+const weekStartDate = ref('');
+const weekEndDate = ref('');
+const { user } = useAuthContext();
 
 // Recipes available
 const recipes = ref<IRecipe[]>([]);
+const page = ref(1);
+const errMsg = ref('');
+const searchQuery = ref('');
 
 const fetchRecipes = async () => {
     const params = {
@@ -133,56 +142,44 @@ const fetchRecipes = async () => {
     }
 };
 
-// Meal Plan structure
-const mealPlan = ref<
-    Record<string, { id: number; name: string; ingredients: string[] }[]>
->({
-    Monday: [],
-    Tuesday: [],
-    Wednesday: [],
-    Thursday: [],
-    Friday: [],
-    Saturday: [],
-    Sunday: [],
-});
-
-// Update meal plan (optional logic if needed)
-function updateMealPlan() {
-    // Meal plan updated
-}
-
-function cloneRecipe(recipe: IRecipe) {
-    // return a fresh copy when dragging
-  return { ...recipe };
-}
-
-// Computed Shopping List
-const shoppingList = computed(() => {
-    const allIngredients: string[] = [];
-    for (const day in mealPlan.value) {
-        for (const recipe of mealPlan.value[day]) {
-            allIngredients.push(...recipe.ingredients);
-        }
+async function submitPlan() {
+    const plans = [];
+    for( var i=0; i<dayPlans.value.length; i++ ) {
+        const item = dayPlans.value[i];
+        const breakfast = (item.meals['breakfast'] as IRecipe[] | undefined)?.map((item: IRecipe) => { _id: item._id });
+        const lunch =(item.meals['lunch'] as IRecipe[] | undefined)?.map((item) => item._id);
+        const snack =(item.meals['snack'] as IRecipe[] | undefined)?.map((item) => item._id);
+        const dinner = (item.meals['dinner'] as IRecipe[] | undefined)?.map((item) => item._id);
+        
+        plans.push({
+            day: item.day as IDayName,
+            meals: {
+                breakfast,
+                lunch,
+                snack,
+                dinner,
+            } as IMealsPerDay
+        });
     }
-    return [...new Set(allIngredients)]; // Remove duplicates
-});
+    
+    const payload = {
+        weekStartDate: weekStartDate.value,
+        weekEndDate: weekEndDate.value,
+        plan: plans,
+        user: user.value!,
+    };
+    
+    
+    const responseData = await addMealPlan(payload);
 
-// Export to PDF
-function exportToPDF() {
-    const element = document.getElementById('meal-plan');
-    if (element) {
-        html2pdf().from(element).save('meal-plan.pdf');
+    if (responseData.success) {
+        alert(responseData.data);
+    } else {
+        errMsg.value = responseData.errMsg!;
     }
 }
-
-// Whenever page changes (e.g., user clicks 'Next' or 'Prev'), call the fetchRecipes() function
-watch(page, fetchRecipes);
-
 </script>
 
 <style scoped>
-/* Optional: better cursor on drag */
-[v-cloak] {
-    display: none;
-}
+/* Add any custom styles if needed */
 </style>

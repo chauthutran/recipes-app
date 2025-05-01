@@ -28,7 +28,7 @@ import draggable from 'vuedraggable';
 
 defineProps<{
     groupName: string;
-}>()
+}>();
 
 // defineEmits<{
 //     (e: 'updatePlan', )

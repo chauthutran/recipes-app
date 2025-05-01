@@ -1,4 +1,3 @@
-export type MealType = 'breakfast' | 'lunch' | 'snack' | 'dinner';
 export interface IUser {
     _id: string;
     email: string;
@@ -41,20 +40,29 @@ export type ResponseData<T> = {
 };
 
 // For MealPlan
+export type IMealType = 'breakfast' | 'lunch' | 'snack' | 'dinner';
+export type IDayName =
+  | 'Monday'
+  | 'Tuesday'
+  | 'Wednesday'
+  | 'Thursday'
+  | 'Friday'
+  | 'Saturday'
+  | 'Sunday';
+  
 export interface IMealPlan {
     _id?: string;
     user: IUser;
-    weekStartDate: Date;
-    weekEndDate: Date;
-    days: DayPlan;
+    weekStartDate: string;
+    weekEndDate: string;
+    plan: IDayPlan[];
 }
 
-export interface DayPlan {
-    day: string; // Monday, Tuesday, ...
-    meal: IMeal[];
+export interface IDayPlan {
+    day: IDayName; // Monday, Tuesday, ...
+    meals: IMealsPerDay;
 }
 
-export interface IMeal {
-    mealType: MealType,
-    recipe: IRecipe
-}
+export type IMealsPerDay = {
+    [key in IMealType]?: Partial<IRecipe>[]; // array of recipes
+};

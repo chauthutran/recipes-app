@@ -16,3 +16,13 @@ export const PAGE_RECIPE_DETAILS = 'PAGE_RECIPE_DETAILS';
 export const PAGE_RECIPE_FORM = 'PAGE_RECIPE_FORM';
 
 export const HOME_PAGE_RECIPE_LIMIT = 12;
+export const MEAL_TYPES = ['breakfast', 'lunch', 'snack', 'dinner'];
+export const DAY_NAMES = [
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+    'Sunday',
+];

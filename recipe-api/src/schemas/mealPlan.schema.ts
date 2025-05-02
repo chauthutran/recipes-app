@@ -26,8 +26,8 @@ class DayPlan {
   @Prop({ type: String, required: true })
   day: string;
 
-  @Prop({ type: [MealsPerDay], default: [] })
-  meals: MealsPerDay[];
+  @Prop({ type: MealsPerDay })
+  meals: MealsPerDay;
 }
 
 @Schema({ timestamps: true })

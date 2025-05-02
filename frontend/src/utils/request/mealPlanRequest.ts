@@ -1,6 +1,13 @@
 import axios from 'axios';
 import { API_BASE_URL, getErrMsg } from '.';
-import type { IDayName, IDayPlan, IMealPlan, IMealsPerDay, JSONObject, ResponseData } from '../../types/types';
+import type {
+    IDayName,
+    IDayPlan,
+    IMealPlan,
+    IRecipe,
+    JSONObject,
+    ResponseData,
+} from '../../types/types';
 
 export const retrieveMealPlanByUser = async (
     userId: string,
@@ -54,21 +61,21 @@ export const updateMealPlan = async (data: Partial<IMealPlan>) => {
 
 export const generateEmptyMealPlan = (): IDayPlan[] => {
     return [
-      'Monday',
-      'Tuesday',
-      'Wednesday',
-      'Thursday',
-      'Friday',
-      'Saturday',
-      'Sunday',
+        'Monday',
+        'Tuesday',
+        'Wednesday',
+        'Thursday',
+        'Friday',
+        'Saturday',
+        'Sunday',
     ].map((day) => ({
-      day: day as IDayName,
-      meals: {
-        breakfast: [],
-        lunch: [],
-        snack: [],
-        dinner: [],
-      },
+        day: day as IDayName,
+        meals: {
+            breakfast: [] as Partial<IRecipe>[],
+            lunch: [] as Partial<IRecipe>[],
+            snack: [] as Partial<IRecipe>[],
+            dinner: [] as Partial<IRecipe>[],
+        },
     }));
 };
 

@@ -9,6 +9,7 @@ import LoginForm from '../components/user/LoginForm.vue';
 import RecipeDetailsPage from '../components/RecipeDetailsPage.vue';
 import RecipeFormPage from '../components/RecipeFormPage.vue';
 import MealPlannerPage from '../components/MealPlannerPage.vue';
+import MealPlanForm from '../components/mealPlan/form/MealPlanForm.vue';
 
 const routes = [
     { path: '/', name: 'Home', component: HomePage },
@@ -33,6 +34,16 @@ const routes = [
         path: '/recipes/add',
         name: 'Add New Recipe',
         component: RecipeFormPage,
+    },
+    {
+        path: '/meal-plan/add',
+        name: 'Add New Meal Plan',
+        component: MealPlanForm,
+    },
+    {
+        path: '/meal-plan/form/:id',
+        name: 'Edit Meal Plan',
+        component: MealPlanForm,
     },
 ];
 

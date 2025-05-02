@@ -1,3 +1,4 @@
+import { DAY_NAMES, MEAL_TYPES } from './../constants/constants';
 export interface IUser {
     _id: string;
     email: string;
@@ -40,16 +41,10 @@ export type ResponseData<T> = {
 };
 
 // For MealPlan
-export type IMealType = 'breakfast' | 'lunch' | 'snack' | 'dinner';
-export type IDayName =
-  | 'Monday'
-  | 'Tuesday'
-  | 'Wednesday'
-  | 'Thursday'
-  | 'Friday'
-  | 'Saturday'
-  | 'Sunday';
-  
+export type IMealType = (typeof MEAL_TYPES)[number];
+
+export type IDayName = (typeof DAY_NAMES)[number];
+
 export interface IMealPlan {
     _id?: string;
     user: IUser;
@@ -66,3 +61,8 @@ export interface IDayPlan {
 export type IMealsPerDay = {
     [key in IMealType]?: Partial<IRecipe>[]; // array of recipes
 };
+
+export interface IMeal {
+    mealType: string;
+    recipes: Partial<IRecipe>[];
+}

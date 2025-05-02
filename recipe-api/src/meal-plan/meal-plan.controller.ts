@@ -1,6 +1,6 @@
 import { MealPlan } from 'src/schemas/mealPlan.schema';
 import { MealPlanService } from './meal-plan.service';
-import { Body, Controller, Delete, Get, Logger, Param, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 
 @Controller('meal-plan')
 export class MealPlanController {
@@ -10,15 +10,12 @@ export class MealPlanController {
     
     @Post()
     async create(@Body() data: any) {
-        const logger = new Logger("====fasdfasdfasfdaasdfa");
-        logger.log("==== mealPlan", data);
         if (data.weekStartDate) {
             data.weekStartDate = new Date(data.weekStartDate);
         }   
         if (data.weekEndDate) {
             data.weekEndDate = new Date(data.weekEndDate);
         }
-        
         
         return this.mealPlanService.create(data);
     }

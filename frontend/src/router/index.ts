@@ -9,7 +9,7 @@ import LoginForm from '../components/user/LoginForm.vue';
 import RecipeDetailsPage from '../components/RecipeDetailsPage.vue';
 import RecipeFormPage from '../components/RecipeFormPage.vue';
 import MealPlannerPage from '../components/MealPlannerPage.vue';
-import MealPlanForm from '../components/mealPlan/form/MealPlanForm.vue';
+import MealPlanForm from '../components/features/mealPlan/form/MealPlanForm.vue';
 
 const routes = [
     { path: '/', name: 'Home', component: HomePage },

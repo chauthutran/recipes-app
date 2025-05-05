@@ -37,19 +37,19 @@ import type {
     IDayName,
     IMealsPerDay,
     IMeal,
-} from '../../../types/types';
-import { HOME_PAGE_RECIPE_LIMIT } from '../../../constants/constants';
-import { searchRecipes } from '../../../utils/request/recipeRequest';
+} from '../../../../types/types';
+import { HOME_PAGE_RECIPE_LIMIT } from '../../../../constants/constants';
+import { searchRecipes } from '../../../../utils/request/recipeRequest';
 import {
     addMealPlan,
     generateEmptyMealPlan,
-} from '../../../utils/request/mealPlanRequest';
-import { useAuthContext } from '../../../hooks/useAuthContext';
+} from '../../../../utils/request/mealPlanRequest';
 import WeekSelector from './WeekSelector.vue';
 import RecipeSearch from './RecipeSearch.vue';
 import DraggableRecipeList from './DraggableRecipeList.vue';
 import SavePlanButton from './SavePlanButton.vue';
 import DayCard from './DayCard.vue';
+import { useAuthContext } from '../../../../hooks/useAuthContext';
 
 const dayPlans = ref<IDayPlan[]>(generateEmptyMealPlan());
 

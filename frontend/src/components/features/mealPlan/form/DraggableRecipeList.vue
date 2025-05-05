@@ -13,13 +13,31 @@
             </div>
         </template>
     </Draggable>
+    
+    
+
+    <div v-if="errMsg !== ''" class="error">{{ errMsg }}</div>
+    <RecipesPaging
+        v-else
+        :recipes="recipes"
+        :page="page"
+        @update:page="
+            (newPage) => {
+                page = newPage;
+            }
+        "
+    />
 </template>
 
 <script setup lang="ts">
 import VueDraggableNext from 'vuedraggable';
-import type { IRecipe } from '../../../types/types';
+import type { IRecipe } from '../../../../types/types';
+import RecipesPaging from '../../recipes/RecipesPaging.vue';
+import { ref } from 'vue';
 
 const Draggable = VueDraggableNext;
+const page = ref(1);
+const errMsg = ref('');
 
 defineProps<{
     recipes: IRecipe[];

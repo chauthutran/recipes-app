@@ -37,8 +37,8 @@
 </template>
 
 <script setup lang="ts">
-import type { IDayPlan, IMeal, IRecipe } from '../../../types/types';
-import { DAY_NAMES, MEAL_TYPES } from '../../../constants/constants';
+import type { IDayPlan, IMeal, IRecipe } from '../../../../types/types';
+import { DAY_NAMES, MEAL_TYPES } from '../../../../constants/constants';
 import DraggableMealType from './DraggableMealType.vue';
 
 defineProps<{

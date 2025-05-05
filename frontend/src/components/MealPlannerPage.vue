@@ -46,9 +46,9 @@ import type { IMealPlan } from '../types/types';
 import { retrieveMealPlanByUser } from '../utils/request/mealPlanRequest';
 import { formatDate } from '../utils/dateUtils';
 import { useRouter } from 'vue-router';
-import MealPlanDetails from './mealPlan/list/MealPlanDetails.vue';
 import { PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/solid';
 import LoadingCircle from './basics/LoadingCircle.vue';
+import MealPlanDetails from './features/mealPlan/list/MealPlanDetails.vue';
 
 const router = useRouter();
 const { user } = useAuthContext();

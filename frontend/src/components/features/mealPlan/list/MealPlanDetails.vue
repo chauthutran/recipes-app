@@ -42,8 +42,8 @@
 
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
-import { MEAL_TYPES } from '../../../constants/constants';
-import type { IRecipe } from '../../../types/types';
+import { MEAL_TYPES } from '../../../../constants/constants';
+import type { IRecipe } from '../../../../types/types';
 
 const router = useRouter();
 

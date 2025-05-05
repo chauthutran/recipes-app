@@ -8,6 +8,7 @@ import type {
     JSONObject,
     ResponseData,
 } from '../../types/types';
+import { DAY_NAMES } from '../../constants/constants';
 
 export const retrieveMealPlanByUser = async (
     userId: string,
@@ -60,15 +61,7 @@ export const updateMealPlan = async (data: Partial<IMealPlan>) => {
 };
 
 export const generateEmptyMealPlan = (): IDayPlan[] => {
-    return [
-        'Monday',
-        'Tuesday',
-        'Wednesday',
-        'Thursday',
-        'Friday',
-        'Saturday',
-        'Sunday',
-    ].map((day) => ({
+    return DAY_NAMES.map((day) => ({
         day: day as IDayName,
         meals: {
             breakfast: [] as Partial<IRecipe>[],

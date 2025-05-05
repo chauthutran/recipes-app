@@ -1,5 +1,5 @@
 <template>
-    <div class="p-6 space-y-8">
+    <div class="p-6 space-y-8 w-full">
         <!-- Week Selector -->
         <section class="flex flex-wrap gap-6 items-center">
             <WeekSelector
@@ -9,27 +9,14 @@
                 @update:end="weekEndDate = $event"
             />
         </section>
-
-        <!-- Day Plan Grid -->
-        <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div
-                v-for="(day, dayIndex) in dayPlans"
-                :key="dayIndex"
-                class="bg-white border border-gray-200 p-4 rounded-xl shadow-sm"
-            >
-                <h3 class="text-xl font-bold text-gray-800 mb-3">
-                    {{ day.day }}
-                </h3>
-
-                <DayCard
-                    v-for="(dayPlan, index) in dayPlans"
-                    :key="index"
-                    :dayPlan="dayPlan"
-                    @update="(payload) => updateDayMeals(index, payload)"
-                />
-            </div>
-        </section>
-
+        
+        <!-- v-for="(dayPlan, index) in dayPlans"
+            :key="index" -->
+        <DayCard
+            :dayPlans="dayPlans"
+            @update="(dayIdx, meal) => updateDayMeals(dayIdx, meal)"
+        />
+        
         <!-- Recipe Search -->
         <section>
             <h2 class="text-2xl font-bold mb-4">Available Recipes</h2>

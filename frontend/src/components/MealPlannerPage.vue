@@ -11,7 +11,9 @@
                 Add new
             </button>
             <hr class="my-4 text-gray-300" />
-            <div v-for="mealPlan in mealPlans">
+            
+            <div v-if="mealPlans === null"><LoadingCircle /></div>
+            <div v-else v-for="mealPlan in mealPlans">
                 <p class="font-semibold text-2xl py-5">
                     Meal plan from {{ formatDate(mealPlan.weekStartDate) }} to
                     {{ formatDate(mealPlan.weekEndDate) }}
@@ -46,10 +48,11 @@ import { formatDate } from '../utils/dateUtils';
 import { useRouter } from 'vue-router';
 import MealPlanDetails from './mealPlan/list/MealPlanDetails.vue';
 import { PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/solid';
+import LoadingCircle from './basics/LoadingCircle.vue';
 
 const router = useRouter();
 const { user } = useAuthContext();
-const mealPlans = ref<IMealPlan[]>([]);
+const mealPlans = ref<IMealPlan[] | null>(null);
 const errMsg = ref('');
 
 const fetchMealPlans = async () => {

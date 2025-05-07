@@ -21,6 +21,7 @@
         v-else
         :recipes="recipes"
         :page="page"
+        :showAsCard="false"
         @update:page="
             (newPage) => {
                 page = newPage;

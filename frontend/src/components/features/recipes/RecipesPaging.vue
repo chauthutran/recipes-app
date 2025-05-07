@@ -2,12 +2,20 @@
     <div className="mb-8">
         <RecipesGridLayout v-if="recipes.length">
             <RecipeCard
+                v-if="showAsCard"
                 v-for="recipe in recipes"
                 :key="'search_' + recipe._id"
                 :recipe="recipe"
                 @edit="console.log('edit')"
                 @delete="console.log('details')"
             />
+            <RecipeNameItem 
+                v-else
+                v-for="recipe in recipes"
+                :key="'search_name_' + recipe._id"
+                :recipe="recipe"
+            />
+            
         </RecipesGridLayout>
         <div v-else class="italic text-gray-500">No recipes found.</div>
     </div>
@@ -35,11 +43,18 @@
 import type { IRecipe } from '../../../types/types';
 import RecipesGridLayout from '../../layout/RecipesGridLayout.vue';
 import RecipeCard from './RecipeCard.vue';
+import RecipeNameItem from './RecipeNameItem.vue';
 
-defineProps<{
-    recipes: IRecipe[];
-    page: number;
-}>();
+withDefaults(
+    defineProps<{
+        recipes: IRecipe[];
+        page: number;
+        showAsCard: boolean;
+    }>(),
+    {
+        showAsCard: true,
+    },
+);
 
 defineEmits<{
     (e: 'update:page', value: number): void;

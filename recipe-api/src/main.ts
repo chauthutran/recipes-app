@@ -8,7 +8,7 @@ async function bootstrap() {
     app.useGlobalFilters(new MongooseValidationFilter());
     
     app.enableCors({
-        origin: 'http://localhost:5174', // Our Vue frontend's URL
+        origin: 'http://localhost:5173', // Our Vue frontend's URL
         // credentials: true,               // if we're using cookies or auth headers
     });
 

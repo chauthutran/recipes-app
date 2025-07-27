@@ -45,7 +45,7 @@
             :recipes="recipes"
             :page="page"
             @update:page="
-                (newPage) => {
+                (newPage: number) => {
                     page = newPage;
                 }
             "
@@ -58,7 +58,7 @@ import type { ICategory, IRecipe } from '../types/types';
 import { HOME_PAGE_RECIPE_LIMIT } from '../constants/constants';
 import { ref, watch } from 'vue';
 import RecipesPaging from './features/recipes/RecipesPaging.vue';
-import { searchRecipes } from '../utils/request/recipeRequest.ts';
+import { searchRecipes } from '../utils/request/recipeRequest';
 import CategorySelector from './features/categories/CategorySelector.vue';
 
 const recipes = ref<IRecipe[]>([]);

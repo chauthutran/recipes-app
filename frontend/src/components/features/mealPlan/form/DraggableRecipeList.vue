@@ -23,7 +23,7 @@
         :page="page"
         :showAsCard="false"
         @update:page="
-            (newPage) => {
+            (newPage: number) => {
                 page = newPage;
             }
         "

@@ -49,7 +49,7 @@ withDefaults(
     defineProps<{
         recipes: IRecipe[];
         page: number;
-        showAsCard: boolean;
+        showAsCard?: boolean;
     }>(),
     {
         showAsCard: true,
